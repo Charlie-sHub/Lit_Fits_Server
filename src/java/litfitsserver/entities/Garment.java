@@ -3,6 +3,7 @@ package litfitsserver.entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -67,6 +68,11 @@ public class Garment implements Serializable {
     @NotNull
     private boolean promoted;
     /**
+     * Path in the database to the picture of the garment
+     */
+    @NotNull
+    private String imagePath;
+    /**
      * Company that sells the garment
      */
     @NotNull
@@ -77,21 +83,21 @@ public class Garment implements Serializable {
      * What colors are in the garment
      */
     @NotNull
-    @ManyToMany //how to make it so when a color/material is deleted it is also deleted from the relational table
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "garment_colors", schema = "Lit_Fits_DB")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
     @NotNull
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "garment_materials", schema = "Lit_Fits_DB")
     private Set<Material> materials;
 
     public Garment() {
     }
 
-    public Garment(String barcode, String designer, Double price, Mood mood, BodyPart bodyPart, GarmentType garmenteType, boolean available, boolean promotionRequest, boolean promoted, Company company, Set<Color> colors, Set<Material> materials) {
+    public Garment(String barcode, String designer, Double price, Mood mood, BodyPart bodyPart, GarmentType garmenteType, boolean available, boolean promotionRequest, boolean promoted, String imagePath, Company company, Set<Color> colors, Set<Material> materials) {
         this.barcode = barcode;
         this.designer = designer;
         this.price = price;
@@ -101,6 +107,7 @@ public class Garment implements Serializable {
         this.available = available;
         this.promotionRequest = promotionRequest;
         this.promoted = promoted;
+        this.imagePath = imagePath;
         this.company = company;
         this.colors = colors;
         this.materials = materials;
@@ -178,6 +185,14 @@ public class Garment implements Serializable {
         this.promoted = promoted;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public Company getCompany() {
         return company;
     }
@@ -205,18 +220,19 @@ public class Garment implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.barcode);
-        hash = 59 * hash + Objects.hashCode(this.designer);
-        hash = 59 * hash + Objects.hashCode(this.price);
-        hash = 59 * hash + Objects.hashCode(this.mood);
-        hash = 59 * hash + Objects.hashCode(this.bodyPart);
-        hash = 59 * hash + Objects.hashCode(this.garmenteType);
-        hash = 59 * hash + (this.available ? 1 : 0);
-        hash = 59 * hash + (this.promotionRequest ? 1 : 0);
-        hash = 59 * hash + (this.promoted ? 1 : 0);
-        hash = 59 * hash + Objects.hashCode(this.company);
-        hash = 59 * hash + Objects.hashCode(this.colors);
-        hash = 59 * hash + Objects.hashCode(this.materials);
+        hash = 41 * hash + Objects.hashCode(this.barcode);
+        hash = 41 * hash + Objects.hashCode(this.designer);
+        hash = 41 * hash + Objects.hashCode(this.price);
+        hash = 41 * hash + Objects.hashCode(this.mood);
+        hash = 41 * hash + Objects.hashCode(this.bodyPart);
+        hash = 41 * hash + Objects.hashCode(this.garmenteType);
+        hash = 41 * hash + (this.available ? 1 : 0);
+        hash = 41 * hash + (this.promotionRequest ? 1 : 0);
+        hash = 41 * hash + (this.promoted ? 1 : 0);
+        hash = 41 * hash + Objects.hashCode(this.imagePath);
+        hash = 41 * hash + Objects.hashCode(this.company);
+        hash = 41 * hash + Objects.hashCode(this.colors);
+        hash = 41 * hash + Objects.hashCode(this.materials);
         return hash;
     }
 
@@ -247,6 +263,9 @@ public class Garment implements Serializable {
         if (!Objects.equals(this.designer, other.designer)) {
             return false;
         }
+        if (!Objects.equals(this.imagePath, other.imagePath)) {
+            return false;
+        }
         if (!Objects.equals(this.price, other.price)) {
             return false;
         }
@@ -265,6 +284,14 @@ public class Garment implements Serializable {
         if (!Objects.equals(this.colors, other.colors)) {
             return false;
         }
-        return Objects.equals(this.materials, other.materials);
+        if (!Objects.equals(this.materials, other.materials)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Garment{" + "barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmenteType=" + garmenteType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + imagePath + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
     }
 }
