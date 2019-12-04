@@ -18,7 +18,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "color", schema = "Lit_Fits_DB")
 public class Color implements Serializable {
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    /**
+     * Unique name for the color
+     */
     @Id
     private String name;
 

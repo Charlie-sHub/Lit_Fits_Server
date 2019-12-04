@@ -5,24 +5,35 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Garment class
+ * Garment entity
  *
  * @author Charlie
  */
 @Entity
 @Table(name = "garment", schema = "Lit_Fits_DB")
 public class Garment implements Serializable {
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    /**
+     * Unique barcode identifier of the garment
+     */
     @Id
     private String barcode;
+    /**
+     * The person that designed the garment
+     */
     @NotNull
     private String designer;
+    /**
+     * How much is worth
+     */
     @NotNull
     private Double price;
     /**
@@ -35,23 +46,46 @@ public class Garment implements Serializable {
      */
     @NotNull
     private BodyPart bodyPart;
+    /**
+     * What kind of garment it is
+     */
     @NotNull
     private GarmentType garmenteType;
+    /**
+     * Indicates if it can be bought
+     */
     @NotNull
     private boolean available;
+    /**
+     * Indicates if the company requested a promotion for this garment
+     */
     @NotNull
     private boolean promotionRequest;
+    /**
+     * Indicates if the promotion request is accepted
+     */
     @NotNull
     private boolean promoted;
+    /**
+     * Company that sells the garment
+     */
     @NotNull
+    @ManyToOne
+    @JoinColumn(name = "nif")
     private Company company;
+    /**
+     * What colors are in the garment
+     */
     @NotNull
-    @ManyToMany
-    @JoinTable(name = "garment_colors")
+    @ManyToMany //how to make it so when a color/material is deleted it is also deleted from the relational table
+    @JoinTable(name = "garment_colors", schema = "Lit_Fits_DB")
     private Set<Color> colors;
+    /**
+     * What materials is the garment made out of
+     */
     @NotNull
     @ManyToMany
-    @JoinTable(name = "garment_materials")
+    @JoinTable(name = "garment_materials", schema = "Lit_Fits_DB")
     private Set<Material> materials;
 
     public Garment() {
@@ -231,9 +265,6 @@ public class Garment implements Serializable {
         if (!Objects.equals(this.colors, other.colors)) {
             return false;
         }
-        if (!Objects.equals(this.materials, other.materials)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.materials, other.materials);
     }
 }

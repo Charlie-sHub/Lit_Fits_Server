@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -13,30 +14,54 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
- * Company class, has all the data required for the Use Cases of company type actors
+ * Company class, has all the data required for the Use Cases of company type
+ * actors
  *
  * @author Charlie
  */
 @Entity
 @Table(name = "company", schema = "Lit_Fits_DB")
 public class Company implements Serializable {
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    /**
+     * Unique identifier for the company it's NIF
+     */
     @Id
     protected String nif;
+    /**
+     * Passqord required for the company to log in
+     */
     @NotNull
     protected String password;
+    /**
+     * Name of the company
+     */
     @NotNull
     protected String fullName;
+    /**
+     * Phone number to contact the company
+     */
+    //Add pattern
     protected String phoneNumber;
+    /**
+     * Email to contact the company
+     */
+    //Add pattern
     protected String email;
+    /**
+     * When the company last accessed the app
+     */
     @Temporal(TemporalType.TIMESTAMP)
     protected Timestamp lastAccess;
+    /**
+     * When the company last changed its password
+     */
     @Temporal(TemporalType.TIMESTAMP)
     protected Timestamp lastPasswordChange;
     /**
      * List of garments "owned" by the company.
      */
-    @OneToMany(mappedBy = "company") // or JoinTable?
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     protected Set<Garment> garments;
 
     public Company() {
