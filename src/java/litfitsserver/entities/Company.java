@@ -1,7 +1,7 @@
 package litfitsserver.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -51,13 +51,13 @@ public class Company implements Serializable {
     /**
      * When the company last accessed the app
      */
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Timestamp lastAccess;
+    @Temporal(TemporalType.DATE)
+    protected Date lastAccess;
     /**
      * When the company last changed its password
      */
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Timestamp lastPasswordChange;
+    @Temporal(TemporalType.DATE)
+    protected Date lastPasswordChange;
     /**
      * List of garments "owned" by the company.
      */
@@ -67,7 +67,7 @@ public class Company implements Serializable {
     public Company() {
     }
 
-    public Company(String nif, String password, String fullName, String phoneNumber, String email, Timestamp lastAccess, Timestamp lastPasswordChange, Set<Garment> garments) {
+    public Company(String nif, String password, String fullName, String phoneNumber, String email, Date lastAccess, Date lastPasswordChange, Set<Garment> garments) {
         this.nif = nif;
         this.password = password;
         this.fullName = fullName;
@@ -118,19 +118,19 @@ public class Company implements Serializable {
         this.email = email;
     }
 
-    public Timestamp getLastAccess() {
+    public Date getLastAccess() {
         return lastAccess;
     }
 
-    public void setLastAccess(Timestamp lastAccess) {
+    public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
     }
 
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
