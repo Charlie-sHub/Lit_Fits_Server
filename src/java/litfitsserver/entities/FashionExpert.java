@@ -7,13 +7,19 @@ package litfitsserver.entities;
 
 import java.io.Serializable;
 import java.security.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -21,6 +27,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="fashionExpert", schema="Lit_Fits_DB")
+@XmlRootElement
 public class FashionExpert implements Serializable {
     private static final long serialVersionUID = 1L;
     
@@ -35,11 +42,15 @@ public class FashionExpert implements Serializable {
     @NotNull
     private String email;
     private String publication;
-    private Timestamp lastPasswordChange;
-    private Timestamp lastAccess;
+    @Temporal(TemporalType.DATE)
+    private Date lastPasswordChange;
+    @Temporal(TemporalType.DATE)
+    private Date lastAccess;
     @ManyToMany
+    @JoinTable(name = "expert_materials", schema = "Lit_Fits_DB")
     private Set<Material> recommendedMaterials;
-    @ManyToMany(mappedBy="colors")
+    @ManyToMany
+    @JoinTable(name = "expert_colors", schema = "Lit_Fits_DB")
     private Set<Color> recommendedColors;
     
     /**
@@ -184,34 +195,35 @@ public class FashionExpert implements Serializable {
     /**
      * @return the lastPasswordChange
      */
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
     /**
      * @param lastPasswordChange the lastPasswordChange to set
      */
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
     /**
      * @return the lastAccess
      */
-    public Timestamp getLastAccess() {
+    public Date getLastAccess() {
         return lastAccess;
     }
 
     /**
      * @param lastAccess the lastAccess to set
      */
-    public void setLastAccess(Timestamp lastAccess) {
+    public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
     }
 
     /**
      * @return the recommendedMaterials
      */
+    @XmlTransient
     public Set<Material> getRecommendedMaterials() {
         return recommendedMaterials;
     }
@@ -226,6 +238,7 @@ public class FashionExpert implements Serializable {
     /**
      * @return the recommendedColors
      */
+    @XmlTransient
     public Set<Color> getRecommendedColors() {
         return recommendedColors;
     }
