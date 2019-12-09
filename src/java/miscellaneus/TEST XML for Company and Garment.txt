@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<colors>
+		<color>
+			<name>Black</name>
+		</color>
+		<color>
+			<name>Blue</name>
+		</color>
+		<color>
+			<name>Green</name>
+		</color>
+		<color>
+			<name>Red</name>
+		</color>
+		<color>
+			<name>White</name>
+		</color>
+		<color>
+			<name>Yellow</name>
+		</color>
+	</colors> 
+
+<?xml version="1.0" encoding="UTF-8"?>
+	<materials>
+		<material>
+			<name>Cotton</name>
+		</material>
+		<material>
+			<name>Polyester</name>
+		</material>
+		<material>
+			<name>Silk</name>
+		</material>
+	</materials>
+
+<?xml version="1.0" encoding="UTF-8"?>
+	<garments>
+		<garment>
+			<available>true</available>
+			<barcode>123456789</barcode>
+			<bodyPart>BOTTOM</bodyPart>
+			<company>
+				<email>thebestcompany@company.com</email>
+				<fullName>The Best</fullName>
+				<lastAccess>2019-12-05T00:00:00+01:00</lastAccess>
+				<lastPasswordChange>2019-12-05T00:00:00+01:00</lastPasswordChange>
+				<nif>123456789</nif>
+				<password>abcd*1234</password>
+				<phoneNumber>123456789</phoneNumber>
+			</company>
+			<designer>Asier</designer>
+			<garmenteType>PANTS</garmenteType>
+			<imagePath>/something</imagePath>
+			<mood>INFORMAL</mood>
+			<price>100.0</price>
+			<promoted>true</promoted>
+			<promotionRequest>false</promotionRequest>
+		</garment>
+		<garment>
+			<available>true</available>
+			<barcode>987654321</barcode>
+			<bodyPart>SHOE</bodyPart>
+			<company>
+				<email>theaveragecompany@company.com</email>
+				<fullName>The Average</fullName>
+				<lastAccess>2019-12-05T00:00:00+01:00</lastAccess>
+				<lastPasswordChange>2019-12-05T00:00:00+01:00</lastPasswordChange>
+				<nif>987654321</nif>
+				<password>abcd*1234</password>
+				<phoneNumber>123456789</phoneNumber>
+			</company>
+			<designer>Carlos</designer>
+			<garmenteType>SHORTS</garmenteType>
+			<imagePath>/somethingelse</imagePath>
+			<mood>SPORT</mood>
+			<price>200.0</price>
+			<promoted>false</promoted>
+			<promotionRequest>true</promotionRequest>
+			<colors>
+				<color>
+					<name>Black</name>
+				</color>				
+			</colors>
+			<materials>
+				<material>
+					<name>Cotton</name>
+				</material>
+			</materials>
+		</garment>
+	</garments> 
+
+<?xml version="1.0" encoding="UTF-8"?>
+	<companies>
+		<company>
+			<email>thebestcompany@company.com</email>
+			<fullName>The Best</fullName>
+			<lastAccess>2019-12-05T00:00:00+01:00</lastAccess>
+			<lastPasswordChange>2019-12-05T00:00:00+01:00</lastPasswordChange>
+			<nif>123456789</nif>
+			<password>abcd*1234</password>
+			<phoneNumber>123456789</phoneNumber>
+		</company>
+		<company>
+			<email>theaveragecompany@company.com</email>
+			<fullName>The Average</fullName>
+			<lastAccess>2019-12-05T00:00:00+01:00</lastAccess>
+			<lastPasswordChange>2019-12-05T00:00:00+01:00</lastPasswordChange>
+			<nif>987654321</nif>
+			<password>abcd*1234</password>
+			<phoneNumber>123456789</phoneNumber>
+		</company>
+		<company>
+			<email>theworstcompany@company.com</email>
+			<fullName>The Worst</fullName>
+			<lastAccess>2019-12-05T00:00:00+01:00</lastAccess>
+			<lastPasswordChange>2019-12-05T00:00:00+01:00</lastPasswordChange>
+			<nif>192837465</nif>
+			<password>abcd*1234</password>
+			<phoneNumber>123456789</phoneNumber>
+		</company>
+	</companies> 
