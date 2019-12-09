@@ -1,0 +1,26 @@
+Company
+	-Create									x
+	-Read (by NIF)							x
+	-Read All								x
+	-Update									x
+	-Update (add Garment)					Prolly will have to do it from the garment
+	-Update (change password)				x
+	-Delete (deleting the garments too) 	Could not initialize class org.eclipse.persistence.jaxb.BeanValidationHelper
+
+Garment
+	-Create									Can't create due to materials and colors, what do?
+	-Read (by Barcode)						x
+	-Read All								x
+	-Update									StackOverflowError apparently
+	-Update (add/remove color)				
+	-Update (add/remove material)
+	-Update (request promotion)
+	-Update (grant promotion)
+	-Delete									Could not initialize class org.eclipse.persistence.jaxb.BeanValidationHelper
+
+Material/Color
+	-Create									x
+	-Read All								x
+
+Add Pattern to phone and email
+Change paths

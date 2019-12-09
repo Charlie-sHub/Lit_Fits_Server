@@ -1,9 +1,10 @@
 package litfitsserver.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -13,36 +14,60 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
- * Company class, has all the data required for the Use Cases of company type actors
+ * Company class, has all the data required for the Use Cases of company type
+ * actors
  *
  * @author Charlie
  */
 @Entity
 @Table(name = "company", schema = "Lit_Fits_DB")
 public class Company implements Serializable {
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    /**
+     * Unique identifier for the company it's NIF
+     */
     @Id
     protected String nif;
+    /**
+     * Passqord required for the company to log in
+     */
     @NotNull
     protected String password;
+    /**
+     * Name of the company
+     */
     @NotNull
     protected String fullName;
+    /**
+     * Phone number to contact the company
+     */
+    //Add pattern
     protected String phoneNumber;
+    /**
+     * Email to contact the company
+     */
+    //Add pattern
     protected String email;
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Timestamp lastAccess;
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Timestamp lastPasswordChange;
+    /**
+     * When the company last accessed the app
+     */
+    @Temporal(TemporalType.DATE)
+    protected Date lastAccess;
+    /**
+     * When the company last changed its password
+     */
+    @Temporal(TemporalType.DATE)
+    protected Date lastPasswordChange;
     /**
      * List of garments "owned" by the company.
      */
-    @OneToMany(mappedBy = "company") // or JoinTable?
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     protected Set<Garment> garments;
 
     public Company() {
     }
 
-    public Company(String nif, String password, String fullName, String phoneNumber, String email, Timestamp lastAccess, Timestamp lastPasswordChange, Set<Garment> garments) {
+    public Company(String nif, String password, String fullName, String phoneNumber, String email, Date lastAccess, Date lastPasswordChange, Set<Garment> garments) {
         this.nif = nif;
         this.password = password;
         this.fullName = fullName;
@@ -93,19 +118,19 @@ public class Company implements Serializable {
         this.email = email;
     }
 
-    public Timestamp getLastAccess() {
+    public Date getLastAccess() {
         return lastAccess;
     }
 
-    public void setLastAccess(Timestamp lastAccess) {
+    public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
     }
 
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
