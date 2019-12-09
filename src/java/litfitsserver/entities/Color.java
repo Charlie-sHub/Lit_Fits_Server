@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Color Class
@@ -12,6 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "color", schema = "Lit_Fits_DB")
+@XmlRootElement
 public class Color implements Serializable {
     private static final long serialVersionUID = 1L;
     /**

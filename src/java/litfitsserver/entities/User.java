@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -20,23 +22,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "users", schema = "testreto2")
+@XmlRootElement
 public class User implements Serializable {
     
     @Id
-    private String username;
-    private String fullName;
-    private String password;
-    private String phoneNumber;
-    private String email;
-    private Timestamp lastAccess;
-    private Timestamp lastPasswordChange;
-    private UserType type;
+    protected String username;
+    protected String fullName;
+    protected String password;
+    protected String phoneNumber;
+    protected String email;
+    protected Timestamp lastAccess;
+    protected Timestamp lastPasswordChange;
+    protected UserType type;
     @ManyToMany
-    private Set<Color> likedColors;
+    protected Set<Color> likedColors;
     @ManyToMany
-    private Set<Material> likedMaterials;
+    protected Set<Material> likedMaterials;
     @ManyToMany
-    protected Set<Garment> garments;
+    private Set<Garment> garments;
     
     public User () {
         
@@ -106,6 +109,7 @@ public class User implements Serializable {
         this.type = type;
     }
 
+    @XmlTransient
     public Set<Color> getLikedColors () {
         return likedColors;
     }
@@ -128,6 +132,7 @@ public class User implements Serializable {
         }
     }
     
+    @XmlTransient
     public Set<Material> getLikedMaterials () {
         return likedMaterials;
     }
@@ -150,6 +155,7 @@ public class User implements Serializable {
         }
     }
 
+    @XmlTransient
     public Set<Garment> getGarments () {
         return garments;
     }
