@@ -9,10 +9,13 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -21,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Asier Vila Dominguez
  */
 @Entity
-@Table(name = "users", schema = "testreto2")
+@Table(name = "users", schema = "Lit_Fits_DB")
 @XmlRootElement
 public class User implements Serializable {
     
@@ -34,11 +37,17 @@ public class User implements Serializable {
     protected Timestamp lastAccess;
     protected Timestamp lastPasswordChange;
     protected UserType type;
-    @ManyToMany
+    @NotNull
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_colors", schema = "Lit_Fits_DB")
     protected Set<Color> likedColors;
-    @ManyToMany
+    @NotNull
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_materials", schema = "Lit_Fits_DB")
     protected Set<Material> likedMaterials;
-    @ManyToMany
+    @NotNull
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_garments", schema = "Lit_Fits_DB")
     private Set<Garment> garments;
     
     public User () {

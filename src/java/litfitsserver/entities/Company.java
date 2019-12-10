@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Company class, has all the data required for the Use Cases of company type
@@ -21,6 +23,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "company", schema = "Lit_Fits_DB")
+@XmlRootElement
 public class Company implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -134,6 +137,7 @@ public class Company implements Serializable {
         this.lastPasswordChange = lastPasswordChange;
     }
 
+    @XmlTransient
     public Set<Garment> getGarments() {
         return garments;
     }

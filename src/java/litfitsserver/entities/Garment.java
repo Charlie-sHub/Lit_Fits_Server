@@ -12,6 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Garment entity
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "garment", schema = "Lit_Fits_DB")
+@XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -201,6 +204,7 @@ public class Garment implements Serializable {
         this.company = company;
     }
 
+    @XmlTransient
     public Set<Color> getColors() {
         return colors;
     }
@@ -209,6 +213,7 @@ public class Garment implements Serializable {
         this.colors = colors;
     }
 
+    @XmlTransient
     public Set<Material> getMaterials() {
         return materials;
     }

@@ -7,7 +7,7 @@ package litfitsserver.entities;
 
 /**
  *
- * @author 2dam
+ * @author Asier Vila Dominguez
  */
 public enum UserType {
     USER, ADMIN, EXPERT
