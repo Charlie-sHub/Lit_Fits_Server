@@ -22,7 +22,7 @@ import litfitsserver.entities.FashionExpert;
 
 /**
  *
- * @author 2dam
+ * @author Ander
  */
 @Stateless
 @Path("litfitsserver.entities.fashionexpert")

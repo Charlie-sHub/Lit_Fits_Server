@@ -52,6 +52,24 @@ public class FashionExpert implements Serializable {
     @ManyToMany
     @JoinTable(name = "expert_colors", schema = "Lit_Fits_DB")
     private Set<Color> recommendedColors;
+
+    public FashionExpert() {
+    }
+
+    public FashionExpert(String username, String password, String phoneNumber, String fullName, String email, String publication, Date lastPasswordChange, Date lastAccess, Set<Material> recommendedMaterials, Set<Color> recommendedColors) {
+        this.username = username;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.fullName = fullName;
+        this.email = email;
+        this.publication = publication;
+        this.lastPasswordChange = lastPasswordChange;
+        this.lastAccess = lastAccess;
+        this.recommendedMaterials = recommendedMaterials;
+        this.recommendedColors = recommendedColors;
+    }
+    
+    
     
     /**
      * Function toString returns all the fields of the expert
