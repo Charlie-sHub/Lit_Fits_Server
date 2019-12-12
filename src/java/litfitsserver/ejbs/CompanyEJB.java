@@ -1,6 +1,10 @@
 package litfitsserver.ejbs;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,7 +29,31 @@ public class CompanyEJB implements LocalCompanyEJB {
 
     @Override
     public void createCompany(Company company) throws CreateException {
-        em.persist(company);
+        try {
+            String password = company.getPassword();
+            company.setPassword(toHash(password));
+            em.persist(company);
+        } catch (Exception ex) {
+            throw new CreateException(ex.getMessage());
+        }
+    }
+
+    private String toHash(String password) throws NoSuchAlgorithmException {
+        //decrypt
+        String passwordHash;
+        MessageDigest messageDigest;
+        messageDigest = MessageDigest.getInstance("MD5");
+        byte dataBytes[] = password.getBytes();
+        messageDigest.update(dataBytes);
+        byte hash[] = messageDigest.digest();
+        passwordHash = new String(hash);
+        return passwordHash;
+    }
+
+    public void Login(Company company) throws NoSuchAlgorithmException, ReadException{
+        String hashReceived = toHash(company.getPassword());
+        Company companyInDB = findCompanyByNif(company.getNif());
+        companyInDB.getPassword().equals(hashReceived);
     }
 
     @Override
@@ -64,5 +92,4 @@ public class CompanyEJB implements LocalCompanyEJB {
     public Company findCompanyByNif(String nif) throws ReadException {
         return (Company) em.createNamedQuery("findCompanyByNif").setParameter("nif", nif).getSingleResult();
     }
-    //add garment
 }

@@ -79,8 +79,4 @@ public class GarmentEJB implements LocalGarmentEJB {
     public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException {
         return (List<Garment>) em.createNamedQuery("findGarmentsPromoted").setParameter("promoted", promoted).getResultList();
     }
-    // add color
-    // add material
-    // remove color
-    // remove material
 }
