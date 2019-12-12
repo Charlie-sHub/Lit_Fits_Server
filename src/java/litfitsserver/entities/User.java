@@ -8,7 +8,7 @@ package litfitsserver.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -70,15 +70,15 @@ public class User implements Serializable {
     @NotNull
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_colors", schema = "testreto2")
-    protected Set<Color> likedColors;
+    protected List<Color> likedColors;
     @NotNull
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_materials", schema = "testreto2")
-    protected Set<Material> likedMaterials;
+    protected List<Material> likedMaterials;
     @NotNull
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_garments", schema = "testreto2")
-    private Set<Garment> garments;
+    private List<Garment> garments;
     
     /**
      * Empty constructor
@@ -216,19 +216,19 @@ public class User implements Serializable {
     }
 
     /**
-     * Gets the Set of colors that the user likes.
-     * @return The Set with all the liked colors.
+     * Gets the List of colors that the user likes.
+     * @return The List with all the liked colors.
      */
     @XmlTransient
-    public Set<Color> getLikedColors () {
+    public List<Color> getLikedColors () {
         return likedColors;
     }
 
     /**
      * Replaces all the colors that the user likes with the received ones.
-     * @param likedColors The colors Set that will be saved for the user.
+     * @param likedColors The colors List that will be saved for the user.
      */
-    public void setLikedColors (Set<Color> likedColors) {
+    public void setLikedColors (List<Color> likedColors) {
         this.likedColors = likedColors;
     }
 
@@ -258,19 +258,19 @@ public class User implements Serializable {
     }
     
     /**
-     * Gets the Set of materials that the user likes.
-     * @return The Set with all the liked materials.
+     * Gets the List of materials that the user likes.
+     * @return The List with all the liked materials.
      */
     @XmlTransient
-    public Set<Material> getLikedMaterials () {
+    public List<Material> getLikedMaterials () {
         return likedMaterials;
     }
 
     /**
      * Replaces all the materials that the user likes with the received ones.
-     * @param likedMaterials The materials Set that will be saved for the user.
+     * @param likedMaterials The materials List that will be saved for the user.
      */
-    public void setLikedMaterials (Set<Material> likedMaterials) {
+    public void setLikedMaterials (List<Material> likedMaterials) {
         this.likedMaterials = likedMaterials;
     }
     
@@ -278,7 +278,7 @@ public class User implements Serializable {
      * This method is created <u>to avoid duplicates</u> on likedMaterials.
      * Instead of <i>user.getLikedMaterials().add(material)</i>, use this 
      * method. This will avoid errors on the server.
-     * @param material The material that sould be added to the Set.
+     * @param material The material that sould be added to the List.
      */
     public void addLikedMaterial (Material material) {
         
@@ -301,10 +301,10 @@ public class User implements Serializable {
 
     /**
      * Gets the garments that the user has saved.
-     * @return A Set with all the garments.
+     * @return A List with all the garments.
      */
     @XmlTransient
-    public Set<Garment> getGarments () {
+    public List<Garment> getGarments () {
         return garments;
     }
 
@@ -312,7 +312,7 @@ public class User implements Serializable {
      * Replaces the users garments with the received set.
      * @param garments The garments that will be saved for this user.
      */
-    public void setGarments (Set<Garment> garments) {
+    public void setGarments (List<Garment> garments) {
         this.garments = garments;
     }
     
