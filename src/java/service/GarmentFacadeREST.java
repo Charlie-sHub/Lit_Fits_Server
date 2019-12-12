@@ -1,11 +1,13 @@
 package service;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -14,6 +16,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalGarmentEJB;
 import litfitsserver.entities.Garment;
+import litfitsserver.exceptions.CreateException;
+import litfitsserver.exceptions.DeleteException;
+import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * RESTful for Garment garment
@@ -37,7 +43,12 @@ public class GarmentFacadeREST {
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void createGarment(Garment garment) {
-        garmentEJB.createGarment(garment);
+        try {
+            garmentEJB.createGarment(garment);
+        } catch (CreateException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -50,7 +61,12 @@ public class GarmentFacadeREST {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void editGarment(@PathParam("id") Long id, Garment garment) {
-        garmentEJB.editGarment(garment);
+        try {
+            garmentEJB.editGarment(garment);
+        } catch (UpdateException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -61,7 +77,12 @@ public class GarmentFacadeREST {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
-        garmentEJB.removeGarment(garmentEJB.findGarment(id));
+        try {
+            garmentEJB.removeGarment(garmentEJB.findGarment(id));
+        } catch (ReadException | DeleteException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -74,7 +95,14 @@ public class GarmentFacadeREST {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Garment findGarment(@PathParam("id") Long id) {
-        return garmentEJB.findGarment(id);
+        Garment garment = null;
+        try {
+            garment = garmentEJB.findGarment(id);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return garment;
     }
 
     /**
@@ -85,7 +113,14 @@ public class GarmentFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentAll() {
-        return garmentEJB.findAllGarments();
+        List<Garment> garments = null;
+        try {
+            garments = garmentEJB.findAllGarments();
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return garments;
     }
 
     /**
@@ -97,7 +132,14 @@ public class GarmentFacadeREST {
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
-        return String.valueOf(garmentEJB.countGarments());
+        String amount = null;
+        try {
+            amount = String.valueOf(garmentEJB.countGarments());
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return amount;
     }
 
     /**
@@ -110,7 +152,14 @@ public class GarmentFacadeREST {
     @Path("company/{nif}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentGarmentsByCompany(@PathParam("nif") String nif) {
-        return garmentEJB.findGarmentsByCompany(nif);
+        List<Garment> garments = null;
+        try {
+            garments = garmentEJB.findGarmentsByCompany(nif);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return garments;
     }
 
     /**
@@ -123,7 +172,14 @@ public class GarmentFacadeREST {
     @Path("request/{requested}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentGarmentsByRequest(@PathParam("requested") Boolean requested) {
-        return garmentEJB.findGarmentsByRequest(requested);
+        List<Garment> garments = null;
+        try {
+            garments = garmentEJB.findGarmentsByRequest(requested);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return garments;
     }
 
     /**
@@ -136,7 +192,14 @@ public class GarmentFacadeREST {
     @Path("barcode/{barcode}")
     @Produces({MediaType.APPLICATION_XML})
     public Garment findGarmentGarmentByBarcode(@PathParam("barcode") String barcode) {
-        return garmentEJB.findGarmentByBarcode(barcode);
+        Garment garment = null;
+        try {
+            garment = garmentEJB.findGarmentByBarcode(barcode);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return garment;
     }
 
     /**
@@ -149,6 +212,13 @@ public class GarmentFacadeREST {
     @Path("promotion/{promoted}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentGarmentsPromoted(@PathParam("promoted") Boolean promoted) {
-        return garmentEJB.findGarmentsPromoted(promoted);
+        List<Garment> garments = null;
+        try {
+            garments = garmentEJB.findGarmentsPromoted(promoted);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return garments;
     }
 }

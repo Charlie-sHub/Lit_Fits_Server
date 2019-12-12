@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -16,6 +17,9 @@ import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalColorEJB;
 import litfitsserver.entities.Color;
 import litfitsserver.exceptions.CreateException;
+import litfitsserver.exceptions.DeleteException;
+import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * RESTful class for the Color entity
@@ -42,9 +46,9 @@ public class ColorFacadeREST {
         try {
             LOG.info("Creating a new Color");
             colorEJB.createColor(color);
-        } catch (CreateException e) {
-            LOG.severe(e.getMessage());
-            throw new InternalServerErrorException(e);
+        } catch (CreateException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
     }
 
@@ -61,9 +65,9 @@ public class ColorFacadeREST {
         try {
             LOG.info("Editing a Color");
             colorEJB.editColor(color);
-        } catch (Exception e) {
-            LOG.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+        } catch (UpdateException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
     }
 
@@ -75,7 +79,13 @@ public class ColorFacadeREST {
     @DELETE
     @Path("{name}")
     public void remove(@PathParam("name") String name) {
-        colorEJB.removeColor(colorEJB.findColor(name));
+        try {
+            LOG.info("Deleting a Color");
+            colorEJB.removeColor(colorEJB.findColor(name));
+        } catch (ReadException | DeleteException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -88,7 +98,15 @@ public class ColorFacadeREST {
     @Path("{name}")
     @Produces({MediaType.APPLICATION_XML})
     public Color find(@PathParam("name") String name) {
-        return colorEJB.findColor(name);
+        Color color = null;
+        try {
+            LOG.info("Finding a Color");
+            color = colorEJB.findColor(name);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return color;
     }
 
     /**
@@ -99,7 +117,15 @@ public class ColorFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML})
     public List<Color> findAll() {
-        return colorEJB.findAllColors();
+        List<Color> colorList = null;
+        try {
+            LOG.info("Getting all Colors");
+            colorList = colorEJB.findAllColors();
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return colorList;
     }
 
     /**
@@ -111,6 +137,14 @@ public class ColorFacadeREST {
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
-        return String.valueOf(colorEJB.countColors());
+        String amount = null;
+        try {
+            LOG.info("Counting the Colors");
+            amount = String.valueOf(colorEJB.countColors());
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return amount;
     }
 }

@@ -8,11 +8,15 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import litfitsserver.entities.Material;
+import litfitsserver.exceptions.CreateException;
+import litfitsserver.exceptions.DeleteException;
+import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * EJB for Materials
  *
- * @author Charlie
+ * @author Carlos
  */
 @Stateless
 public class MaterialEJB implements LocalMaterialEJB {
@@ -20,35 +24,35 @@ public class MaterialEJB implements LocalMaterialEJB {
     private EntityManager em;
 
     @Override
-    public void createMaterial(Material material) {
+    public void createMaterial(Material material) throws CreateException {
         em.persist(material);
     }
 
     @Override
-    public void editMaterial(Material material) {
+    public void editMaterial(Material material) throws UpdateException {
         em.merge(material);
         em.flush();
     }
 
     @Override
-    public void removeMaterial(Material material) {
+    public void removeMaterial(Material material) throws ReadException, DeleteException {
         em.remove(em.merge(material));
     }
 
     @Override
-    public Material findMaterial(String name) {
+    public Material findMaterial(String name) throws ReadException {
         return em.find(Material.class, name);
     }
 
     @Override
-    public List<Material> findAllMaterials() {
+    public List<Material> findAllMaterials() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         cq.select(cq.from(Material.class));
         return em.createQuery(cq).getResultList();
     }
 
     @Override
-    public int countMaterials() {
+    public int countMaterials() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         Root<Material> rt = cq.from(Material.class);
         cq.select(em.getCriteriaBuilder().count(rt));

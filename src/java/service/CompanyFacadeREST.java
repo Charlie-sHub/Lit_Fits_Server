@@ -1,11 +1,13 @@
 package service;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -14,6 +16,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalCompanyEJB;
 import litfitsserver.entities.Company;
+import litfitsserver.exceptions.CreateException;
+import litfitsserver.exceptions.DeleteException;
+import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * RESTful for Company entity
@@ -37,7 +43,12 @@ public class CompanyFacadeREST {
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Company company) {
-        companyEJB.createCompany(company);
+        try {
+            companyEJB.createCompany(company);
+        } catch (CreateException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -50,7 +61,12 @@ public class CompanyFacadeREST {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Long id, Company company) {
-        companyEJB.editCompany(company);
+        try {
+            companyEJB.editCompany(company);
+        } catch (UpdateException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -61,7 +77,12 @@ public class CompanyFacadeREST {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
-        companyEJB.removeCompany(companyEJB.findCompany(id));
+        try {
+            companyEJB.removeCompany(companyEJB.findCompany(id));
+        } catch (ReadException | DeleteException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
     /**
@@ -74,7 +95,14 @@ public class CompanyFacadeREST {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Company find(@PathParam("id") Long id) {
-        return companyEJB.findCompany(id);
+        Company company = null;
+        try {
+            company = companyEJB.findCompany(id);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return company;
     }
 
     /**
@@ -85,7 +113,14 @@ public class CompanyFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML})
     public List<Company> findAll() {
-        return companyEJB.findAllCompanies();
+        List<Company> companies = null;
+        try {
+            companies = companyEJB.findAllCompanies();
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return companies;
     }
 
     /**
@@ -97,7 +132,14 @@ public class CompanyFacadeREST {
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
-        return String.valueOf(companyEJB.countCompanies());
+        String amount = null;
+        try {
+            amount = String.valueOf(companyEJB.countCompanies());
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return amount;
     }
 
     /**
@@ -110,6 +152,13 @@ public class CompanyFacadeREST {
     @Path("company/{nif}")
     @Produces({MediaType.APPLICATION_XML})
     public Company findCompanyByNif(@PathParam("nif") String nif) {
-        return companyEJB.findCompanyByNif(nif);
+        Company company = null;
+        try {
+            company = companyEJB.findCompanyByNif(nif);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return company;
     }
 }
