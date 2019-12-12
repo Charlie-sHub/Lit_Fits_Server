@@ -8,11 +8,15 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import litfitsserver.entities.Garment;
+import litfitsserver.exceptions.CreateException;
+import litfitsserver.exceptions.DeleteException;
+import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * EJB for Garments
  *
- * @author Charlie
+ * @author Carlos
  */
 @Stateless
 public class GarmentEJB implements LocalGarmentEJB {
@@ -20,35 +24,35 @@ public class GarmentEJB implements LocalGarmentEJB {
     private EntityManager em;
 
     @Override
-    public void createGarment(Garment garment) {
+    public void createGarment(Garment garment) throws CreateException {
         em.persist(garment);
     }
 
     @Override
-    public void editGarment(Garment garment) {
+    public void editGarment(Garment garment) throws UpdateException {
         em.merge(garment);
         em.flush();
     }
 
     @Override
-    public void removeGarment(Garment garment) {
+    public void removeGarment(Garment garment) throws ReadException, DeleteException {
         em.remove(em.merge(garment));
     }
 
     @Override
-    public Garment findGarment(Long id) {
+    public Garment findGarment(Long id) throws ReadException {
         return em.find(Garment.class, id);
     }
 
     @Override
-    public List<Garment> findAllGarments() {
+    public List<Garment> findAllGarments() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         cq.select(cq.from(Garment.class));
         return em.createQuery(cq).getResultList();
     }
 
     @Override
-    public int countGarments() {
+    public int countGarments() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         Root<Garment> rt = cq.from(Garment.class);
         cq.select(em.getCriteriaBuilder().count(rt));
@@ -57,26 +61,22 @@ public class GarmentEJB implements LocalGarmentEJB {
     }
 
     @Override
-    public List<Garment> findGarmentsByCompany(String nif) {
+    public List<Garment> findGarmentsByCompany(String nif) throws ReadException {
         return (List<Garment>) em.createNamedQuery("findGarmentsByCompany").setParameter("nif", nif).getResultList();
     }
 
     @Override
-    public List<Garment> findGarmentsByRequest(Boolean requested) {
+    public List<Garment> findGarmentsByRequest(Boolean requested) throws ReadException {
         return (List<Garment>) em.createNamedQuery("findGarmentsByRequest").setParameter("requested", requested).getResultList();
     }
 
     @Override
-    public Garment findGarmentByBarcode(String barcode) {
+    public Garment findGarmentByBarcode(String barcode) throws ReadException {
         return (Garment) em.createNamedQuery("findGarmentByBarcode").setParameter("barcode", barcode).getSingleResult();
     }
 
     @Override
-    public List<Garment> findGarmentsPromoted(Boolean promoted) {
+    public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException {
         return (List<Garment>) em.createNamedQuery("findGarmentsPromoted").setParameter("promoted", promoted).getResultList();
     }
-    // add color
-    // add material
-    // remove color
-    // remove material
 }

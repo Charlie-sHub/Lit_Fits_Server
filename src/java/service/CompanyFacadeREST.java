@@ -14,38 +14,37 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import litfitsserver.ejbs.LocalColorEJB;
-import litfitsserver.entities.Color;
+import litfitsserver.ejbs.LocalCompanyEJB;
+import litfitsserver.entities.Company;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
 
 /**
- * RESTful class for the Color entity
+ * RESTful for Company entity
  *
  * @author Carlos
  */
-@Path("litfitsserver.entities.color")
-public class ColorFacadeREST {
+@Path("litfitsserver.entities.company")
+public class CompanyFacadeREST {
     /**
      * Injects the EJB of the entity in question
      */
     @EJB
-    private LocalColorEJB colorEJB;
-    private static final Logger LOG = Logger.getLogger(ColorFacadeREST.class.getName());
+    private LocalCompanyEJB companyEJB;
+    private static final Logger LOG = Logger.getLogger(CompanyFacadeREST.class.getName());
 
     /**
-     * Inserts a new Color in the database
+     * Inserts a new Company
      *
-     * @param color
+     * @param company
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
-    public void create(Color color) {
+    public void create(Company company) {
         try {
-            LOG.info("Creating a new Color");
-            colorEJB.createColor(color);
+            companyEJB.createCompany(company);
         } catch (CreateException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -53,18 +52,17 @@ public class ColorFacadeREST {
     }
 
     /**
-     * Edits the color
+     * Edits a Company
      *
-     * @param name
-     * @param color
+     * @param id
+     * @param company
      */
     @PUT
-    @Path("{name}")
+    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("name") String name, Color color) {
+    public void edit(@PathParam("id") Long id, Company company) {
         try {
-            LOG.info("Editing a Color");
-            colorEJB.editColor(color);
+            companyEJB.editCompany(company);
         } catch (UpdateException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -72,16 +70,15 @@ public class ColorFacadeREST {
     }
 
     /**
-     * Deletes the color
+     * Deletes a Company
      *
-     * @param name
+     * @param id
      */
     @DELETE
-    @Path("{name}")
-    public void remove(@PathParam("name") String name) {
+    @Path("{id}")
+    public void remove(@PathParam("id") Long id) {
         try {
-            LOG.info("Deleting a Color");
-            colorEJB.removeColor(colorEJB.findColor(name));
+            companyEJB.removeCompany(companyEJB.findCompany(id));
         } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -89,49 +86,47 @@ public class ColorFacadeREST {
     }
 
     /**
-     * Gets the color wanted
+     * Gets a Company
      *
-     * @param name
-     * @return Color
+     * @param id
+     * @return Company
      */
     @GET
-    @Path("{name}")
+    @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Color find(@PathParam("name") String name) {
-        Color color = null;
+    public Company find(@PathParam("id") Long id) {
+        Company company = null;
         try {
-            LOG.info("Finding a Color");
-            color = colorEJB.findColor(name);
+            company = companyEJB.findCompany(id);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return color;
+        return company;
     }
 
     /**
-     * Gets all the colors
+     * Gets all the companies
      *
-     * @return List of colors
+     * @return List
      */
     @GET
     @Produces({MediaType.APPLICATION_XML})
-    public List<Color> findAll() {
-        List<Color> colorList = null;
+    public List<Company> findAll() {
+        List<Company> companies = null;
         try {
-            LOG.info("Getting all Colors");
-            colorList = colorEJB.findAllColors();
+            companies = companyEJB.findAllCompanies();
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return colorList;
+        return companies;
     }
 
     /**
-     * Gets the amount of colors
+     * Gets the amount of companies
      *
-     * @return String amount of colors
+     * @return String
      */
     @GET
     @Path("count")
@@ -139,12 +134,31 @@ public class ColorFacadeREST {
     public String countREST() {
         String amount = null;
         try {
-            LOG.info("Counting the Colors");
-            amount = String.valueOf(colorEJB.countColors());
-        } catch (Exception ex) {
+            amount = String.valueOf(companyEJB.countCompanies());
+        } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return amount;
+    }
+
+    /**
+     * Gets a company by its nif
+     *
+     * @param nif
+     * @return Company
+     */
+    @GET
+    @Path("company/{nif}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Company findCompanyByNif(@PathParam("nif") String nif) {
+        Company company = null;
+        try {
+            company = companyEJB.findCompanyByNif(nif);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return company;
     }
 }

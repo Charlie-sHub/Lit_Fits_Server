@@ -3,6 +3,10 @@ package litfitsserver.ejbs;
 import java.util.List;
 import javax.ejb.Local;
 import litfitsserver.entities.Garment;
+import litfitsserver.exceptions.CreateException;
+import litfitsserver.exceptions.DeleteException;
+import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * Interface for the GarmentEJB
@@ -16,28 +20,28 @@ public interface LocalGarmentEJB {
      *
      * @return int
      */
-    int countGarments();
+    int countGarments() throws ReadException;
 
     /**
      * Inserts a Garment into the database
      *
      * @param garment
      */
-    void createGarment(Garment garment);
+    void createGarment(Garment garment) throws CreateException;
 
     /**
      * Edits a Garment
      *
      * @param garment
      */
-    void editGarment(Garment garment);
+    void editGarment(Garment garment) throws UpdateException;
 
     /**
      * Gets all the garments
      *
      * @return
      */
-    List<Garment> findAllGarments();
+    List<Garment> findAllGarments() throws ReadException;
 
     /**
      * Gets a garment by its id
@@ -45,14 +49,14 @@ public interface LocalGarmentEJB {
      * @param id
      * @return Garment
      */
-    Garment findGarment(Long id);
+    Garment findGarment(Long id) throws ReadException;
 
     /**
      * Deletes a garment
      *
      * @param garment
      */
-    void removeGarment(Garment garment);
+    void removeGarment(Garment garment) throws ReadException, DeleteException;
 
     /**
      * Gets the garments of a Company
@@ -60,7 +64,7 @@ public interface LocalGarmentEJB {
      * @param nif
      * @return List
      */
-    public List<Garment> findGarmentsByCompany(String nif);
+    public List<Garment> findGarmentsByCompany(String nif) throws ReadException;
 
     /**
      * Gets the garments of which a promotion has been requested
@@ -68,7 +72,7 @@ public interface LocalGarmentEJB {
      * @param requested
      * @return List
      */
-    public List<Garment> findGarmentsByRequest(Boolean requested);
+    public List<Garment> findGarmentsByRequest(Boolean requested) throws ReadException;
 
     /**
      * Gets a garment by its barcode
@@ -76,7 +80,7 @@ public interface LocalGarmentEJB {
      * @param barcode
      * @return Garment
      */
-    public Garment findGarmentByBarcode(String barcode);
+    public Garment findGarmentByBarcode(String barcode) throws ReadException;
 
     /**
      * Gets the garments currently being promoted
@@ -84,5 +88,5 @@ public interface LocalGarmentEJB {
      * @param promoted
      * @return List
      */
-    public List<Garment> findGarmentsPromoted(Boolean promoted);
+    public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException;
 }
