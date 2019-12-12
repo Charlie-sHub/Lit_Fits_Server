@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,6 +27,7 @@ public class GarmentFacadeREST {
      */
     @EJB
     private LocalGarmentEJB garmentEJB;
+    private static final Logger LOG = Logger.getLogger(GarmentFacadeREST.class.getName());
 
     /**
      * Inserts a new Garment

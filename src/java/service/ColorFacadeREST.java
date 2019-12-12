@@ -1,10 +1,12 @@
 package service;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -13,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalColorEJB;
 import litfitsserver.entities.Color;
+import litfitsserver.exceptions.CreateException;
 
 /**
  * RESTful class for the Color entity
@@ -26,6 +29,7 @@ public class ColorFacadeREST {
      */
     @EJB
     private LocalColorEJB colorEJB;
+    private static final Logger LOG = Logger.getLogger(ColorFacadeREST.class.getName());
 
     /**
      * Inserts a new Color in the database
@@ -35,7 +39,13 @@ public class ColorFacadeREST {
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Color color) {
-        colorEJB.createColor(color);
+        try {
+            LOG.info("Creating a new Color");
+            colorEJB.createColor(color);
+        } catch (CreateException e) {
+            LOG.severe(e.getMessage());
+            throw new InternalServerErrorException(e);
+        }
     }
 
     /**
@@ -48,7 +58,13 @@ public class ColorFacadeREST {
     @Path("{name}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("name") String name, Color color) {
-        colorEJB.editColor(color);
+        try {
+            LOG.info("Editing a Color");
+            colorEJB.editColor(color);
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     /**

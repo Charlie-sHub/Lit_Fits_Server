@@ -3,6 +3,7 @@ package litfitsserver.ejbs;
 import java.util.List;
 import javax.ejb.Local;
 import litfitsserver.entities.Color;
+import litfitsserver.exceptions.CreateException;
 
 /**
  * Interface for the ColorEJB
@@ -15,14 +16,14 @@ public interface LocalColorEJB {
      *
      * @return int
      */
-    int countColors();
+    int countColors() throws Exception;
 
     /**
      * Inserts a new color in the database
      *
      * @param color
      */
-    void createColor(Color color);
+    void createColor(Color color) throws CreateException;
 
     /**
      * Edits a Color

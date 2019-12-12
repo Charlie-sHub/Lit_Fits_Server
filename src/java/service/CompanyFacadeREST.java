@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,6 +27,7 @@ public class CompanyFacadeREST {
      */
     @EJB
     private LocalCompanyEJB companyEJB;
+    private static final Logger LOG = Logger.getLogger(CompanyFacadeREST.class.getName());
 
     /**
      * Inserts a new Company
