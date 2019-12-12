@@ -1,4 +1,4 @@
-package service;
+package litfitsserver.ejbs;
 
 import java.util.List;
 import javax.ejb.Local;

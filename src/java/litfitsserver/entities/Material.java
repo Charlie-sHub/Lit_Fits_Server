@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Defines the different materials a garment can be made out of
+ *
  * @author Charlie
  */
 @Entity

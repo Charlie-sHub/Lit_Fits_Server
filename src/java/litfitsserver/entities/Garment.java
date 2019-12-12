@@ -4,12 +4,18 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,15 +26,40 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Charlie
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findGarmentsByCompany",
+            query = "SELECT gar FROM Garment gar WHERE gar.company.nif=:nif"
+    )
+    ,
+    @NamedQuery(
+            name = "findGarmentsByRequest",
+            query = "SELECT gar FROM Garment gar WHERE gar.promotionRequest=:requested"
+    )
+    ,
+    @NamedQuery(
+            name = "findGarmentByBarcode",
+            query = "SELECT gar FROM Garment gar WHERE gar.barcode=:barcode"
+    )
+    ,
+    @NamedQuery(
+            name = "findGarmentsPromoted",
+            query = "SELECT gar FROM Garment gar WHERE gar.promoted=:promoted"
+    )
+})
 @Entity
 @Table(name = "garment", schema = "Lit_Fits_DB")
 @XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     /**
      * Unique barcode identifier of the garment
      */
-    @Id
+    @NotNull
+    @Column(unique = true)
     private String barcode;
     /**
      * The person that designed the garment
@@ -54,7 +85,7 @@ public class Garment implements Serializable {
      * What kind of garment it is
      */
     @NotNull
-    private GarmentType garmenteType;
+    private GarmentType garmentType;
     /**
      * Indicates if it can be bought
      */
@@ -80,33 +111,53 @@ public class Garment implements Serializable {
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "nif")
+    @JoinColumn(name = "company")
     private Company company;
     /**
      * What colors are in the garment
      */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "garment_colors", schema = "Lit_Fits_DB")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
+    @JoinTable(name = "garment_colors", schema = "TestLitFitsDB")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "garment_materials", schema = "Lit_Fits_DB")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
+    @JoinTable(name = "garment_materials", schema = "TestLitFitsDB")
     private Set<Material> materials;
 
+    /**
+     * Empty constructor
+     */
     public Garment() {
     }
 
-    public Garment(String barcode, String designer, Double price, Mood mood, BodyPart bodyPart, GarmentType garmenteType, boolean available, boolean promotionRequest, boolean promoted, String imagePath, Company company, Set<Color> colors, Set<Material> materials) {
+    /**
+     * Full constructor
+     *
+     * @param id
+     * @param barcode
+     * @param designer
+     * @param price
+     * @param mood
+     * @param bodyPart
+     * @param garmentType
+     * @param available
+     * @param promotionRequest
+     * @param promoted
+     * @param imagePath
+     * @param company
+     * @param colors
+     * @param materials
+     */
+    public Garment(long id, String barcode, String designer, Double price, Mood mood, BodyPart bodyPart, GarmentType garmentType, boolean available, boolean promotionRequest, boolean promoted, String imagePath, Company company, Set<Color> colors, Set<Material> materials) {
+        this.id = id;
         this.barcode = barcode;
         this.designer = designer;
         this.price = price;
         this.mood = mood;
         this.bodyPart = bodyPart;
-        this.garmenteType = garmenteType;
+        this.garmentType = garmentType;
         this.available = available;
         this.promotionRequest = promotionRequest;
         this.promoted = promoted;
@@ -114,6 +165,14 @@ public class Garment implements Serializable {
         this.company = company;
         this.colors = colors;
         this.materials = materials;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getBarcode() {
@@ -156,12 +215,12 @@ public class Garment implements Serializable {
         this.bodyPart = bodyPart;
     }
 
-    public GarmentType getGarmenteType() {
-        return garmenteType;
+    public GarmentType getGarmentType() {
+        return garmentType;
     }
 
-    public void setGarmenteType(GarmentType garmenteType) {
-        this.garmenteType = garmenteType;
+    public void setGarmentType(GarmentType garmentType) {
+        this.garmentType = garmentType;
     }
 
     public boolean isAvailable() {
@@ -225,19 +284,20 @@ public class Garment implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.barcode);
-        hash = 41 * hash + Objects.hashCode(this.designer);
-        hash = 41 * hash + Objects.hashCode(this.price);
-        hash = 41 * hash + Objects.hashCode(this.mood);
-        hash = 41 * hash + Objects.hashCode(this.bodyPart);
-        hash = 41 * hash + Objects.hashCode(this.garmenteType);
-        hash = 41 * hash + (this.available ? 1 : 0);
-        hash = 41 * hash + (this.promotionRequest ? 1 : 0);
-        hash = 41 * hash + (this.promoted ? 1 : 0);
-        hash = 41 * hash + Objects.hashCode(this.imagePath);
-        hash = 41 * hash + Objects.hashCode(this.company);
-        hash = 41 * hash + Objects.hashCode(this.colors);
-        hash = 41 * hash + Objects.hashCode(this.materials);
+        hash = 29 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.barcode);
+        hash = 29 * hash + Objects.hashCode(this.designer);
+        hash = 29 * hash + Objects.hashCode(this.price);
+        hash = 29 * hash + Objects.hashCode(this.mood);
+        hash = 29 * hash + Objects.hashCode(this.bodyPart);
+        hash = 29 * hash + Objects.hashCode(this.garmentType);
+        hash = 29 * hash + (this.available ? 1 : 0);
+        hash = 29 * hash + (this.promotionRequest ? 1 : 0);
+        hash = 29 * hash + (this.promoted ? 1 : 0);
+        hash = 29 * hash + Objects.hashCode(this.imagePath);
+        hash = 29 * hash + Objects.hashCode(this.company);
+        hash = 29 * hash + Objects.hashCode(this.colors);
+        hash = 29 * hash + Objects.hashCode(this.materials);
         return hash;
     }
 
@@ -253,6 +313,9 @@ public class Garment implements Serializable {
             return false;
         }
         final Garment other = (Garment) obj;
+        if (this.id != other.id) {
+            return false;
+        }
         if (this.available != other.available) {
             return false;
         }
@@ -280,7 +343,7 @@ public class Garment implements Serializable {
         if (this.bodyPart != other.bodyPart) {
             return false;
         }
-        if (this.garmenteType != other.garmenteType) {
+        if (this.garmentType != other.garmentType) {
             return false;
         }
         if (!Objects.equals(this.company, other.company)) {
@@ -297,6 +360,6 @@ public class Garment implements Serializable {
 
     @Override
     public String toString() {
-        return "Garment{" + "barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmenteType=" + garmenteType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + imagePath + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
+        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + imagePath + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
     }
 }
