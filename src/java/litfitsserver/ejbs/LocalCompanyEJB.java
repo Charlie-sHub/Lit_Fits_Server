@@ -1,7 +1,9 @@
 package litfitsserver.ejbs;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.ejb.Local;
+import javax.ws.rs.NotAuthorizedException;
 import litfitsserver.entities.Company;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
@@ -65,4 +67,15 @@ public interface LocalCompanyEJB {
      * @return Company
      */
     Company findCompanyByNif(String nif) throws ReadException;
+
+    /**
+     * Takes a company object sent by the client and it returns the full company object with that nif and password
+     *
+     * @param company
+     * @return Company
+     * @throws NoSuchAlgorithmException
+     * @throws ReadException
+     * @throws NotAuthorizedException
+     */
+    public Company Login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException;
 }

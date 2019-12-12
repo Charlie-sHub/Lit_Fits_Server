@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.ws.rs.NotAuthorizedException;
 import litfitsserver.entities.Company;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
@@ -39,7 +40,6 @@ public class CompanyEJB implements LocalCompanyEJB {
     }
 
     private String toHash(String password) throws NoSuchAlgorithmException {
-        //decrypt
         String passwordHash;
         MessageDigest messageDigest;
         messageDigest = MessageDigest.getInstance("MD5");
@@ -50,10 +50,17 @@ public class CompanyEJB implements LocalCompanyEJB {
         return passwordHash;
     }
 
-    public void Login(Company company) throws NoSuchAlgorithmException, ReadException{
-        String hashReceived = toHash(company.getPassword());
+    @Override
+    public Company Login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException {
         Company companyInDB = findCompanyByNif(company.getNif());
-        companyInDB.getPassword().equals(hashReceived);
+        //if the nif doesn't exist a ReadException will be thrown no?
+        //Therefore it won't continue with the login
+        //Decrypt password and set it again for the company
+        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
+        if (!rightPassword) {
+            throw new NotAuthorizedException("Passwords do not match");
+        }
+        return companyInDB;
     }
 
     @Override
