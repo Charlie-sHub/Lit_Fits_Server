@@ -3,8 +3,7 @@ package litfitsserver.ejbs;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,8 +24,10 @@ import litfitsserver.exceptions.UpdateException;
  */
 @Stateless
 public class CompanyEJB implements LocalCompanyEJB {
-    @PersistenceContext(unitName = "Test_Server2PU")
+    @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager em;
+    @EJB
+    LocalGarmentEJB garmentEJB;
 
     @Override
     public void createCompany(Company company) throws CreateException {
@@ -51,7 +52,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     }
 
     @Override
-    public Company Login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException {
+    public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException {
         Company companyInDB = findCompanyByNif(company.getNif());
         //if the nif doesn't exist a ReadException will be thrown no?
         //Therefore it won't continue with the login
@@ -60,11 +61,15 @@ public class CompanyEJB implements LocalCompanyEJB {
         if (!rightPassword) {
             throw new NotAuthorizedException("Passwords do not match");
         }
+        companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));        
         return companyInDB;
     }
 
     @Override
-    public void editCompany(Company company) throws UpdateException {
+    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException {
+        //Decrypt password
+        String passwordHash = toHash(company.getPassword());
+        company.setPassword(passwordHash);
         em.merge(company);
         em.flush();
     }

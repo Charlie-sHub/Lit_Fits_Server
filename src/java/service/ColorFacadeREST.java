@@ -59,9 +59,8 @@ public class ColorFacadeREST {
      * @param color
      */
     @PUT
-    @Path("{name}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("name") String name, Color color) {
+    public void edit(Color color) {
         try {
             LOG.info("Editing a Color");
             colorEJB.editColor(color);

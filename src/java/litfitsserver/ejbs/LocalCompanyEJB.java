@@ -36,7 +36,7 @@ public interface LocalCompanyEJB {
      *
      * @param company
      */
-    void editCompany(Company company) throws UpdateException;
+    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException;
 
     /**
      * Gets all the companies
@@ -77,5 +77,5 @@ public interface LocalCompanyEJB {
      * @throws ReadException
      * @throws NotAuthorizedException
      */
-    public Company Login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException;
+    public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException;
 }

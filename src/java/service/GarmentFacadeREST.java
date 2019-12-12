@@ -58,9 +58,8 @@ public class GarmentFacadeREST {
      * @param garment
      */
     @PUT
-    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void editGarment(@PathParam("id") Long id, Garment garment) {
+    public void editGarment(Garment garment) {
         try {
             garmentEJB.editGarment(garment);
         } catch (UpdateException ex) {

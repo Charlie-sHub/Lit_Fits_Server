@@ -59,9 +59,8 @@ public class MaterialFacadeREST {
      * @param material
      */
     @PUT
-    @Path("{name}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("name") String name, Material material) {
+    public void edit(Material material) {
         try {
             LOG.info("Editing a Material");
             materialEJB.editMaterial(material);

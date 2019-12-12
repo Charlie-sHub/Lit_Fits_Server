@@ -2,8 +2,8 @@ package litfitsserver.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,8 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Company class, has all the data required for the Use Cases of company type
- * actors
+ * Company class, has all the data required for the Use Cases of company type actors
  *
  * @author Charlie
  */
@@ -80,7 +79,7 @@ public class Company implements Serializable {
      * List of garments "owned" by the company.
      */
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    protected Set<Garment> garments;
+    protected List<Garment> garments;
 
     /**
      * Empty constructor
@@ -101,7 +100,7 @@ public class Company implements Serializable {
      * @param lastPasswordChange
      * @param garments
      */
-    public Company(long id, String nif, String password, String fullName, String phoneNumber, String email, Date lastAccess, Date lastPasswordChange, Set<Garment> garments) {
+    public Company(long id, String nif, String password, String fullName, String phoneNumber, String email, Date lastAccess, Date lastPasswordChange, List<Garment> garments) {
         this.id = id;
         this.nif = nif;
         this.password = password;
@@ -178,11 +177,11 @@ public class Company implements Serializable {
     }
 
     @XmlTransient
-    public Set<Garment> getGarments() {
+    public List<Garment> getGarments() {
         return garments;
     }
 
-    public void setGarments(Set<Garment> garments) {
+    public void setGarments(List<Garment> garments) {
         this.garments = garments;
     }
 
