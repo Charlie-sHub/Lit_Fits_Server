@@ -2,14 +2,12 @@ package service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -90,9 +88,9 @@ public class CompanyFacadeREST {
     }
 
     @GET
-    @Path("{Company}")
+    @Path("login/{company}")
     @Produces({MediaType.APPLICATION_XML})
-    public Company login(@PathParam("id") Company company) {
+    public Company login(@PathParam("company") Company company) {
         try {
             LOG.info("Login of a company attempted");
             company = companyEJB.login(company);

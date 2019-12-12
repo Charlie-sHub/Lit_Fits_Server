@@ -19,7 +19,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Garment entity
@@ -116,13 +115,13 @@ public class Garment implements Serializable {
     /**
      * What colors are in the garment
      */
-    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
+    @ManyToMany(fetch = EAGER)
     @JoinTable(name = "garment_colors", schema = "TestLitFitsDB")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
-    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
+    @ManyToMany(fetch = EAGER)
     @JoinTable(name = "garment_materials", schema = "TestLitFitsDB")
     private Set<Material> materials;
 
