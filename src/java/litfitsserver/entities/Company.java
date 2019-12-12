@@ -5,13 +5,20 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Company class, has all the data required for the Use Cases of company type
@@ -19,17 +26,28 @@ import javax.validation.constraints.NotNull;
  *
  * @author Charlie
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findCompanyByNif",
+            query = "SELECT com FROM Company com WHERE com.nif=:nif"
+    )
+})
 @Entity
-@Table(name = "company", schema = "Lit_Fits_DB")
+@Table(name = "company", schema = "TestLitFitsDB")
+@XmlRootElement
 public class Company implements Serializable {
     private static final long serialVersionUID = 1L;
-    /**
-     * Unique identifier for the company it's NIF
-     */
     @Id
-    protected String nif;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     /**
-     * Passqord required for the company to log in
+     * Unique nif identifier of the garment
+     */
+    @NotNull
+    @Column(unique = true)
+    private String nif;
+    /**
+     * Password required for the company to log in
      */
     @NotNull
     protected String password;
@@ -64,10 +82,27 @@ public class Company implements Serializable {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     protected Set<Garment> garments;
 
+    /**
+     * Empty constructor
+     */
     public Company() {
     }
 
-    public Company(String nif, String password, String fullName, String phoneNumber, String email, Date lastAccess, Date lastPasswordChange, Set<Garment> garments) {
+    /**
+     * Full Constructor
+     *
+     * @param id
+     * @param nif
+     * @param password
+     * @param fullName
+     * @param phoneNumber
+     * @param email
+     * @param lastAccess
+     * @param lastPasswordChange
+     * @param garments
+     */
+    public Company(long id, String nif, String password, String fullName, String phoneNumber, String email, Date lastAccess, Date lastPasswordChange, Set<Garment> garments) {
+        this.id = id;
         this.nif = nif;
         this.password = password;
         this.fullName = fullName;
@@ -76,6 +111,14 @@ public class Company implements Serializable {
         this.lastAccess = lastAccess;
         this.lastPasswordChange = lastPasswordChange;
         this.garments = garments;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getNif() {
@@ -134,6 +177,7 @@ public class Company implements Serializable {
         this.lastPasswordChange = lastPasswordChange;
     }
 
+    @XmlTransient
     public Set<Garment> getGarments() {
         return garments;
     }
@@ -143,21 +187,17 @@ public class Company implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Company{" + "nif=" + nif + ", password=" + password + ", fullName=" + fullName + ", phoneNumber=" + phoneNumber + ", email=" + email + ", lastAccess=" + lastAccess + ", lastPasswordChange=" + lastPasswordChange + ", garments=" + garments + '}';
-    }
-
-    @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.nif);
-        hash = 97 * hash + Objects.hashCode(this.password);
-        hash = 97 * hash + Objects.hashCode(this.fullName);
-        hash = 97 * hash + Objects.hashCode(this.phoneNumber);
-        hash = 97 * hash + Objects.hashCode(this.email);
-        hash = 97 * hash + Objects.hashCode(this.lastAccess);
-        hash = 97 * hash + Objects.hashCode(this.lastPasswordChange);
-        hash = 97 * hash + Objects.hashCode(this.garments);
+        int hash = 7;
+        hash = 71 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 71 * hash + Objects.hashCode(this.nif);
+        hash = 71 * hash + Objects.hashCode(this.password);
+        hash = 71 * hash + Objects.hashCode(this.fullName);
+        hash = 71 * hash + Objects.hashCode(this.phoneNumber);
+        hash = 71 * hash + Objects.hashCode(this.email);
+        hash = 71 * hash + Objects.hashCode(this.lastAccess);
+        hash = 71 * hash + Objects.hashCode(this.lastPasswordChange);
+        hash = 71 * hash + Objects.hashCode(this.garments);
         return hash;
     }
 
@@ -173,6 +213,9 @@ public class Company implements Serializable {
             return false;
         }
         final Company other = (Company) obj;
+        if (this.id != other.id) {
+            return false;
+        }
         if (!Objects.equals(this.nif, other.nif)) {
             return false;
         }
@@ -198,5 +241,10 @@ public class Company implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" + "id=" + id + ", nif=" + nif + ", password=" + password + ", fullName=" + fullName + ", phoneNumber=" + phoneNumber + ", email=" + email + ", lastAccess=" + lastAccess + ", lastPasswordChange=" + lastPasswordChange + ", garments=" + garments + '}';
     }
 }
