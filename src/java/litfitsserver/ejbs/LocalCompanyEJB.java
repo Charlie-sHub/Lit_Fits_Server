@@ -3,6 +3,7 @@ package litfitsserver.ejbs;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.ejb.Local;
+import javax.mail.MessagingException;
 import javax.ws.rs.NotAuthorizedException;
 import litfitsserver.entities.Company;
 import litfitsserver.exceptions.CreateException;
@@ -36,7 +37,7 @@ public interface LocalCompanyEJB {
      *
      * @param company
      */
-    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException;
+    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException;
 
     /**
      * Gets all the companies

@@ -1,10 +1,13 @@
 package litfitsserver.ejbs;
 
+import miscellaneous.EmailService;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -64,12 +67,23 @@ public class CompanyEJB implements LocalCompanyEJB {
     }
 
     @Override
-    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException {
+    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException {
         //Decrypt password
-        String passwordHash = toHash(company.getPassword());
-        company.setPassword(passwordHash);
+        Company companyInDB = findCompanyByNif(company.getNif());
+        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
+        if (!rightPassword) {
+            sendPasswordComfirmationEmail(company);
+            String passwordHash = toHash(company.getPassword());
+            company.setPassword(passwordHash);
+        }
         em.merge(company);
         em.flush();
+    }
+
+    private void sendPasswordComfirmationEmail(Company company) throws MessagingException {
+        EmailService emailService = new EmailService("lit_fits_no_reply@outlook.com", "litfits69", null, null);
+        String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
+        emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }
 
     @Override

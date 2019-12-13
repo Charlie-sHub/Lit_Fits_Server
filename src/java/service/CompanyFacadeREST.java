@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -65,8 +66,9 @@ public class CompanyFacadeREST {
         LOG.info("Editing a company");
         try {
             companyEJB.editCompany(company);
-        } catch (UpdateException | NoSuchAlgorithmException ex) {
+        } catch (UpdateException | NoSuchAlgorithmException | MessagingException | ReadException ex) {
             LOG.severe(ex.getMessage());
+            ex.printStackTrace();
             throw new InternalServerErrorException(ex);
         }
     }
