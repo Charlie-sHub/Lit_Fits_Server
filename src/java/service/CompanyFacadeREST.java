@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -43,8 +44,8 @@ public class CompanyFacadeREST {
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Company company) {
+        LOG.info("Creating a company");
         try {
-            LOG.info("Creating a company");
             companyEJB.createCompany(company);
         } catch (CreateException ex) {
             LOG.severe(ex.getMessage());
@@ -61,8 +62,8 @@ public class CompanyFacadeREST {
     @PUT
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(Company company) {
+        LOG.info("Editing a company");
         try {
-            LOG.info("Editing a company");
             companyEJB.editCompany(company);
         } catch (UpdateException | NoSuchAlgorithmException ex) {
             LOG.severe(ex.getMessage());
@@ -78,8 +79,8 @@ public class CompanyFacadeREST {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
+        LOG.info("Deleting a company");
         try {
-            LOG.info("Deleting a company");
             companyEJB.removeCompany(companyEJB.findCompany(id));
         } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
@@ -87,17 +88,27 @@ public class CompanyFacadeREST {
         }
     }
 
-    @GET
-    @Path("login/{company}")
+    /**
+     * The log in method for companies Takes a Company object with only the password and nif giving back either an
+     * exception or a full Company
+     *
+     * @param company
+     * @return Company
+     */
+    @POST
+    @Path("login/")
+    @Consumes({MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_XML})
-    public Company login(@PathParam("company") Company company) {
+    public Company login(Company company) {
+        LOG.info("Login of a company attempted");
         try {
-            LOG.info("Login of a company attempted");
             company = companyEJB.login(company);
         } catch (ReadException | NoSuchAlgorithmException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
-        } // What to do about the NotAuthorizedException
+        } catch (NotAuthorizedException ex) {
+            LOG.severe(ex.getMessage());
+        }
         return company;
     }
 
@@ -111,9 +122,9 @@ public class CompanyFacadeREST {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Company find(@PathParam("id") Long id) {
+        LOG.info("Finding a company");
         Company company = null;
         try {
-            LOG.info("Finding a company");
             company = companyEJB.findCompany(id);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
@@ -130,9 +141,9 @@ public class CompanyFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML})
     public List<Company> findAll() {
+        LOG.info("Finding all companies");
         List<Company> companies = null;
         try {
-            LOG.info("Finding all companies");
             companies = companyEJB.findAllCompanies();
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
@@ -150,9 +161,9 @@ public class CompanyFacadeREST {
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
+        LOG.info("Counting the companies");
         String amount = null;
         try {
-            LOG.info("Counting the companies");
             amount = String.valueOf(companyEJB.countCompanies());
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
@@ -171,9 +182,9 @@ public class CompanyFacadeREST {
     @Path("company/{nif}")
     @Produces({MediaType.APPLICATION_XML})
     public Company findCompanyByNif(@PathParam("nif") String nif) {
+        LOG.info("Finding a company by its nif");
         Company company = null;
         try {
-            LOG.info("Finding a company by its nif");
             company = companyEJB.findCompanyByNif(nif);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());

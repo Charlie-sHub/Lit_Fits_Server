@@ -43,7 +43,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     private String toHash(String password) throws NoSuchAlgorithmException {
         String passwordHash;
         MessageDigest messageDigest;
-        messageDigest = MessageDigest.getInstance("MD5");
+        messageDigest = MessageDigest.getInstance("SHA");
         byte dataBytes[] = password.getBytes();
         messageDigest.update(dataBytes);
         byte hash[] = messageDigest.digest();
@@ -54,14 +54,12 @@ public class CompanyEJB implements LocalCompanyEJB {
     @Override
     public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException {
         Company companyInDB = findCompanyByNif(company.getNif());
-        //if the nif doesn't exist a ReadException will be thrown no?
-        //Therefore it won't continue with the login
         //Decrypt password and set it again for the company
         boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
         if (!rightPassword) {
-            throw new NotAuthorizedException("Passwords do not match");
+            throw new NotAuthorizedException("Wrong password");
         }
-        companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));        
+        companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
         return companyInDB;
     }
 

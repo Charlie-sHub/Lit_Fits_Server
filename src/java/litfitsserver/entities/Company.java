@@ -58,12 +58,10 @@ public class Company implements Serializable {
     /**
      * Phone number to contact the company
      */
-    //Add pattern
     protected String phoneNumber;
     /**
      * Email to contact the company
      */
-    //Add pattern
     protected String email;
     /**
      * When the company last accessed the app
