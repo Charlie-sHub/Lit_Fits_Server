@@ -50,7 +50,7 @@ public class FashionExpertFacadeREST  {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") String id) {
-       ejb.deleteExpert(ejb.findExpertById(id));
+       ejb.deleteExpert(ejb.findExpert(id));
     }
 
     @GET

@@ -6,14 +6,14 @@
 package litfitsserver.entities;
 
 import java.io.Serializable;
-import java.security.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,9 +28,26 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name="fashionExpert", schema="Lit_Fits_DB")
-@NamedQuery(name="findAllExperts",
+@NamedQueries ({
+    @NamedQuery(
+        name="findAllExperts",
         query = "SELECT e FROM FashionExpert e ORDER BY e.id DESC"
-)
+
+    ),
+    @NamedQuery(
+        name = "getExpertRecommendedColors",
+        query = "SELECT name from expert_colors "
+                + "where expert_colors.username == :username"
+    ),
+    
+    @NamedQuery(
+        name = "getExpertRecommendedMaterials",
+        query = "SELECT name from expert_materials "
+                + "where expert_materials.username == :username"
+    ),
+    
+    
+})
 @XmlRootElement
 public class FashionExpert implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -52,15 +69,15 @@ public class FashionExpert implements Serializable {
     private Date lastAccess;
     @ManyToMany
     @JoinTable(name = "expert_materials", schema = "Lit_Fits_DB")
-    private Set<Material> recommendedMaterials;
+    private List<Material> recommendedMaterials;
     @ManyToMany
     @JoinTable(name = "expert_colors", schema = "Lit_Fits_DB")
-    private Set<Color> recommendedColors;
+    private List<Color> recommendedColors;
 
     public FashionExpert() {
     }
 
-    public FashionExpert(String username, String password, String phoneNumber, String fullName, String email, String publication, Date lastPasswordChange, Date lastAccess, Set<Material> recommendedMaterials, Set<Color> recommendedColors) {
+    public FashionExpert(String username, String password, String phoneNumber, String fullName, String email, String publication, Date lastPasswordChange, Date lastAccess, List<Material> recommendedMaterials, List<Color> recommendedColors) {
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -86,12 +103,22 @@ public class FashionExpert implements Serializable {
                 + ", Recommended Materials: " + recommendedMaterials + "and Recommended Colors: " + recommendedColors + " }" ;
    }
     /**
-     * Funvtion hash code will verify
+     * Function hash code 
+     * 
      * @return an integer
      */
     @Override
     public int hashCode() {
-        return 0;
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.username);
+        hash = 29 * hash + Objects.hashCode(this.password);
+        hash = 29 * hash + Objects.hashCode(this.fullName);
+        hash = 29 * hash + Objects.hashCode(this.phoneNumber);
+        hash = 29 * hash + Objects.hashCode(this.email);
+        hash = 29 * hash + Objects.hashCode(this.publication);
+        hash = 29 * hash + Objects.hashCode(this.recommendedColors);
+        hash = 29 * hash + Objects.hashCode(this.recommendedMaterials);
+        return hash;
 
     }
     /**
@@ -246,14 +273,14 @@ public class FashionExpert implements Serializable {
      * @return the recommendedMaterials
      */
     @XmlTransient
-    public Set<Material> getRecommendedMaterials() {
+    public List<Material> getRecommendedMaterials() {
         return recommendedMaterials;
     }
 
     /**
      * @param recommendedMaterials the recommendedMaterials to set
      */
-    public void setRecommendedMaterials(Set<Material> recommendedMaterials) {
+    public void setRecommendedMaterials(List<Material> recommendedMaterials) {
         this.recommendedMaterials = recommendedMaterials;
     }
 
@@ -261,14 +288,14 @@ public class FashionExpert implements Serializable {
      * @return the recommendedColors
      */
     @XmlTransient
-    public Set<Color> getRecommendedColors() {
+    public List<Color> getRecommendedColors() {
         return recommendedColors;
     }
 
     /**
      * @param recommendedColors the recommendedColors to set
      */
-    public void setRecommendedColors(Set<Color> recommendedColors) {
+    public void setRecommendedColors(List<Color> recommendedColors) {
         this.recommendedColors = recommendedColors;
     }
     
