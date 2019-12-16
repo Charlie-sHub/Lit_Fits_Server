@@ -5,16 +5,17 @@
  */
 package service;
 
+import litfitsserver.entities.*;
+import service.*;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
 /**
  *
- * @author 2dam
+ * @author Carlos
  */
 @javax.ws.rs.ApplicationPath("webresources")
 public class ApplicationConfig extends Application {
-
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new java.util.HashSet<>();
@@ -23,13 +24,15 @@ public class ApplicationConfig extends Application {
     }
 
     /**
-     * Do not modify addRestResourceClasses() method.
-     * It is automatically populated with
-     * all resources defined in the project.
-     * If required, comment out calling this method in getClasses().
+     * Do not modify addRestResourceClasses() method. It is automatically
+     * populated with all resources defined in the project. If required, comment
+     * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(service.ColorFacadeREST.class);
+        resources.add(service.CompanyFacadeREST.class);
         resources.add(service.FashionExpertFacadeREST.class);
+        resources.add(service.GarmentFacadeREST.class);
+        resources.add(service.MaterialFacadeREST.class);
     }
-    
 }

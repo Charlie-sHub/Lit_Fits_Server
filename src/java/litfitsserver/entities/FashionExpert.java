@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,6 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name="fashionExpert", schema="Lit_Fits_DB")
+@NamedQuery(name="findAllExperts",
+        query = "SELECT e FROM FashionExpert e ORDER BY e.id DESC"
+)
 @XmlRootElement
 public class FashionExpert implements Serializable {
     private static final long serialVersionUID = 1L;

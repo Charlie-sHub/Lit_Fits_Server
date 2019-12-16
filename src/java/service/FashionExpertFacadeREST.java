@@ -6,9 +6,8 @@
 package service;
 
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.ejb.CreateException;
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,73 +18,53 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.entities.FashionExpert;
+import litfitsserver.ejbs.ExpertManagerLocal;
 
 /**
  *
  * @author Ander
  */
-@Stateless
+
 @Path("litfitsserver.entities.fashionexpert")
-public class FashionExpertFacadeREST extends AbstractFacade<FashionExpert> {
+public class FashionExpertFacadeREST  {
 
-    @PersistenceContext(unitName = "Lit_Fits_ServerPU")
-    private EntityManager em;
-
-    public FashionExpertFacadeREST() {
-        super(FashionExpert.class);
-    }
-
+    @EJB
+    private ExpertManagerLocal ejb;
+    
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(FashionExpert entity) {
-        super.create(entity);
+    @Consumes({MediaType.APPLICATION_XML})
+    public void createExpert(FashionExpert expert) {
+        try {
+            ejb.createExpert(expert);
+        } catch (CreateException ex) {
+            
+        }
     }
-
+    
     @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") String id, FashionExpert entity) {
-        super.edit(entity);
+    @Consumes({MediaType.APPLICATION_XML})
+    public void edit(FashionExpert expert) {
+        ejb.modifyExpert(expert);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") String id) {
-        super.remove(super.find(id));
+       ejb.deleteExpert(ejb.findExpertById(id));
     }
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public FashionExpert find(@PathParam("id") String id) {
-        return super.find(id);
+        return ejb.findExpert(id);
     }
 
     @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<FashionExpert> findAll() {
-        return super.findAll();
+    @Produces({MediaType.APPLICATION_XML})
+    public List<FashionExpert> findAllExpert(){
+        return ejb.findAllExperts();
     }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<FashionExpert> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-    
+       
+   
 }
