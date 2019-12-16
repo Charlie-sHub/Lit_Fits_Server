@@ -1,4 +1,4 @@
-package service;
+package litfistsserver.service;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,38 +13,38 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import litfitsserver.ejbs.LocalMaterialEJB;
-import litfitsserver.entities.Material;
+import litfitsserver.ejbs.LocalColorEJB;
+import litfitsserver.entities.Color;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
 
 /**
- * RESTful class for the Material entity
+ * RESTful class for the Color entity
  *
  * @author Carlos
  */
-@Path("litfitsserver.entities.material")
-public class MaterialFacadeREST {
+@Path("litfitsserver.entities.color")
+public class ColorFacadeREST {
     /**
      * Injects the EJB of the entity in question
      */
     @EJB
-    private LocalMaterialEJB materialEJB;
-    private static final Logger LOG = Logger.getLogger(MaterialFacadeREST.class.getName());
+    private LocalColorEJB colorEJB;
+    private static final Logger LOG = Logger.getLogger(ColorFacadeREST.class.getName());
 
     /**
-     * Inserts a new Material in the database
+     * Inserts a new Color in the database
      *
-     * @param material
+     * @param color
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
-    public void create(Material material) {
+    public void create(Color color) {
         try {
-            LOG.info("Creating a new Material");
-            materialEJB.createMaterial(material);
+            LOG.info("Creating a new Color");
+            colorEJB.createColor(color);
         } catch (CreateException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -52,17 +52,17 @@ public class MaterialFacadeREST {
     }
 
     /**
-     * Edits the material
+     * Edits the color
      *
      * @param name
-     * @param material
+     * @param color
      */
     @PUT
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(Material material) {
+    public void edit(Color color) {
         try {
-            LOG.info("Editing a Material");
-            materialEJB.editMaterial(material);
+            LOG.info("Editing a Color");
+            colorEJB.editColor(color);
         } catch (UpdateException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -70,7 +70,7 @@ public class MaterialFacadeREST {
     }
 
     /**
-     * Deletes the material
+     * Deletes the color
      *
      * @param name
      */
@@ -78,8 +78,8 @@ public class MaterialFacadeREST {
     @Path("{name}")
     public void remove(@PathParam("name") String name) {
         try {
-            LOG.info("Deleting a Material");
-            materialEJB.removeMaterial(materialEJB.findMaterial(name));
+            LOG.info("Deleting a Color");
+            colorEJB.removeColor(colorEJB.findColor(name));
         } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -87,49 +87,49 @@ public class MaterialFacadeREST {
     }
 
     /**
-     * Gets the material wanted
+     * Gets the color wanted
      *
      * @param name
-     * @return Material
+     * @return Color
      */
     @GET
     @Path("{name}")
     @Produces({MediaType.APPLICATION_XML})
-    public Material find(@PathParam("name") String name) {
-        Material material = null;
+    public Color find(@PathParam("name") String name) {
+        Color color = null;
         try {
-            LOG.info("Finding a Material");
-            material = materialEJB.findMaterial(name);
+            LOG.info("Finding a Color");
+            color = colorEJB.findColor(name);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return material;
+        return color;
     }
 
     /**
-     * Gets all the materials
+     * Gets all the colors
      *
-     * @return List of materials
+     * @return List of colors
      */
     @GET
     @Produces({MediaType.APPLICATION_XML})
-    public List<Material> findAll() {
-        List<Material> materialList = null;
+    public List<Color> findAll() {
+        List<Color> colorList = null;
         try {
-            LOG.info("Getting all Materials");
-            materialList = materialEJB.findAllMaterials();
+            LOG.info("Getting all Colors");
+            colorList = colorEJB.findAllColors();
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return materialList;
+        return colorList;
     }
 
     /**
-     * Gets the amount of materials
+     * Gets the amount of colors
      *
-     * @return String amount of materials
+     * @return String amount of colors
      */
     @GET
     @Path("count")
@@ -137,8 +137,8 @@ public class MaterialFacadeREST {
     public String countREST() {
         String amount = null;
         try {
-            LOG.info("Counting the Materials");
-            amount = String.valueOf(materialEJB.countMaterials());
+            LOG.info("Counting the Colors");
+            amount = String.valueOf(colorEJB.countColors());
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);

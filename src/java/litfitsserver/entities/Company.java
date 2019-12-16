@@ -30,6 +30,11 @@ import javax.xml.bind.annotation.XmlTransient;
             name = "findCompanyByNif",
             query = "SELECT com FROM Company com WHERE com.nif=:nif"
     )
+    ,
+        @NamedQuery(
+            name = "companyExists",
+            query = "SELECT count(*) FROM Company com WHERE com.nif=:nif"
+    )
 })
 @Entity
 @Table(name = "company", schema = "TestLitFitsDB")

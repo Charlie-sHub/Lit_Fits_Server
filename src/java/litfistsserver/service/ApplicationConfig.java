@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package service;
+package litfistsserver.service;
 
 import litfitsserver.entities.*;
-import service.*;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
@@ -29,9 +28,9 @@ public class ApplicationConfig extends Application {
      * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(service.ColorFacadeREST.class);
-        resources.add(service.CompanyFacadeREST.class);
-        resources.add(service.GarmentFacadeREST.class);
-        resources.add(service.MaterialFacadeREST.class);
+        resources.add(litfistsserver.service.ColorFacadeREST.class);
+        resources.add(litfistsserver.service.CompanyFacadeREST.class);
+        resources.add(litfistsserver.service.GarmentFacadeREST.class);
+        resources.add(litfistsserver.service.MaterialFacadeREST.class);
     }
 }

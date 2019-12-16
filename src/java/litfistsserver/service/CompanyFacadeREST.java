@@ -1,4 +1,4 @@
-package service;
+package litfistsserver.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
