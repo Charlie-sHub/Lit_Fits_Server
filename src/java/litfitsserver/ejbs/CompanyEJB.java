@@ -170,7 +170,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     private void sendPasswordChangeComfirmationEmail(Company company) throws MessagingException, Exception {
         Decryptor decryptor = new Decryptor();
         //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedUser.dat");
+        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedAddress.dat");
         String password = decryptor.decypher("Nothin personnel kid", "EncodedPassword.dat");
         EmailService emailService = new EmailService(emailAddress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
@@ -187,7 +187,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     private void sendPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
         Decryptor decryptor = new Decryptor();
         //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedUser.dat");
+        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedAddress.dat");
         String password = decryptor.decypher("Nothin personnel kid", "EncodedPassword.dat");
         EmailService emailService = new EmailService(emailAddress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
