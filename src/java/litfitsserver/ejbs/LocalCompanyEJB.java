@@ -37,7 +37,7 @@ public interface LocalCompanyEJB {
      *
      * @param company
      */
-    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException;
+    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception;
 
     /**
      * Gets all the companies
@@ -79,4 +79,12 @@ public interface LocalCompanyEJB {
      * @throws NotAuthorizedException
      */
     public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException;
+
+    /**
+     * Method to reestablish the password of a given company ( nif)
+     *
+     * @param nif
+     * @throws ReadException
+     */
+    public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception;
 }

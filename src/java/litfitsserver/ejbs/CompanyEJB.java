@@ -5,12 +5,9 @@ import java.io.IOException;
 import miscellaneous.EmailService;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -27,6 +24,8 @@ import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
+import miscellaneous.Decryptor;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * EJB for Companies
@@ -42,22 +41,26 @@ public class CompanyEJB implements LocalCompanyEJB {
 
     @Override
     public void createCompany(Company company) throws CreateException {
-        FileInputStream keyFile = null;
+        //FileInputStream keyFile = null;
+        String message = null;
         try {
-            keyFile = new FileInputStream("private.key");
-            byte[] privateKey = new byte[keyFile.available()];
-            keyFile.read(privateKey);
+            //keyFile = new FileInputStream(".\\private.key");
+            //byte[] privateKey = new byte[keyFile.available()];
+            //keyFile.read(privateKey);
             //decrypt password
             if (companyExists(company.getNif())) {
-                throw new CreateException("The NIF given already exists in the database");
+                throw new Exception("NIF already exists in the database");
             } else {
                 String password = company.getPassword();
                 company.setPassword(toHash(password));
+                company.setLastAccess(new Date());
+                company.setLastPasswordChange(new Date());
                 em.persist(company);
             }
         } catch (Exception ex) {
             throw new CreateException(ex.getMessage());
-        } finally {
+        }
+        /*finally {
             if (null != keyFile) {
                 try {
                     keyFile.close();
@@ -65,7 +68,7 @@ public class CompanyEJB implements LocalCompanyEJB {
                     Logger.getLogger(CompanyEJB.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
+        }*/
     }
 
     @Override
@@ -76,22 +79,22 @@ public class CompanyEJB implements LocalCompanyEJB {
         if (!rightPassword) {
             throw new NotAuthorizedException("Wrong password");
         }
-        companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
-        Date date = new Date();
-        companyInDB.setLastAccess(date);
+        companyInDB.setLastAccess(new Date());
         em.merge(companyInDB);
+        companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
         return companyInDB;
     }
 
     @Override
-    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException {
+    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception {
         //Decrypt password
         //This method should receive the original password to make sure the company is the one editing its own data
         Company companyInDB = findCompanyByNif(company.getNif());
-        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
+        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()).toString());
         if (!rightPassword) {
             sendPasswordComfirmationEmail(company);
             //Make a pool for emails
+            company.setLastPasswordChange(new Date());
             company.setPassword(toHash(company.getPassword()));
             Date date = new Date();
             company.setLastPasswordChange(date);
@@ -131,6 +134,15 @@ public class CompanyEJB implements LocalCompanyEJB {
         return (Company) em.createNamedQuery("findCompanyByNif").setParameter("nif", nif).getSingleResult();
     }
 
+    @Override
+    public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception {
+        Company company = findCompanyByNif(nif);
+        String generatedString = RandomStringUtils.randomAlphabetic(10);
+        company.setPassword(generatedString);
+        sendPasswordReestablishmentEmail(company);
+        em.merge(company);
+    }
+
     /**
      * Creates a returns the hash value of the given password
      *
@@ -155,12 +167,30 @@ public class CompanyEJB implements LocalCompanyEJB {
      * @param company
      * @throws MessagingException
      */
-    private void sendPasswordComfirmationEmail(Company company) throws MessagingException {
-        String user = ResourceBundle.getBundle("litfistsserver.miscellaneous.emailCredentials").getString("user");
-        String password = ResourceBundle.getBundle("litfistsserver.miscellaneous.emailCredentials").getString("password");
-        //Decypher credentials
-        EmailService emailService = new EmailService(user, password, null, null);
+    private void sendPasswordComfirmationEmail(Company company) throws MessagingException, Exception {
+        Decryptor decryptor = new Decryptor();
+        //Fucking paths how do they work? the path should be relative to decryptor i guess
+        String emailAdress = decryptor.decypher("Nothin personnel kid", ".\\EncodedUser.dat");
+        String password = decryptor.decypher("Nothin personnel kid", ".\\EncodedPassword.dat");
+        EmailService emailService = new EmailService(emailAdress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
+        emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
+    }
+
+    /**
+     * Sends an email notifying the password has been changed to a new random one, used when users forget their
+     * passwords
+     *
+     * @param company
+     * @throws MessagingException
+     */
+    private void sendPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
+        Decryptor decryptor = new Decryptor();
+        //Fucking paths how do they work? the path should be relative to decryptor i guess
+        String emailAdress = decryptor.decypher("Nothin personnel kid", ".\\EncodedUser.dat");
+        String password = decryptor.decypher("Nothin personnel kid", ".\\EncodedPassword.dat");
+        EmailService emailService = new EmailService(emailAdress, password, null, null);
+        String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
         emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }
 
@@ -171,6 +201,6 @@ public class CompanyEJB implements LocalCompanyEJB {
      * @return Boolenan exists
      */
     private boolean companyExists(String nif) throws ReadException {
-        return (int) em.createNamedQuery("companyExists").setParameter("nif", nif).getSingleResult() == 1;
+        return (long) em.createNamedQuery("companyExists").setParameter("nif", nif).getSingleResult() == 1;
     }
 }

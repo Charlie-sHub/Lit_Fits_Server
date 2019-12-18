@@ -48,7 +48,6 @@ public class Company implements Serializable {
      * Unique nif identifier of the garment
      */
     @NotNull
-    @Column(unique = true)
     private String nif;
     /**
      * Password required for the company to log in
