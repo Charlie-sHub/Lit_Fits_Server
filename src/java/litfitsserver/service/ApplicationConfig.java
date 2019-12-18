@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package litfistserver.service;
+package litfitsserver.service;
 
 import litfitsserver.entities.*;
 import java.util.Set;
@@ -28,10 +28,10 @@ public class ApplicationConfig extends Application {
      * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(litfistserver.service.ColorFacadeREST.class);
-        resources.add(litfistserver.service.CompanyFacadeREST.class);
-        resources.add(litfistserver.service.GarmentFacadeREST.class);
-        resources.add(litfistserver.service.MaterialFacadeREST.class);
-        resources.add(litfistserver.service.PublicKeyFacadeREST.class);
+        resources.add(litfitsserver.service.ColorFacadeREST.class);
+        resources.add(litfitsserver.service.CompanyFacadeREST.class);
+        resources.add(litfitsserver.service.GarmentFacadeREST.class);
+        resources.add(litfitsserver.service.MaterialFacadeREST.class);
+        resources.add(litfitsserver.service.PublicKeyFacadeREST.class);
     }
 }

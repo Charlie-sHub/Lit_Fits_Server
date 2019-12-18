@@ -16,8 +16,9 @@ public class PublicKeyEJB implements LocalPublicKeyEJB {
     @Override
     public byte[] getPublicKey() throws FileNotFoundException, IOException {
         byte[] publicKey = null;
-        File file = new File(".\\public.key");
-        publicKey = Files.readAllBytes(file.toPath());
+        //File file = new File(".\\public.key");
+        //publicKey = Files.readAllBytes(file.toPath());
+        publicKey = "Whatever dude".getBytes();
         return publicKey;
     }
 }

@@ -92,7 +92,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         Company companyInDB = findCompanyByNif(company.getNif());
         boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()).toString());
         if (!rightPassword) {
-            sendPasswordComfirmationEmail(company);
+            sendPasswordChangeComfirmationEmail(company);
             //Make a pool for emails
             company.setLastPasswordChange(new Date());
             company.setPassword(toHash(company.getPassword()));
@@ -167,12 +167,12 @@ public class CompanyEJB implements LocalCompanyEJB {
      * @param company
      * @throws MessagingException
      */
-    private void sendPasswordComfirmationEmail(Company company) throws MessagingException, Exception {
+    private void sendPasswordChangeComfirmationEmail(Company company) throws MessagingException, Exception {
         Decryptor decryptor = new Decryptor();
         //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAdress = decryptor.decypher("Nothin personnel kid", ".\\EncodedUser.dat");
-        String password = decryptor.decypher("Nothin personnel kid", ".\\EncodedPassword.dat");
-        EmailService emailService = new EmailService(emailAdress, password, null, null);
+        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedUser.dat");
+        String password = decryptor.decypher("Nothin personnel kid", "EncodedPassword.dat");
+        EmailService emailService = new EmailService(emailAddress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
         emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }
@@ -187,9 +187,9 @@ public class CompanyEJB implements LocalCompanyEJB {
     private void sendPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
         Decryptor decryptor = new Decryptor();
         //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAdress = decryptor.decypher("Nothin personnel kid", ".\\EncodedUser.dat");
-        String password = decryptor.decypher("Nothin personnel kid", ".\\EncodedPassword.dat");
-        EmailService emailService = new EmailService(emailAdress, password, null, null);
+        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedUser.dat");
+        String password = decryptor.decypher("Nothin personnel kid", "EncodedPassword.dat");
+        EmailService emailService = new EmailService(emailAddress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
         emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }

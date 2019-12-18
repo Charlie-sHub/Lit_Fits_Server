@@ -1,4 +1,4 @@
-package litfistserver.service;
+package litfitsserver.service;
 
 import java.io.IOException;
 import java.util.logging.Logger;

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
+import java.util.ResourceBundle;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -29,6 +30,7 @@ public class Decryptor {
      * Returns the decyphered content of a given encrypted file
      *
      * @param userKey the user's key
+     * @param path the path to the file to decypher
      */
     public String decypher(String userKey, String path) throws Exception {
         String decypheredSecret = null;
