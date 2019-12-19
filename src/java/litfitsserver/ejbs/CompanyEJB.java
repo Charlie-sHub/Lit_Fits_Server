@@ -1,15 +1,12 @@
 package litfitsserver.ejbs;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.File;
 import miscellaneous.EmailService;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
@@ -41,11 +38,11 @@ public class CompanyEJB implements LocalCompanyEJB {
 
     @Override
     public void createCompany(Company company) throws CreateException {
-        //FileInputStream keyFile = null;
+        File keyFile = new File("private.key");
+        byte[] privateKey;
         String message = null;
         try {
-            //keyFile = new FileInputStream(".\\private.key");
-            //byte[] privateKey = new byte[keyFile.available()];
+            //privateKey = new byte[keyFile.available()];
             //keyFile.read(privateKey);
             //decrypt password
             if (companyExists(company.getNif())) {
@@ -95,9 +92,8 @@ public class CompanyEJB implements LocalCompanyEJB {
             sendPasswordChangeComfirmationEmail(company);
             //Make a pool for emails
             company.setLastPasswordChange(new Date());
-            company.setPassword(toHash(company.getPassword()));
-            Date date = new Date();
-            company.setLastPasswordChange(date);
+            String password = company.getPassword();
+            company.setPassword(toHash(password));
         }
         em.merge(company);
         em.flush();
@@ -171,7 +167,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         Decryptor decryptor = new Decryptor();
         //Fucking paths how do they work? the path should be relative to decryptor i guess
         String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedAddress.dat");
-        String password = decryptor.decypher("Nothin personnel kid", "EncodedPassword.dat");
+        String password = decryptor.decypher("Nothin personnel kid", "C:\\Users\\2dam.LAPINF02\\Documents\\NetBeansProjects\\Lit_Fits_Server\\src\\java\\miscellaneous\\EncodedPassword.dat");
         EmailService emailService = new EmailService(emailAddress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
         emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
@@ -187,8 +183,8 @@ public class CompanyEJB implements LocalCompanyEJB {
     private void sendPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
         Decryptor decryptor = new Decryptor();
         //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAddress = decryptor.decypher("Nothin personnel kid", "EncodedAddress.dat");
-        String password = decryptor.decypher("Nothin personnel kid", "EncodedPassword.dat");
+        String emailAddress = decryptor.decypher("Nothin personnel kid", "miscellaneous/EncodedAddress.dat");
+        String password = decryptor.decypher("Nothin personnel kid", "miscellaneous/EncodedPassword.dat");
         EmailService emailService = new EmailService(emailAddress, password, null, null);
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
         emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);

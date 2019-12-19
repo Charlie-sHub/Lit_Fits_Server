@@ -1,5 +1,7 @@
 package litfitsserver.ejbs;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import javax.ejb.Local;
 import litfitsserver.entities.Garment;
@@ -89,4 +91,12 @@ public interface LocalGarmentEJB {
      * @return List
      */
     public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException;
+
+    /**
+     * Gets the picture of the garment
+     *
+     * @param id
+     * @return byte[]
+     */
+    public File getImage(Long id) throws IOException, ReadException;
 }

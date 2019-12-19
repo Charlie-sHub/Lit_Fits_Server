@@ -1,5 +1,7 @@
 package litfitsserver.ejbs;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -78,5 +80,11 @@ public class GarmentEJB implements LocalGarmentEJB {
     @Override
     public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException {
         return (List<Garment>) em.createNamedQuery("findGarmentsPromoted").setParameter("promoted", promoted).getResultList();
+    }
+
+    @Override
+    public File getImage(Long id) throws IOException, ReadException {
+        File image = new File(findGarment(id).getImagePath());
+        return image;
     }
 }

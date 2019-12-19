@@ -1,16 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package miscellaneous;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -59,7 +55,8 @@ public class Decryptor {
         byte content[] = null;
         File file = new File(path);
         try {
-            content = Files.readAllBytes(file.toPath());
+            Path absolutePath = Paths.get(file.getAbsolutePath());
+            content = Files.readAllBytes(absolutePath);
         } catch (IOException e) {
             e.printStackTrace();
         }

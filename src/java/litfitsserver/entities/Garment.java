@@ -1,9 +1,9 @@
 package litfitsserver.entities;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -124,6 +125,11 @@ public class Garment implements Serializable {
     @ManyToMany(fetch = EAGER)
     @JoinTable(name = "garment_materials", schema = "TestLitFitsDB")
     private Set<Material> materials;
+    /**
+     * The picture of the garment
+     */
+    @Transient
+    private File picture;
 
     /**
      * Empty constructor
@@ -276,6 +282,14 @@ public class Garment implements Serializable {
 
     public void setMaterials(Set<Material> materials) {
         this.materials = materials;
+    }
+
+    public File getPicture() {
+        return picture;
+    }
+
+    public void setPicture(File picture) {
+        this.picture = picture;
     }
 
     @Override
