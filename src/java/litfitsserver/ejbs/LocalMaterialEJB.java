@@ -19,6 +19,7 @@ public interface LocalMaterialEJB {
      * Gets the amount of materials
      *
      * @return int
+     * @throws litfitsserver.exceptions.ReadException
      */
     int countMaterials() throws ReadException;
 
@@ -26,6 +27,7 @@ public interface LocalMaterialEJB {
      * Inserts a new material in the database
      *
      * @param material
+     * @throws litfitsserver.exceptions.CreateException
      */
     void createMaterial(Material material) throws CreateException;
 
@@ -33,6 +35,7 @@ public interface LocalMaterialEJB {
      * Edits a Material
      *
      * @param material
+     * @throws litfitsserver.exceptions.UpdateException
      */
     void editMaterial(Material material) throws UpdateException;
 
@@ -40,6 +43,7 @@ public interface LocalMaterialEJB {
      * Gets all the materials
      *
      * @return List
+     * @throws litfitsserver.exceptions.ReadException
      */
     List<Material> findAllMaterials() throws ReadException;
 
@@ -48,6 +52,7 @@ public interface LocalMaterialEJB {
      *
      * @param name
      * @return Material
+     * @throws litfitsserver.exceptions.ReadException
      */
     Material findMaterial(String name) throws ReadException;
 
@@ -55,6 +60,8 @@ public interface LocalMaterialEJB {
      * Deletes a material
      *
      * @param material
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws litfitsserver.exceptions.DeleteException
      */
     void removeMaterial(Material material) throws ReadException, DeleteException;
 }
