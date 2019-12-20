@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package miscellaneous;
 
 import java.io.FileOutputStream;
@@ -41,16 +36,17 @@ public class KeyGenerator {
         String emailAddress = scanner.nextLine();
         System.out.println("Enter the password to use: ");
         String password = scanner.nextLine();
-        encrypt(".\\EncodedUser.dat", emailAddress);
-        encrypt(".\\EncodedPassword.dat", password);
+        //Fucking paths how do they work? gotta change them to relative paths
+        encrypt("C:\\Users\\2dam.LAPINF02\\Documents\\NetBeansProjects\\Lit_Fits_Server\\src\\java\\miscellaneous\\EncodedAddress.dat", emailAddress);
+        encrypt("C:\\Users\\2dam.LAPINF02\\Documents\\NetBeansProjects\\Lit_Fits_Server\\src\\java\\miscellaneous\\EncodedPassword.dat", password);
         generateSaveKeyPair();
     }
 
     /**
      * Takes a given user (email address) and password, encrypts them and saves them
      *
+     * @param path
      * @param secret
-     * @param password
      */
     private static void encrypt(String path, String secret) {
         try {
@@ -77,9 +73,9 @@ public class KeyGenerator {
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
             KeyPair keyPair = generator.genKeyPair();
             X509EncodedKeySpec specPublic = new X509EncodedKeySpec(keyPair.getPublic().getEncoded());
-            fileWriter(".\\public.key", specPublic.getEncoded());
+            fileWriter("C:\\Users\\2dam.LAPINF02\\Documents\\NetBeansProjects\\Lit_Fits_Server\\src\\java\\litfitsserver\\ejbs\\public.key", specPublic.getEncoded());
             PKCS8EncodedKeySpec specPrivate = new PKCS8EncodedKeySpec(keyPair.getPrivate().getEncoded());
-            fileWriter(".\\private.key", specPrivate.getEncoded());
+            fileWriter("C:\\Users\\2dam.LAPINF02\\Documents\\NetBeansProjects\\Lit_Fits_Server\\src\\java\\litfitsserver\\ejbs\\private.key", specPrivate.getEncoded());
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(KeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -110,8 +106,8 @@ public class KeyGenerator {
         try {
             out = new FileOutputStream(path);
             out.write(text);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(KeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (null != out) {
                 try {
