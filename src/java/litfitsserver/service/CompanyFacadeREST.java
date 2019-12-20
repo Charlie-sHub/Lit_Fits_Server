@@ -2,7 +2,6 @@ package litfitsserver.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.mail.MessagingException;

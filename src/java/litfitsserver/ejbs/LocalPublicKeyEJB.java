@@ -11,5 +11,12 @@ import javax.ejb.Local;
  */
 @Local
 public interface LocalPublicKeyEJB {
+    /**
+     * Returns the public key in use by the application
+     *
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     byte[] getPublicKey() throws FileNotFoundException, IOException;
 }

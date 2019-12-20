@@ -327,43 +327,7 @@ public class Garment implements Serializable {
         if (this.id != other.id) {
             return false;
         }
-        if (this.available != other.available) {
-            return false;
-        }
-        if (this.promotionRequest != other.promotionRequest) {
-            return false;
-        }
-        if (this.promoted != other.promoted) {
-            return false;
-        }
         if (!Objects.equals(this.barcode, other.barcode)) {
-            return false;
-        }
-        if (!Objects.equals(this.designer, other.designer)) {
-            return false;
-        }
-        if (!Objects.equals(this.imagePath, other.imagePath)) {
-            return false;
-        }
-        if (!Objects.equals(this.price, other.price)) {
-            return false;
-        }
-        if (this.mood != other.mood) {
-            return false;
-        }
-        if (this.bodyPart != other.bodyPart) {
-            return false;
-        }
-        if (this.garmentType != other.garmentType) {
-            return false;
-        }
-        if (!Objects.equals(this.company, other.company)) {
-            return false;
-        }
-        if (!Objects.equals(this.colors, other.colors)) {
-            return false;
-        }
-        if (!Objects.equals(this.materials, other.materials)) {
             return false;
         }
         return true;

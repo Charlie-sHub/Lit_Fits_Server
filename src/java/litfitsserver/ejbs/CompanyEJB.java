@@ -87,7 +87,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         //Decrypt password
         //This method should receive the original password to make sure the company is the one editing its own data
         Company companyInDB = findCompanyByNif(company.getNif());
-        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()).toString());
+        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
         if (!rightPassword) {
             sendPasswordChangeComfirmationEmail(company);
             //Make a pool for emails
@@ -194,7 +194,7 @@ public class CompanyEJB implements LocalCompanyEJB {
      * Checks if a company with a given nif exists
      *
      * @param nif
-     * @return Boolenan exists
+     * @return boolean exists
      */
     private boolean companyExists(String nif) throws ReadException {
         return (long) em.createNamedQuery("companyExists").setParameter("nif", nif).getSingleResult() == 1;

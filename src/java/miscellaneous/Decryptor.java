@@ -15,7 +15,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Has the methods for decyphering the encrypted files used by the server
+ * Has the methods for deciphering the encrypted files used by the server
  *
  * @author Carlos Mendez
  */
@@ -23,10 +23,12 @@ public class Decryptor {
     private static final byte[] SALT = "OwO UwU *.^ u.u!".getBytes();
 
     /**
-     * Returns the decyphered content of a given encrypted file
+     * Returns the deciphered content of a given encrypted file
      *
      * @param userKey the user's key
-     * @param path the path to the file to decypher
+     * @param path the path to the file to decipher
+     * @return String deciphered
+     * @throws java.lang.Exception
      */
     public String decypher(String userKey, String path) throws Exception {
         String decypheredSecret = null;
@@ -58,6 +60,7 @@ public class Decryptor {
             Path absolutePath = Paths.get(file.getAbsolutePath());
             content = Files.readAllBytes(absolutePath);
         } catch (IOException e) {
+            //Print stack trace should be removed
             e.printStackTrace();
         }
         return content;

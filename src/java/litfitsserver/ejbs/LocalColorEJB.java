@@ -19,6 +19,7 @@ public interface LocalColorEJB {
      * Gets the amount of colors
      *
      * @return int
+     * @throws litfitsserver.exceptions.ReadException
      */
     int countColors() throws ReadException;
 
@@ -26,6 +27,7 @@ public interface LocalColorEJB {
      * Inserts a new color in the database
      *
      * @param color
+     * @throws litfitsserver.exceptions.CreateException
      */
     void createColor(Color color) throws CreateException;
 
@@ -33,6 +35,7 @@ public interface LocalColorEJB {
      * Edits a Color
      *
      * @param color
+     * @throws litfitsserver.exceptions.UpdateException
      */
     void editColor(Color color) throws UpdateException;
 
@@ -40,6 +43,7 @@ public interface LocalColorEJB {
      * Gets all the colors
      *
      * @return List
+     * @throws litfitsserver.exceptions.ReadException
      */
     List<Color> findAllColors() throws ReadException;
 
@@ -48,6 +52,7 @@ public interface LocalColorEJB {
      *
      * @param name
      * @return Color
+     * @throws litfitsserver.exceptions.ReadException
      */
     Color findColor(String name) throws ReadException;
 
@@ -55,6 +60,8 @@ public interface LocalColorEJB {
      * Deletes a color
      *
      * @param color
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws litfitsserver.exceptions.DeleteException
      */
     void removeColor(Color color) throws ReadException, DeleteException;
 }

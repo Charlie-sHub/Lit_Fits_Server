@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -220,28 +219,7 @@ public class Company implements Serializable {
         if (!Objects.equals(this.nif, other.nif)) {
             return false;
         }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(this.fullName, other.fullName)) {
-            return false;
-        }
-        if (!Objects.equals(this.phoneNumber, other.phoneNumber)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        if (!Objects.equals(this.lastAccess, other.lastAccess)) {
-            return false;
-        }
-        if (!Objects.equals(this.lastPasswordChange, other.lastPasswordChange)) {
-            return false;
-        }
-        if (!Objects.equals(this.garments, other.garments)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.garments, other.garments);
     }
 
     @Override

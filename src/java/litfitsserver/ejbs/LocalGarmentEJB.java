@@ -21,6 +21,7 @@ public interface LocalGarmentEJB {
      * Counts the amount of garments
      *
      * @return int
+     * @throws litfitsserver.exceptions.ReadException
      */
     int countGarments() throws ReadException;
 
@@ -28,6 +29,7 @@ public interface LocalGarmentEJB {
      * Inserts a Garment into the database
      *
      * @param garment
+     * @throws litfitsserver.exceptions.CreateException
      */
     void createGarment(Garment garment) throws CreateException;
 
@@ -35,6 +37,7 @@ public interface LocalGarmentEJB {
      * Edits a Garment
      *
      * @param garment
+     * @throws litfitsserver.exceptions.UpdateException
      */
     void editGarment(Garment garment) throws UpdateException;
 
@@ -42,6 +45,7 @@ public interface LocalGarmentEJB {
      * Gets all the garments
      *
      * @return
+     * @throws litfitsserver.exceptions.ReadException
      */
     List<Garment> findAllGarments() throws ReadException;
 
@@ -50,6 +54,7 @@ public interface LocalGarmentEJB {
      *
      * @param id
      * @return Garment
+     * @throws litfitsserver.exceptions.ReadException
      */
     Garment findGarment(Long id) throws ReadException;
 
@@ -57,6 +62,8 @@ public interface LocalGarmentEJB {
      * Deletes a garment
      *
      * @param garment
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws litfitsserver.exceptions.DeleteException
      */
     void removeGarment(Garment garment) throws ReadException, DeleteException;
 
@@ -65,6 +72,7 @@ public interface LocalGarmentEJB {
      *
      * @param nif
      * @return List
+     * @throws litfitsserver.exceptions.ReadException
      */
     public List<Garment> findGarmentsByCompany(String nif) throws ReadException;
 
@@ -73,6 +81,7 @@ public interface LocalGarmentEJB {
      *
      * @param requested
      * @return List
+     * @throws litfitsserver.exceptions.ReadException
      */
     public List<Garment> findGarmentsByRequest(Boolean requested) throws ReadException;
 
@@ -81,6 +90,7 @@ public interface LocalGarmentEJB {
      *
      * @param barcode
      * @return Garment
+     * @throws litfitsserver.exceptions.ReadException
      */
     public Garment findGarmentByBarcode(String barcode) throws ReadException;
 
@@ -89,6 +99,7 @@ public interface LocalGarmentEJB {
      *
      * @param promoted
      * @return List
+     * @throws litfitsserver.exceptions.ReadException
      */
     public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException;
 
@@ -97,6 +108,8 @@ public interface LocalGarmentEJB {
      *
      * @param id
      * @return byte[]
+     * @throws java.io.IOException
+     * @throws litfitsserver.exceptions.ReadException
      */
     public File getImage(Long id) throws IOException, ReadException;
 }
