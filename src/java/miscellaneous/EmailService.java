@@ -1,10 +1,8 @@
 package miscellaneous;
 
+import java.time.LocalDate;
 import java.util.Properties;
 import java.util.regex.Pattern;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -16,10 +14,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import litfitsserver.entities.Company;
 
 /**
  * Builds an Email Service capable of sending normal email to a given SMTP Host. Currently <b>send()</b> can only works
  * with text.
+ *
+ * @author Asier Vila & Carlos Mendez
  */
 public class EmailService {
     private String user = "lit_fits_no_reply@outlook.com";
@@ -89,12 +90,6 @@ public class EmailService {
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(text, "text/html");
         multipart.addBodyPart(mimeBodyPart);
-        /*MimeBodyPart messageBodyPart = new MimeBodyPart();
-        String filename = "Lit Fits Logo";
-        DataSource source = new FileDataSource(filename);
-        messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(filename);
-        multipart.addBodyPart(messageBodyPart);*/
         message.setContent(multipart);
         Transport.send(message);
     }
@@ -112,5 +107,28 @@ public class EmailService {
             return false;
         }
         return pattern.matcher(mail).matches();
+    }
+
+    /**
+     * Sends a confirmation email to the address associated with the company
+     *
+     * @param company
+     * @throws MessagingException
+     */
+    public void sendCompanyPasswordChangeComfirmationEmail(Company company) throws MessagingException, Exception {
+        String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
+        sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
+    }
+
+    /**
+     * Sends an email notifying the password has been changed to a new random one, used when users forget their
+     * passwords
+     *
+     * @param company
+     * @throws MessagingException
+     */
+    public void sendCompanyPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
+        String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
+        sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }
 }

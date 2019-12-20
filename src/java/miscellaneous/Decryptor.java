@@ -1,13 +1,23 @@
 package miscellaneous;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.ObjectInputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -30,7 +40,7 @@ public class Decryptor {
      * @return String deciphered
      * @throws java.lang.Exception
      */
-    public String decypher(String userKey, String path) throws Exception {
+    public String decypherAES(String userKey, String path) throws Exception {
         String decypheredSecret = null;
         byte[] fileContent = fileReader(path);
         KeySpec keySpec = null;
@@ -48,6 +58,26 @@ public class Decryptor {
     }
 
     /**
+     * Returns the decyphered content of a string
+     *
+     * @param secret
+     * @return
+     */
+    public String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        String message = null;
+        byte secretBytes[] = null;
+        byte privateKeyFile[] = fileReader("private.key");
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyFile);
+        PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        secretBytes = cipher.doFinal(secret.getBytes());
+        message = secretBytes.toString();
+        return message;
+    }
+
+    /**
      * Returns the content of a given file
      *
      * @param path
@@ -55,13 +85,27 @@ public class Decryptor {
      */
     private byte[] fileReader(String path) {
         byte content[] = null;
-        File file = new File(path);
+        //File file = new File(path);
+        ObjectInputStream in = null;
         try {
-            Path absolutePath = Paths.get(file.getAbsolutePath());
-            content = Files.readAllBytes(absolutePath);
-        } catch (IOException e) {
+            in = new ObjectInputStream(new FileInputStream(path));
+            content = (byte[]) in.readObject();
+            //Path absolutePath = Paths.get(file.getAbsolutePath());
+            //content = Files.readAllBytes(absolutePath);
+        } catch (IOException ex) {
             //Print stack trace should be removed
-            e.printStackTrace();
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (null != in) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         return content;
     }

@@ -89,7 +89,7 @@ public interface LocalCompanyEJB {
      * @throws ReadException
      * @throws NotAuthorizedException
      */
-    public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException;
+    public Company login(Company company) throws ReadException, NotAuthorizedException, Exception;
 
     /**
      * Method to reestablish the password of a given company ( nif)
