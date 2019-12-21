@@ -2,6 +2,7 @@ package litfitsserver.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.mail.MessagingException;
@@ -112,11 +113,12 @@ public class CompanyFacadeREST {
         LOG.info("Login of a company attempted");
         try {
             company = companyEJB.login(company);
-        } catch (ReadException | NoSuchAlgorithmException ex) {
+        } catch (ReadException | NoSuchAlgorithmException | NotAuthorizedException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
-        } catch (NotAuthorizedException ex) {
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
         return company;
     }

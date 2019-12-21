@@ -5,6 +5,7 @@
  */
 package miscellaneous;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -50,10 +51,10 @@ public class Encryptor {
      */
     private byte[] fileReader(String path) {
         byte content[] = null;
-        //File file = new File(path);
+        File file = new File(path);
         ObjectInputStream in = null;
         try {
-            in = new ObjectInputStream(new FileInputStream(path));
+            in = new ObjectInputStream(new FileInputStream(file));
             content = (byte[]) in.readObject();
             //Path absolutePath = Paths.get(file.getAbsolutePath());
             //content = Files.readAllBytes(absolutePath);

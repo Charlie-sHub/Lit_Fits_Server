@@ -54,7 +54,6 @@ public class ColorFacadeREST {
     /**
      * Edits the color
      *
-     * @param name
      * @param color
      */
     @PUT
@@ -134,12 +133,12 @@ public class ColorFacadeREST {
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
+    public String count() {
         String amount = null;
         try {
             LOG.info("Counting the Colors");
             amount = String.valueOf(colorEJB.countColors());
-        } catch (Exception ex) {
+        } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

@@ -54,7 +54,6 @@ public class MaterialFacadeREST {
     /**
      * Edits the material
      *
-     * @param name
      * @param material
      */
     @PUT
@@ -139,7 +138,7 @@ public class MaterialFacadeREST {
         try {
             LOG.info("Counting the Materials");
             amount = String.valueOf(materialEJB.countMaterials());
-        } catch (Exception ex) {
+        } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
