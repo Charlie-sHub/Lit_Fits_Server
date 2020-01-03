@@ -87,4 +87,5 @@ public class GarmentEJB implements LocalGarmentEJB {
         File image = new File(findGarment(id).getImagePath());
         return image;
     }
+    // Still neds to be able to take and save an image
 }
