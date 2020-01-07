@@ -7,6 +7,7 @@ package litfitsserver.ejbs;
 
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,10 +21,10 @@ import litfitsserver.entities.User;
  * The EJB for the User on the app
  * @author Asier Vila Dominguez
  */
-@EJB
-public abstract class UserEJB implements LocalUserEJB{
+@Stateless
+public class UserEJB implements LocalUserEJB{
 
-    @PersistenceContext(unitName = "Lit_Fits_ServerPU")
+    @PersistenceContext(unitName = "Test_Server2PU")
     private EntityManager em;
     
     @Override

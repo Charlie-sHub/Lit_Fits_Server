@@ -21,14 +21,14 @@ import javax.ws.rs.core.MediaType;
 import litfitsserver.entities.User;
 
 /**
- *
- * @author 2dam
+ * RESTful class for User entity
+ * @author Asier
  */
 @Stateless
 @Path("litfitsserver.entities.user")
 public class UserFacadeREST extends AbstractFacade<User> {
 
-    @PersistenceContext(unitName = "Lit_Fits_ServerPU")
+    @PersistenceContext(unitName = "Test_Server2PU")
     private EntityManager em;
 
     public UserFacadeREST () {

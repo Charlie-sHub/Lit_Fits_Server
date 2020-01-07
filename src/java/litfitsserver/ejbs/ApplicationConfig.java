@@ -5,8 +5,6 @@
  */
 package litfitsserver.ejbs;
 
-import litfitsserver.entities.*;
-import service.*;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
