@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 })
 @Entity
-@Table(name = "company", schema = "Lit_Fits_DB")
+@Table(name = "company", schema = "testreto2")
 @XmlRootElement
 public class Company implements Serializable {
     private static final long serialVersionUID = 1L;

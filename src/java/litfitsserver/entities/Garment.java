@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 })
 @Entity
-@Table(name = "garment", schema = "Lit_Fits_DB")
+@Table(name = "garment", schema = "testreto2")
 @XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -117,13 +117,13 @@ public class Garment implements Serializable {
      * What colors are in the garment
      */
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "garment_colors", schema = "TestLitFitsDB")
+    @JoinTable(name = "garment_colors", schema = "testreto2")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "garment_materials", schema = "TestLitFitsDB")
+    @JoinTable(name = "garment_materials", schema = "testreto2")
     private Set<Material> materials;
 
     /**

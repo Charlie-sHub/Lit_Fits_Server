@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Charlie
  */
 @Entity
-@Table(name = "material", schema = "Lit_Fits_DB")
+@Table(name = "material", schema = "testreto2")
 @XmlRootElement
 public class Material implements Serializable {
     private static final long serialVersionUID = 1L;

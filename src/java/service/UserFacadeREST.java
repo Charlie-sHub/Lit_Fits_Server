@@ -6,12 +6,8 @@
 package service;
 
 import java.util.List;
-//import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-//import javax.ejb.Stateless;
-//import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,31 +23,28 @@ import litfitsserver.ejbs.LocalUserEJB;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
-//import litfitsserver.exceptions.UpdateException;
 
 /**
  * RESTful class for User entity
+ * 
  * @author Asier
  */
-//@Stateless
 @Path("litfitsserver.entities.user")
 public class UserFacadeREST {
-
-    //@PersistenceContext(unitName = "Test_Server2PU")
-    //private EntityManager em;
-
-    //public UserFacadeREST () {
-    //    super(User.class);
-    //}
     
     @EJB
     private LocalUserEJB userEJB;
     private static final Logger LOG = Logger.getLogger(UserFacadeREST.class.getName());
 
+    /**
+     * Inserts a new user in the database
+     * 
+     * @param user The user that will be inserted, with all the data
+     */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
-    public void createUser (User user) {
-        //super.create(entity);
+    public void createUser(User user) {
+        
         try {
             userEJB.createUser(user);
             
@@ -61,11 +54,17 @@ public class UserFacadeREST {
         }
     }
 
+    /**
+     *  Edits the data of a registered user
+     * 
+     * @param id The username of the user that will be modified
+     * @param user An User object that contains all the data that will be updated
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void editUser (@PathParam("id") String id, User user) {
-        //super.edit(entity);
+    public void editUser(@PathParam("id") String id, User user) {
+
         try {
             userEJB.createUser(user);
             
@@ -75,10 +74,15 @@ public class UserFacadeREST {
         }
     }
 
+    /**
+     * Removes a user from the database
+     * 
+     * @param user The user that will be deleted from the database
+     */
     @DELETE
     @Path("{id}")
-    public void removeUser (@PathParam("id") User user) {
-        //super.remove(super.find(id));
+    public void removeUser(@PathParam("id") User user) {
+
         try {
             userEJB.removeUser(user);
             
@@ -88,11 +92,17 @@ public class UserFacadeREST {
         }
     }
 
+    /**
+     * This method gets the data of a registered user
+     * 
+     * @param id The unique id for the user
+     * @return The user with all the data
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findUser (@PathParam("id") String id) {
-        //return super.find(id);
+    public User findUser(@PathParam("id") String id) {
+
         try {
             return userEJB.findUser(id);
             
@@ -102,10 +112,15 @@ public class UserFacadeREST {
         }
     }
 
+    /**
+     * This method returns a list with all the registered users
+     * 
+     * @return A List with the registered users
+     */
     @GET
     @Produces({MediaType.APPLICATION_XML})
-    public List<User> findAllUser () {
-        //return super.findAll();
+    public List<User> findAllUser() {
+
         try {
             return userEJB.findAllUsers();
             
@@ -115,25 +130,16 @@ public class UserFacadeREST {
         }
     }
 
-    //@GET
-    //@Path("{from}/{to}")
-    //@Produces({MediaType.APPLICATION_XML})
-    //public List<User> findRangeUser (@PathParam("from") Integer from, @PathParam("to") Integer to) {
-    //    //return super.findRange(new int[]{from, to});
-    //    try {
-    //        userEJB.findRangeUser();
-    //        
-    //    } catch (ReadException readException) {
-    //        LOG.severe(readException.getMessage());
-    //        throw new InternalServerErrorException(readException);
-    //    }
-    //}
-
+    /**
+     * Returns the amount of registered users
+     * 
+     * @return An integer with the number of users
+     */
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
-    public int countRESTUser () {
-        //return String.valueOf(super.count());
+    public int countRESTUser() {
+        
         try {
             return userEJB.countUsers();
             
@@ -142,8 +148,4 @@ public class UserFacadeREST {
             throw new InternalServerErrorException(readException);
         }
     }
-
-    //protected EntityManager getEntityManager() {
-    //    return em;
-    //}
 }

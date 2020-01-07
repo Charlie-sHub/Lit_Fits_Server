@@ -32,27 +32,29 @@ import javax.xml.bind.annotation.XmlTransient;
     
     @NamedQuery (
         name = "getUserGarments",
-        query = "select * from Garments join User_Garments "
-                + "where Garments.barcode == User_Garments.barcode "
-                + "&& User_Garments.username =:username"
+        query = "SELECT barcode, designer, garmentType, "
+                + "bodyPart, mood, available, promoted, promotionRequest "
+                + "FROM Garment join user_garments "
+                + "WHERE Garment.barcode == user_garment.barcode "
+                + "AND user_garments.username = :username"
     ),
     
     @NamedQuery (
         name = "getUserLikedColors",
-        query = "select name from Users_Colors "
-                + "where Users_Colors.username == :username"
+        query = "SELECT name FROM user_colors "
+                + "WHERE user_colors.username = :username"
     ),
 
     @NamedQuery (
         name = "getUserLikedMaterials",
-        query = "select name from Users_Materials "
-                + "where Users_Materials.username == :username"
+        query = "SELECT name FROM user_materials "
+                + "WHERE user_materials.username = :username"
     )
 
 })
 
 @Entity
-@Table(name = "users", schema = "Lit_Fits_DB")
+@Table(name = "users", schema = "testreto2")
 @XmlRootElement
 public class User implements Serializable {
     
