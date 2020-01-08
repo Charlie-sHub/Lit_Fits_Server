@@ -18,7 +18,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.entities.FashionExpert;
-import litfitsserver.ejbs.ExpertManagerLocal;
+import litfitsserver.ejbs.LocalExpertEJB;
 
 /**
  *
@@ -29,7 +29,7 @@ import litfitsserver.ejbs.ExpertManagerLocal;
 public class FashionExpertFacadeREST  {
 
     @EJB
-    private ExpertManagerLocal ejb;
+    private LocalExpertEJB ejb;
     
     @POST
     @Consumes({MediaType.APPLICATION_XML})
@@ -50,14 +50,14 @@ public class FashionExpertFacadeREST  {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") String id) {
-       ejb.deleteExpert(ejb.findExpert(id));
+       ejb.deleteExpert(ejb.findExpertById(id));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public FashionExpert find(@PathParam("id") String id) {
-        return ejb.findExpert(id);
+        return ejb.findExpertById(id);
     }
 
     @GET
