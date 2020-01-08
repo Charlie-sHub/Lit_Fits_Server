@@ -1,6 +1,6 @@
 package litfitsserver.ejbs;
 
-import java.util.List;
+import java.util.Set;
 import javax.ejb.Local;
 import litfitsserver.entities.Color;
 import litfitsserver.entities.Garment;
@@ -45,9 +45,9 @@ public interface LocalUserEJB {
     
     /**
      * Gets the data of all the users in the database.
-     * @return A list with all the existing users.
+     * @return A set with all the existing users.
      */
-    public List<User> findAllUsers() throws ReadException;
+    public Set<User> findAllUsers() throws ReadException;
     
     /**
      * Gets the amount of users saved on the database.
@@ -58,21 +58,21 @@ public interface LocalUserEJB {
     /**
      * Gets all the garments that the user saved on his "closet".
      * @param username The username that will be used to filter.
-     * @return A list with all the garments that the user has.
+     * @return A set with all the garments that the user has.
      */
-    public List<Garment> getUserGarments (String username) throws ReadException;
+    //public Set<Garment> getUserGarments (String username) throws ReadException;
     
     /**
      * Gets all the colors that the user likes.
      * @param username The username that will be used to filter.
-     * @return A list with all the colors that the user likes.
+     * @return A set with all the colors that the user likes.
      */
-    public List<Color> getUserLikedColors (String username) throws ReadException;
+    public Set<Color> getUserLikedColors (String username) throws ReadException;
     
     /**
      * Gets all the materials that the user likes.
      * @param username The username that will be used to filter.
-     * @return A list with all the materials that the user likes.
+     * @return A set with all the materials that the user likes.
      */
-    public List<Material> getUserLikedMaterials (String username) throws ReadException;
+    public Set<Material> getUserLikedMaterials (String username) throws ReadException;
 }

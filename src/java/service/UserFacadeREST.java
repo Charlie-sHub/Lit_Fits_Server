@@ -5,7 +5,7 @@
  */
 package service;
 
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -20,6 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.entities.User;
 import litfitsserver.ejbs.LocalUserEJB;
+import litfitsserver.entities.Color;
+import litfitsserver.entities.Material;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
@@ -119,7 +121,7 @@ public class UserFacadeREST {
      */
     @GET
     @Produces({MediaType.APPLICATION_XML})
-    public List<User> findAllUser() {
+    public Set<User> findAllUser() {
 
         try {
             return userEJB.findAllUsers();
@@ -147,5 +149,39 @@ public class UserFacadeREST {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
         }
+    }
+    
+    @GET
+    @Path("color/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Color> getUserLikedColors(@PathParam("username") String username) {
+        
+        Set<Color> colors = null;
+        
+        try {
+            
+            colors = userEJB.getUserLikedColors(username);
+        } catch (ReadException readException) {
+            LOG.severe(readException.getMessage());
+            throw new InternalServerErrorException(readException);
+        }
+        return colors;
+    }
+    
+    @GET
+    @Path("material/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Material> getUserLikedMaterials(@PathParam("username") String username) {
+        
+        Set<Material> materials = null;
+        
+        try {
+            
+            materials = userEJB.getUserLikedMaterials(username);
+        } catch (ReadException readException) {
+            LOG.severe(readException.getMessage());
+            throw new InternalServerErrorException(readException);
+        }
+        return materials;
     }
 }

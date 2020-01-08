@@ -5,7 +5,7 @@
  */
 package litfitsserver.ejbs;
 
-import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,7 +13,6 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import litfitsserver.entities.Color;
-import litfitsserver.entities.Garment;
 import litfitsserver.entities.Material;
 import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
@@ -39,6 +38,7 @@ public class UserEJB implements LocalUserEJB{
     @Override
     public void editUser(User user) throws UpdateException {
         em.merge(user);
+        em.flush();
     }
 
     @Override
@@ -52,10 +52,10 @@ public class UserEJB implements LocalUserEJB{
     }
 
     @Override
-    public List<User> findAllUsers() throws ReadException {
+    public Set<User> findAllUsers() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         cq.select(cq.from(User.class));
-        return (List<User>) em.createQuery(cq).getResultList();
+        return (Set<User>) em.createQuery(cq).getResultList();
     }
 
     @Override
@@ -67,18 +67,18 @@ public class UserEJB implements LocalUserEJB{
         return ((Long) q.getSingleResult()).intValue();
     }
 
+    //@Override
+    //public Set<Garment> getUserGarments(String username) throws ReadException {
+    //    return (Set<Garment>) em.createNamedQuery("getUserGarments").setParameter("username", username).getResultList();
+    //}
+
     @Override
-    public List<Garment> getUserGarments(String username) throws ReadException {
-        return (List<Garment>) em.createNamedQuery("getUserGarments").setParameter("username", username).getResultList();
+    public Set<Color> getUserLikedColors(String username) throws ReadException {
+        return (Set<Color>) em.createNamedQuery("getUserLikedColors").setParameter("username", username).getResultList();
     }
 
     @Override
-    public List<Color> getUserLikedColors(String username) throws ReadException {
-        return (List<Color>) em.createNamedQuery("getUserLikedColors").setParameter("username", username).getResultList();
-    }
-
-    @Override
-    public List<Material> getUserLikedMaterials(String username) throws ReadException {
-        return (List<Material>) em.createNamedQuery("getUserLikedMaterials").setParameter("username", username).getResultList();
+    public Set<Material> getUserLikedMaterials(String username) throws ReadException {
+        return (Set<Material>) em.createNamedQuery("getUserLikedMaterials").setParameter("username", username).getResultList();
     }
 }

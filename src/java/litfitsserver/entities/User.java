@@ -8,9 +8,10 @@ package litfitsserver.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -25,32 +26,27 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * The class that will be used to manage all the users data.
- * @author Asier Vila Dominguez
+ * @author Asier 
  */
 
 @NamedQueries ({
     
-    @NamedQuery (
-        name = "getUserGarments",
-        query = "SELECT barcode, designer, garmentType, "
-                + "bodyPart, mood, available, promoted, promotionRequest "
-                + "FROM Garment join user_garments "
-                + "WHERE Garment.barcode == user_garment.barcode "
-                + "AND user_garments.username = :username"
-    ),
+    //@NamedQuery (
+    //   name = "getUserGarments",
+    //    query = "SELECT col FROM Color col WHERE col.name=:username"
+    //)
+    //,
     
     @NamedQuery (
         name = "getUserLikedColors",
-        query = "SELECT name FROM user_colors "
-                + "WHERE user_colors.username = :username"
-    ),
+        query = "SELECT col FROM Color col WHERE col.name=:username"
+    )
+    ,
 
     @NamedQuery (
         name = "getUserLikedMaterials",
-        query = "SELECT name FROM user_materials "
-                + "WHERE user_materials.username = :username"
+        query = "SELECT mat FROM Material mat WHERE mat.name=:username"
     )
-
 })
 
 @Entity
@@ -61,32 +57,49 @@ public class User implements Serializable {
     @Id
     protected String username;
     protected String fullName;
+    @NotNull
     protected String password;
     protected String phoneNumber;
+    @NotNull
     protected String email;
     @Temporal(TemporalType.DATE)
     protected Date lastAccess;
     @Temporal(TemporalType.DATE)
     protected Date lastPasswordChange;
     protected UserType type;
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
     @JoinTable(name = "user_colors", schema = "testreto2")
-    protected List<Color> likedColors;
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Color> likedColors;
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
     @JoinTable(name = "user_materials", schema = "testreto2")
-    protected List<Material> likedMaterials;
-    @NotNull
-    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Material> likedMaterials;
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
     @JoinTable(name = "user_garments", schema = "testreto2")
-    private List<Garment> garments;
+    private Set<Garment> garments;
     
     /**
      * Empty constructor
      */
     public User () {
         
+    }
+    
+    /**
+     * Full constructor
+     */
+    public User (String username, String fullName, String password, String phoneNumber,
+            String email, Date lastAccess, Date lastPasswordChange, UserType type) {
+        this.username = username;
+        this.fullName = fullName;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.lastAccess = lastAccess;
+        this.lastPasswordChange = lastPasswordChange;
+        this.type = type;
     }
     
     /**
@@ -218,19 +231,19 @@ public class User implements Serializable {
     }
 
     /**
-     * Gets the List of colors that the user likes.
-     * @return The List with all the liked colors.
+     * Gets the Set of colors that the user likes.
+     * @return The Set with all the liked colors.
      */
     @XmlTransient
-    public List<Color> getLikedColors () {
+    public Set<Color> getLikedColors () {
         return likedColors;
     }
 
     /**
      * Replaces all the colors that the user likes with the received ones.
-     * @param likedColors The colors List that will be saved for the user.
+     * @param likedColors The colors Set that will be saved for the user.
      */
-    public void setLikedColors (List<Color> likedColors) {
+    public void setLikedColors (Set<Color> likedColors) {
         this.likedColors = likedColors;
     }
 
@@ -260,19 +273,19 @@ public class User implements Serializable {
     }
     
     /**
-     * Gets the List of materials that the user likes.
-     * @return The List with all the liked materials.
+     * Gets the Set of materials that the user likes.
+     * @return The Set with all the liked materials.
      */
     @XmlTransient
-    public List<Material> getLikedMaterials () {
+    public Set<Material> getLikedMaterials () {
         return likedMaterials;
     }
 
     /**
      * Replaces all the materials that the user likes with the received ones.
-     * @param likedMaterials The materials List that will be saved for the user.
+     * @param likedMaterials The materials Set that will be saved for the user.
      */
-    public void setLikedMaterials (List<Material> likedMaterials) {
+    public void setLikedMaterials (Set<Material> likedMaterials) {
         this.likedMaterials = likedMaterials;
     }
     
@@ -280,7 +293,7 @@ public class User implements Serializable {
      * This method is created <u>to avoid duplicates</u> on likedMaterials.
      * Instead of <i>user.getLikedMaterials().add(material)</i>, use this 
      * method. This will avoid errors on the server.
-     * @param material The material that sould be added to the List.
+     * @param material The material that sould be added to the Set.
      */
     public void addLikedMaterial (Material material) {
         
@@ -303,10 +316,10 @@ public class User implements Serializable {
 
     /**
      * Gets the garments that the user has saved.
-     * @return A List with all the garments.
+     * @return A Set with all the garments.
      */
     @XmlTransient
-    public List<Garment> getGarments () {
+    public Set<Garment> getGarments () {
         return garments;
     }
 
@@ -314,7 +327,7 @@ public class User implements Serializable {
      * Replaces the users garments with the received set.
      * @param garments The garments that will be saved for this user.
      */
-    public void setGarments (List<Garment> garments) {
+    public void setGarments (Set<Garment> garments) {
         this.garments = garments;
     }
     
