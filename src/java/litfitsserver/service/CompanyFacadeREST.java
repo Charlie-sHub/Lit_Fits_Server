@@ -1,4 +1,4 @@
-package service;
+package litfitsserver.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -50,12 +50,13 @@ public class CompanyFacadeREST {
             companyEJB.createCompany(company);
         } catch (CreateException ex) {
             LOG.severe(ex.getMessage());
+            ex.printStackTrace();
             throw new InternalServerErrorException(ex);
         }
     }
 
     /**
-     * Edits a Company
+     * Edits a Company including the change of password
      *
      * @param id
      * @param company
@@ -68,6 +69,12 @@ public class CompanyFacadeREST {
             companyEJB.editCompany(company);
         } catch (UpdateException | NoSuchAlgorithmException | MessagingException | ReadException ex) {
             LOG.severe(ex.getMessage());
+            //Don't forget to delete
+            ex.printStackTrace();
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            //Don't forget to delete
             ex.printStackTrace();
             throw new InternalServerErrorException(ex);
         }
@@ -105,11 +112,12 @@ public class CompanyFacadeREST {
         LOG.info("Login of a company attempted");
         try {
             company = companyEJB.login(company);
-        } catch (ReadException | NoSuchAlgorithmException ex) {
+        } catch (ReadException | NoSuchAlgorithmException | NotAuthorizedException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
-        } catch (NotAuthorizedException ex) {
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
         return company;
     }
@@ -193,5 +201,25 @@ public class CompanyFacadeREST {
             throw new InternalServerErrorException(ex);
         }
         return company;
+    }
+
+    /**
+     * Gets a given nif and replaces the password of the associated company with a nre random one
+     *
+     * @param nif
+     */
+    @GET
+    @Path("passwordReestablishment/{nif}")
+    public void reestablishPassword(@PathParam("nif") String nif) {
+        LOG.info("Reestablishing a password");
+        try {
+            companyEJB.reestablishPassword(nif);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 }

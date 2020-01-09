@@ -1,5 +1,7 @@
-package service;
+package litfitsserver.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -13,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import litfitsserver.ejbs.LocalGarmentEJB;
 import litfitsserver.entities.Garment;
 import litfitsserver.exceptions.CreateException;
@@ -218,5 +221,26 @@ public class GarmentFacadeREST {
             throw new InternalServerErrorException(ex);
         }
         return garments;
+    }
+
+    /**
+     * Gets the picture of the garment
+     *
+     * @param id
+     * @return Response
+     */
+    @GET
+    @Path("picture/{id}")
+    @Produces("image/jpg")
+    public Response getImage(@PathParam("id") Long id) {
+        File image = null;
+        try {
+            LOG.info("Retreiving a garment's picture");
+            image = garmentEJB.getImage(id);
+        } catch (IOException | ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return Response.ok(image, "image/jpg").header("Inline", "filename=\"" + image.getName() + "\"").build();
     }
 }

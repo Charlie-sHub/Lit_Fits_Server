@@ -30,22 +30,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name="fashionExpert", schema="Lit_Fits_DB")
 @NamedQueries ({
     @NamedQuery(
-        name="findAllExperts",
-        query = "SELECT e FROM FashionExpert e ORDER BY e.id DESC"
-
+        name="expertExists",
+        query = "SELECT count(*) FROM fashionexpert exp WHERE exp.username =: username"
     ),
     @NamedQuery(
-        name = "getExpertRecommendedColors",
-        query = "SELECT name from expert_colors "
-                + "where expert_colors.username == :username"
-    ),
-    
-    @NamedQuery(
-        name = "getExpertRecommendedMaterials",
-        query = "SELECT name from expert_materials "
-                + "where expert_materials.username == :username"
-    ),
-    
+        name = "findExpertById",
+        query = "SELECT exp FROM fashionexpert exp WHERE exp.username=:username"
+    )
     
 })
 @XmlRootElement

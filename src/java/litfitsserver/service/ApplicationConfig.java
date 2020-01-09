@@ -1,12 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package service;
+package litfitsserver.service;
 
-import litfitsserver.entities.*;
-import service.*;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
@@ -29,10 +22,11 @@ public class ApplicationConfig extends Application {
      * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(service.ColorFacadeREST.class);
-        resources.add(service.CompanyFacadeREST.class);
-        resources.add(service.FashionExpertFacadeREST.class);
-        resources.add(service.GarmentFacadeREST.class);
-        resources.add(service.MaterialFacadeREST.class);
+        resources.add(litfitsserver.service.ColorFacadeREST.class);
+        resources.add(litfitsserver.service.CompanyFacadeREST.class);
+        resources.add(litfitsserver.service.FashionExpertFacadeREST.class);
+        resources.add(litfitsserver.service.GarmentFacadeREST.class);
+        resources.add(litfitsserver.service.MaterialFacadeREST.class);
+        resources.add(litfitsserver.service.PublicKeyFacadeREST.class);
     }
 }

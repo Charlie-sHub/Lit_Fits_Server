@@ -1,10 +1,15 @@
 package litfitsserver.ejbs;
 
+import java.security.InvalidKeyException;
 import miscellaneous.EmailService;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.Date;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
@@ -19,6 +24,8 @@ import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
+import miscellaneous.Decryptor;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * EJB for Companies
@@ -34,56 +41,60 @@ public class CompanyEJB implements LocalCompanyEJB {
 
     @Override
     public void createCompany(Company company) throws CreateException {
+        Decryptor decryptor = new Decryptor();
         try {
-            String password = company.getPassword();
-            company.setPassword(toHash(password));
-            em.persist(company);
+            company.setPassword(decryptor.decypherRSA(company.getPassword()));
+            if (companyExists(company.getNif())) {
+                throw new Exception("NIF already exists in the database");
+            } else {
+                String password = company.getPassword();
+                company.setPassword(toHash(password));
+                company.setLastAccess(new Date());
+                company.setLastPasswordChange(new Date());
+                em.persist(company);
+            }
         } catch (Exception ex) {
             throw new CreateException(ex.getMessage());
         }
     }
 
-    private String toHash(String password) throws NoSuchAlgorithmException {
-        String passwordHash;
-        MessageDigest messageDigest;
-        messageDigest = MessageDigest.getInstance("SHA");
-        byte dataBytes[] = password.getBytes();
-        messageDigest.update(dataBytes);
-        byte hash[] = messageDigest.digest();
-        passwordHash = new String(hash);
-        return passwordHash;
-    }
-
     @Override
-    public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException {
+    public Company login(Company company) throws ReadException, NotAuthorizedException, Exception {
         Company companyInDB = findCompanyByNif(company.getNif());
-        //Decrypt password and set it again for the company
-        boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
-        if (!rightPassword) {
-            throw new NotAuthorizedException("Wrong password");
+        try {
+            Decryptor decryptor = new Decryptor();
+            company.setPassword(decryptor.decypherRSA(company.getPassword()));
+            boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
+            if (!rightPassword) {
+                throw new NotAuthorizedException("Wrong password");
+            }
+            companyInDB.setLastAccess(new Date());
+            em.merge(companyInDB);
+            companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            throw new Exception(ex.getMessage());
         }
-        companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
+        //return a encoded password or just use the client's?
         return companyInDB;
     }
 
     @Override
-    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException {
-        //Decrypt password
+    public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception {
+        //This method should receive the original password to make sure the company is the one editing its own data
+        Decryptor decryptor = new Decryptor();
+        company.setPassword(decryptor.decypherRSA(company.getPassword()));
         Company companyInDB = findCompanyByNif(company.getNif());
         boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
         if (!rightPassword) {
-            sendPasswordComfirmationEmail(company);
-            String passwordHash = toHash(company.getPassword());
-            company.setPassword(passwordHash);
+            EmailService emailService = newEmailService(decryptor);
+            emailService.sendCompanyPasswordChangeComfirmationEmail(company);
+            //Make a pool for emails
+            company.setLastPasswordChange(new Date());
+            String password = company.getPassword();
+            company.setPassword(toHash(password));
         }
         em.merge(company);
         em.flush();
-    }
-
-    private void sendPasswordComfirmationEmail(Company company) throws MessagingException {
-        EmailService emailService = new EmailService("lit_fits_no_reply@outlook.com", "litfits69", null, null);
-        String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now();
-        emailService.sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }
 
     @Override
@@ -115,5 +126,57 @@ public class CompanyEJB implements LocalCompanyEJB {
     @Override
     public Company findCompanyByNif(String nif) throws ReadException {
         return (Company) em.createNamedQuery("findCompanyByNif").setParameter("nif", nif).getSingleResult();
+    }
+
+    @Override
+    public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception {
+        Company company = findCompanyByNif(nif);
+        String generatedString = RandomStringUtils.randomAlphabetic(10);
+        company.setPassword(generatedString);
+        Decryptor decryptor = new Decryptor();
+        EmailService emailService = newEmailService(decryptor);
+        emailService.sendCompanyPasswordReestablishmentEmail(company);
+        em.merge(company);
+    }
+    /**
+     * Creates a new email service object with the address and password from their respective files
+     * @param decryptor
+     * @return
+     * @throws Exception 
+     */
+    private EmailService newEmailService(Decryptor decryptor) throws Exception {
+        //Fucking paths how do they work? the path should be relative to decryptor i guess
+        String emailAddress = decryptor.decypherAES("Nothin personnel kid", "EncodedAddress.dat");
+        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", "EncodedPassword.dat");
+        EmailService emailService = new EmailService(emailAddress, emailAddressPassword, null, null);
+        return emailService;
+    }
+
+    /**
+     * Creates and returns the hash value of the given password
+     *
+     * @param password
+     * @return String hash of the password
+     * @throws NoSuchAlgorithmException
+     */
+    private String toHash(String password) throws NoSuchAlgorithmException {
+        String passwordHash;
+        MessageDigest messageDigest;
+        messageDigest = MessageDigest.getInstance("SHA");
+        byte dataBytes[] = password.getBytes();
+        messageDigest.update(dataBytes);
+        byte hash[] = messageDigest.digest();
+        passwordHash = new String(hash);
+        return passwordHash;
+    }
+
+    /**
+     * Checks if a company with a given nif exists
+     *
+     * @param nif
+     * @return boolean exists
+     */
+    private boolean companyExists(String nif) throws ReadException {
+        return (long) em.createNamedQuery("companyExists").setParameter("nif", nif).getSingleResult() == 1;
     }
 }

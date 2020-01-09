@@ -22,6 +22,7 @@ public interface LocalCompanyEJB {
      * Gets the amount of companies
      *
      * @return int
+     * @throws litfitsserver.exceptions.ReadException
      */
     int countCompanies() throws ReadException;
 
@@ -29,6 +30,7 @@ public interface LocalCompanyEJB {
      * Inserts a new company in the database
      *
      * @param company
+     * @throws litfitsserver.exceptions.CreateException
      */
     void createCompany(Company company) throws CreateException;
 
@@ -36,13 +38,18 @@ public interface LocalCompanyEJB {
      * Edits a Company
      *
      * @param company
+     * @throws litfitsserver.exceptions.UpdateException
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws javax.mail.MessagingException
      */
-    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException;
+    void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception;
 
     /**
      * Gets all the companies
      *
      * @return List
+     * @throws litfitsserver.exceptions.ReadException
      */
     List<Company> findAllCompanies() throws ReadException;
 
@@ -51,6 +58,7 @@ public interface LocalCompanyEJB {
      *
      * @param id
      * @return Company
+     * @throws litfitsserver.exceptions.ReadException
      */
     Company findCompany(Long id) throws ReadException;
 
@@ -58,6 +66,8 @@ public interface LocalCompanyEJB {
      * Deletes a company
      *
      * @param company
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws litfitsserver.exceptions.DeleteException
      */
     void removeCompany(Company company) throws ReadException, DeleteException;
 
@@ -66,6 +76,7 @@ public interface LocalCompanyEJB {
      *
      * @param nif
      * @return Company
+     * @throws litfitsserver.exceptions.ReadException
      */
     Company findCompanyByNif(String nif) throws ReadException;
 
@@ -78,5 +89,14 @@ public interface LocalCompanyEJB {
      * @throws ReadException
      * @throws NotAuthorizedException
      */
-    public Company login(Company company) throws NoSuchAlgorithmException, ReadException, NotAuthorizedException;
+    public Company login(Company company) throws ReadException, NotAuthorizedException, Exception;
+
+    /**
+     * Method to reestablish the password of a given company ( nif)
+     *
+     * @param nif
+     * @throws ReadException
+     * @throws javax.mail.MessagingException
+     */
+    public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception;
 }
