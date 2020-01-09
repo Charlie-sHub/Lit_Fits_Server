@@ -111,7 +111,6 @@ public class Garment implements Serializable {
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "companyId")
     private Company company;
     /**
      * What colors are in the garment
@@ -327,10 +326,7 @@ public class Garment implements Serializable {
         if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.barcode, other.barcode)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.barcode, other.barcode);
     }
 
     @Override
