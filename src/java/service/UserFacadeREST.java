@@ -20,8 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.entities.User;
 import litfitsserver.ejbs.LocalUserEJB;
-import litfitsserver.entities.Color;
-import litfitsserver.entities.Material;
+import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
@@ -152,36 +151,19 @@ public class UserFacadeREST {
     }
     
     @GET
-    @Path("color/{username}")
+    @Path("user/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Color> getUserLikedColors(@PathParam("username") String username) {
+    public User getUserGarments(@PathParam("email") String email) {
         
-        Set<Color> colors = null;
+        User user = null;
         
         try {
             
-            colors = userEJB.getUserLikedColors(username);
+            user = userEJB.getUserByEmail(email);
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
         }
-        return colors;
-    }
-    
-    @GET
-    @Path("material/{username}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Set<Material> getUserLikedMaterials(@PathParam("username") String username) {
-        
-        Set<Material> materials = null;
-        
-        try {
-            
-            materials = userEJB.getUserLikedMaterials(username);
-        } catch (ReadException readException) {
-            LOG.severe(readException.getMessage());
-            throw new InternalServerErrorException(readException);
-        }
-        return materials;
+        return user;
     }
 }

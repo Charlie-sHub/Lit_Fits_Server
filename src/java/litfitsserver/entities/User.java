@@ -31,21 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries ({
     
-    //@NamedQuery (
-    //   name = "getUserGarments",
-    //    query = "SELECT col FROM Color col WHERE col.name=:username"
-    //)
-    //,
-    
     @NamedQuery (
-        name = "getUserLikedColors",
-        query = "SELECT col FROM Color col WHERE col.name=:username"
-    )
-    ,
-
-    @NamedQuery (
-        name = "getUserLikedMaterials",
-        query = "SELECT mat FROM Material mat WHERE mat.name=:username"
+       name = "getUserByEmail",
+        query = "SELECT user from User user WHERE user.email=:email"
     )
 })
 
@@ -89,6 +77,14 @@ public class User implements Serializable {
     
     /**
      * Full constructor
+     * @param username The username that will be set.
+     * @param fullName The full name that will be set.
+     * @param password The password that that will be set.
+     * @param phoneNumber The phone number that will be set.
+     * @param email The email that will be set.
+     * @param lastAccess The last access date that will be set.
+     * @param lastPasswordChange The last password change date that will be set.
+     * @param type The type of the user that will be set.
      */
     public User (String username, String fullName, String password, String phoneNumber,
             String email, Date lastAccess, Date lastPasswordChange, UserType type) {

@@ -6,7 +6,7 @@
 package litfitsserver.entities;
 
 /**
- *
+ * Enumerator to set the type of a user.
  * @author Asier Vila Dominguez
  */
 public enum UserType {

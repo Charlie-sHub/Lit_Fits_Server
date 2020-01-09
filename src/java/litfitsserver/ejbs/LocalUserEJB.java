@@ -56,23 +56,9 @@ public interface LocalUserEJB {
     public int countUsers() throws ReadException;
     
     /**
-     * Gets all the garments that the user saved on his "closet".
-     * @param username The username that will be used to filter.
-     * @return A set with all the garments that the user has.
+     * Gets the user that has the received email linked to its account.
+     * @param email The email that will be used to filter.
+     * @return A User with all the data.
      */
-    //public Set<Garment> getUserGarments (String username) throws ReadException;
-    
-    /**
-     * Gets all the colors that the user likes.
-     * @param username The username that will be used to filter.
-     * @return A set with all the colors that the user likes.
-     */
-    public Set<Color> getUserLikedColors (String username) throws ReadException;
-    
-    /**
-     * Gets all the materials that the user likes.
-     * @param username The username that will be used to filter.
-     * @return A set with all the materials that the user likes.
-     */
-    public Set<Material> getUserLikedMaterials (String username) throws ReadException;
+    public User getUserByEmail (String email) throws ReadException;
 }
