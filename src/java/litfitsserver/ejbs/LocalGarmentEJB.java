@@ -9,6 +9,7 @@ import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * Interface for the GarmentEJB
@@ -112,4 +113,12 @@ public interface LocalGarmentEJB {
      * @throws litfitsserver.exceptions.ReadException
      */
     public File getImage(Long id) throws IOException, ReadException;
+
+    /**
+     * Saves the picture of the garment
+     *
+     * @param input
+     * @return
+     */
+    public boolean uploadPicture(MultipartFormDataInput input, Long id) throws IOException, ReadException;
 }

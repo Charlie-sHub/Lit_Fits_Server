@@ -111,6 +111,7 @@ public class Garment implements Serializable {
      */
     @NotNull
     @ManyToOne
+    @JoinColumn(name = "company")
     private Company company;
     /**
      * What colors are in the garment
