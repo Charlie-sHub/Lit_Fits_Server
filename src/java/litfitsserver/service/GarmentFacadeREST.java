@@ -3,7 +3,6 @@ package litfitsserver.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -245,17 +244,17 @@ public class GarmentFacadeREST {
         }
         return Response.ok(image, "image/jpg").header("Inline", "filename=\"" + image.getName() + "\"").build();
     }
-
     /**
      * Takes a given file input and saves it, meant for the garment's picture
      *
      * @param input
      * @return Response
      */
-    @PUT
-    @Path("picture/upload")
+    /*
+    @POST
+    @Path("picture/upload/{id}")
     @Consumes("image/jpg")
-    public Response uploadFile(MultipartFormDataInput input, Long id) {
+    public Response uploadFile(MultipartFormDataInput input, @PathParam("id") Long id) {
         try {
             if (garmentEJB.uploadPicture(input, id)) {
                 return Response.status(200).entity("Uploaded file").build();
@@ -266,4 +265,5 @@ public class GarmentFacadeREST {
         }
         return null;
     }
+     */
 }
