@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import java.util.Set;
@@ -18,7 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import litfitsserver.entities.User;
 import litfitsserver.ejbs.LocalUserEJB;
 import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
@@ -26,7 +20,7 @@ import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 
 /**
- * RESTful class for User entity
+ * RESTful class for User entity.
  * 
  * @author Asier
  */
@@ -38,9 +32,9 @@ public class UserFacadeREST {
     private static final Logger LOG = Logger.getLogger(UserFacadeREST.class.getName());
 
     /**
-     * Inserts a new user in the database
+     * Inserts a new user in the database.
      * 
-     * @param user The user that will be inserted, with all the data
+     * @param user The user that will be inserted, with all the data.
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
@@ -56,15 +50,14 @@ public class UserFacadeREST {
     }
 
     /**
-     *  Edits the data of a registered user
+     *  Edits the data of a registered user.
      * 
-     * @param id The username of the user that will be modified
-     * @param user An User object that contains all the data that will be updated
+     * @param user A User object that contains all the data that will be updated.
      */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void editUser(@PathParam("id") String id, User user) {
+    public void editUser(@PathParam("id") User user) {
 
         try {
             userEJB.createUser(user);
@@ -76,9 +69,9 @@ public class UserFacadeREST {
     }
 
     /**
-     * Removes a user from the database
+     * Removes a user from the database.
      * 
-     * @param user The user that will be deleted from the database
+     * @param user The user that will be deleted from the database.
      */
     @DELETE
     @Path("{id}")
@@ -94,10 +87,10 @@ public class UserFacadeREST {
     }
 
     /**
-     * This method gets the data of a registered user
+     * This method gets the data of a registered user.
      * 
-     * @param id The unique id for the user
-     * @return The user with all the data
+     * @param id The unique id for the user.
+     * @return The user with all the data.
      */
     @GET
     @Path("{id}")
@@ -114,9 +107,9 @@ public class UserFacadeREST {
     }
 
     /**
-     * This method returns a list with all the registered users
+     * This method returns a list with all the registered users.
      * 
-     * @return A List with the registered users
+     * @return A List with the registered users.
      */
     @GET
     @Produces({MediaType.APPLICATION_XML})
@@ -132,9 +125,9 @@ public class UserFacadeREST {
     }
 
     /**
-     * Returns the amount of registered users
+     * Returns the amount of registered users.
      * 
-     * @return An integer with the number of users
+     * @return An integer with the number of users.
      */
     @GET
     @Path("count")
@@ -150,16 +143,22 @@ public class UserFacadeREST {
         }
     }
     
+    /**
+     * This method uses an email to filter and get a user from the database.
+     * 
+     * @param email The email that will be used to filter.
+     * @return The user with all the data.
+     */
     @GET
     @Path("user/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public User getUserGarments(@PathParam("email") String email) {
+    public User findUserByEmail(@PathParam("email") String email) {
         
         User user = null;
         
         try {
             
-            user = userEJB.getUserByEmail(email);
+            user = userEJB.findUserByEmail(email);
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);

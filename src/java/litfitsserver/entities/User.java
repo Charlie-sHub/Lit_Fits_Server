@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package litfitsserver.entities;
 
 import java.io.Serializable;
@@ -32,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries ({
     
     @NamedQuery (
-       name = "getUserByEmail",
+       name = "findUserByEmail",
         query = "SELECT user from User user WHERE user.email=:email"
     )
 })
