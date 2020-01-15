@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.ResourceBundle;
 import javax.ejb.Stateless;
 
 /**
@@ -16,11 +16,11 @@ import javax.ejb.Stateless;
 @Stateless
 public class PublicKeyEJB implements LocalPublicKeyEJB {
     @Override
-    public byte[] getPublicKey() throws FileNotFoundException, IOException {
+    public byte[] getPublicKey() throws FileNotFoundException, IOException {        
         byte[] publicKey = null;
-        File publicKeyFile = new File("public.key");
-        Path publicKeyPath = Paths.get(publicKeyFile.getAbsolutePath());
-        publicKey = Files.readAllBytes(publicKeyPath);
+        String publicKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("publicKey");
+        File publicKeyFile = new File(publicKeyPath);
+        publicKey = Files.readAllBytes(publicKeyFile.toPath());
         return publicKey;
     }
 }

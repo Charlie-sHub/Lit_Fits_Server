@@ -1,4 +1,4 @@
-package miscellaneous;
+package litfitsserver.miscellaneous;
 
 import java.time.LocalDate;
 import java.util.Properties;

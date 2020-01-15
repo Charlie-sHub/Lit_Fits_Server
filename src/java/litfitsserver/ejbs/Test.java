@@ -11,8 +11,8 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
-import miscellaneous.Decryptor;
-import miscellaneous.Encryptor;
+import litfitsserver.miscellaneous.Decryptor;
+import litfitsserver.miscellaneous.Encryptor;
 
 /**
  *

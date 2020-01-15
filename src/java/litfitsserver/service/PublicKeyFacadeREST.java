@@ -30,7 +30,7 @@ public class PublicKeyFacadeREST {
      * @return Material
      */
     @GET
-    @Produces({MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_OCTET_STREAM})
     public byte[] getPublicKey() {
         byte[] publicKey = null;
         try {
