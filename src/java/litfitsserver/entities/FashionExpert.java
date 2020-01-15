@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -26,24 +28,27 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Ander Rodriguez
  */
-@Entity
-@Table(name="fashionExpert", schema="Lit_Fits_DB")
 @NamedQueries ({
     @NamedQuery(
-        name="expertExists",
-        query = "SELECT count(*) FROM fashionexpert exp WHERE exp.username =: username"
-    ),
+        name = "expertExists",
+        query = "SELECT count(*) FROM FashionExpert exp WHERE exp.username=:username"
+    )
+    ,
     @NamedQuery(
-        name = "findExpertById",
-        query = "SELECT exp FROM fashionexpert exp WHERE exp.username=:username"
+        name = "findExpertByUsername",
+        query = "SELECT exp FROM FashionExpert exp WHERE exp.username=:username"
     )
     
 })
+@Entity
+@Table(name="fashionExpert", schema="testLitFits")
 @XmlRootElement
 public class FashionExpert implements Serializable {
     private static final long serialVersionUID = 1L;
-    
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    @NotNull
     private String username;
     @NotNull
     private String password;
@@ -59,10 +64,10 @@ public class FashionExpert implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date lastAccess;
     @ManyToMany
-    @JoinTable(name = "expert_materials", schema = "Lit_Fits_DB")
+    @JoinTable(name = "expert_materials", schema = "testLitFits")
     private List<Material> recommendedMaterials;
     @ManyToMany
-    @JoinTable(name = "expert_colors", schema = "Lit_Fits_DB")
+    @JoinTable(name = "expert_colors", schema = "testLitFits")
     private List<Color> recommendedColors;
 
     public FashionExpert() {

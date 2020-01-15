@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.crypto.NoSuchPaddingException;
@@ -19,7 +20,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.ws.rs.NotAuthorizedException;
+import litfitsserver.entities.Color;
 import litfitsserver.entities.FashionExpert;
+import litfitsserver.entities.Material;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
@@ -41,7 +44,6 @@ public class EJBExpertManager implements LocalExpertEJB {
         Decryptor decryptor = new Decryptor();
         try{
             expert.setPassword(decryptor.decypherRSA(expert.getPassword()));
-                        
             if(expertExists(expert.getUsername())){
                 throw new Exception("Username already exists in the database");
             }else{
@@ -59,7 +61,7 @@ public class EJBExpertManager implements LocalExpertEJB {
     public void modifyExpert(FashionExpert expert) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception{
         Decryptor decryptor = new Decryptor();
         expert.setPassword(decryptor.decypherRSA(expert.getPassword()));
-        FashionExpert expertInDB = findExpertById(expert.getUsername());
+        FashionExpert expertInDB = findExpertByUsername(expert.getUsername());
         boolean correctPassword = expertInDB.getPassword().equals(toHash(expert.getPassword()));
         
         if(!correctPassword){
@@ -76,8 +78,8 @@ public class EJBExpertManager implements LocalExpertEJB {
     }
     
     @Override
-    public FashionExpert findExpertById(String id){
-        return em.find(FashionExpert.class, id);
+    public FashionExpert findExpertByUsername(String username) throws ReadException{
+        return (FashionExpert) em.createNamedQuery("findExpertByUsername").setParameter("username", username).getSingleResult();
     }
     
     @Override
@@ -86,20 +88,38 @@ public class EJBExpertManager implements LocalExpertEJB {
         cq.select(cq.from(FashionExpert.class));
         return em.createQuery(cq).getResultList();
     }
-    /*
+    
     @Override
-    public List<Color> getRecommendedColors(String username) {
-        return (List<Color>) em.createNamedQuery("getExpertRecommendedColors").setParameter("username", username).getResultList();
+    public List<Color> getRecommendedColors() {
+        List<FashionExpert> experts;
+        List<Color> colors = null;
+        experts = findAllExperts();
+        experts.forEach((expert) -> {
+            List<Color> color = expert.getRecommendedColors();
+            color.forEach((c) -> {
+                colors.add(c);
+            });
+        });
+        return colors;
     }
 
     @Override
-    public List<Material> getRecommendedMaterials(String username) {
-        return (List<Material>) em.createNamedQuery("getExpertRecommendedMaterials").setParameter("username", username).getResultList();
+    public List<Material> getRecommendedMaterials() {
+        List<FashionExpert> experts;
+        List<Material> materials = null;
+        experts = findAllExperts();
+        experts.forEach((expert) -> {
+            List<Material> material = expert.getRecommendedMaterials();
+            material.forEach((m) -> {
+                materials.add(m);
+            });
+        });
+        return materials;
     }
-    */
+    
     @Override
     public FashionExpert login(FashionExpert expert) throws ReadException, NotAuthorizedException, Exception {
-        FashionExpert expertInDB = findExpertById(expert.getUsername());
+        FashionExpert expertInDB = findExpertByUsername(expert.getUsername());
         try {
             Decryptor decryptor = new Decryptor();
             expert.setPassword(decryptor.decypherRSA(expert.getPassword()));

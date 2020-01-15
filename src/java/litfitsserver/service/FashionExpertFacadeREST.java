@@ -6,6 +6,7 @@
 package litfitsserver.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.CreateException;
 import javax.ejb.EJB;
@@ -23,6 +24,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import litfitsserver.entities.FashionExpert;
 import litfitsserver.ejbs.LocalExpertEJB;
+import litfitsserver.entities.Color;
+import litfitsserver.entities.Material;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
@@ -72,7 +75,7 @@ public class FashionExpertFacadeREST  {
     public void remove(@PathParam("username") String username) {
         LOG.info("Deleting an expert");
         try {
-            expertEJB.deleteExpert(expertEJB.findExpertById(username));
+            expertEJB.deleteExpert(expertEJB.findExpertByUsername(username));
         } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -107,14 +110,44 @@ public class FashionExpertFacadeREST  {
         LOG.info("Finding an expert");
         FashionExpert expert = null;
         try {
-            expert = expertEJB.findExpertById(username);
+            expert = expertEJB.findExpertByUsername(username);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return expert;
     }
-
+    
+    @GET
+    @Path("colors/")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Color> recommendedColors() {
+        LOG.info("Recommended Colors");
+        List<Color> colors;
+        try {
+            colors = expertEJB.getRecommendedColors();
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return colors;
+    }
+    
+    @GET
+    @Path("materials/")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Material> recommendedMaterials() {
+        LOG.info("Recommended Colors");
+        List<Material> materials;
+        try {
+            materials = expertEJB.getRecommendedMaterials();
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return materials;
+    }
+       
 
        
    
