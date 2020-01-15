@@ -78,6 +78,11 @@ public class EJBExpertManager implements LocalExpertEJB {
     }
     
     @Override
+    public FashionExpert findExpert(Long id) throws ReadException {
+        return em.find(FashionExpert.class, id);
+    }
+    
+    @Override
     public FashionExpert findExpertByUsername(String username) throws ReadException{
         return (FashionExpert) em.createNamedQuery("findExpertByUsername").setParameter("username", username).getSingleResult();
     }
@@ -159,5 +164,7 @@ public class EJBExpertManager implements LocalExpertEJB {
     private boolean expertExists(String username) throws ReadException {
         return (long) em.createNamedQuery("expertExists").setParameter("username", username).getSingleResult() == 1;
     }
+
+   
     
 }

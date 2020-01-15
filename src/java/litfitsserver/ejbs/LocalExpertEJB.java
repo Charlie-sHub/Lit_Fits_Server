@@ -29,7 +29,8 @@ public interface LocalExpertEJB {
     void createExpert (FashionExpert expert) throws CreateException;
     void modifyExpert(FashionExpert expert) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception;
     void deleteExpert(FashionExpert expert) throws ReadException, DeleteException;
-    FashionExpert findExpertByUsername(String id) throws ReadException;
+    FashionExpert findExpert(Long id) throws ReadException;
+    FashionExpert findExpertByUsername(String username) throws ReadException;
     List<FashionExpert> findAllExperts() throws ReadException;
     List<Color> getRecommendedColors() throws ReadException;
     List<Material> getRecommendedMaterials() throws ReadException;
