@@ -20,11 +20,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Garment entity
  *
- * @author Charlie
+ * @author Carlos Mendez
  */
 @NamedQueries({
     @NamedQuery(
@@ -48,7 +49,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     )
 })
 @Entity
-@Table(name = "garment", schema = "TestLitFitsDB")
+@Table(name = "garment", schema = "testlitfitsdb")
 @XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -117,17 +118,18 @@ public class Garment implements Serializable {
      * What colors are in the garment
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_colors", schema = "TestLitFitsDB")
+    @JoinTable(name = "garment_colors", schema = "testlitfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_materials", schema = "TestLitFitsDB")
+    @JoinTable(name = "garment_materials", schema = "testlitfitsdb")
     private Set<Material> materials;
     /**
      * The picture of the garment
      */
+    //It was Transient before, will it now try to save it on the database? 
     @Transient
     private File picture;
 
@@ -268,6 +270,7 @@ public class Garment implements Serializable {
         this.company = company;
     }
 
+    @XmlTransient
     public Set<Color> getColors() {
         return colors;
     }
@@ -276,6 +279,7 @@ public class Garment implements Serializable {
         this.colors = colors;
     }
 
+    @XmlTransient
     public Set<Material> getMaterials() {
         return materials;
     }

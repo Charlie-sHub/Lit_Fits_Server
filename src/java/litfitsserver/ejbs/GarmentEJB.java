@@ -1,9 +1,11 @@
 package litfitsserver.ejbs;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
@@ -25,7 +27,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 /**
  * EJB for Garments
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Stateless
 public class GarmentEJB implements LocalGarmentEJB {
@@ -34,6 +36,11 @@ public class GarmentEJB implements LocalGarmentEJB {
 
     @Override
     public void createGarment(Garment garment) throws CreateException {
+        // Does this really save the picture?
+        File pictureFile = new File("/Pictures/" + garment.getPicture().getName());
+        // Is it ok to use absolute path here?
+        garment.setImagePath(pictureFile.getAbsolutePath());
+        // Is it neccessary to set the image null or something?
         em.persist(garment);
     }
 

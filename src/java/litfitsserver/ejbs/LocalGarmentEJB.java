@@ -118,7 +118,8 @@ public interface LocalGarmentEJB {
      * Saves the picture of the garment
      *
      * @param input
-     * @return
+     * @param id
+     * @return boolean
      */
     public boolean uploadPicture(MultipartFormDataInput input, Long id) throws IOException, ReadException;
 }

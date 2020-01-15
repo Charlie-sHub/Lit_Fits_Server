@@ -138,11 +138,13 @@ public class CompanyEJB implements LocalCompanyEJB {
         emailService.sendCompanyPasswordReestablishmentEmail(company);
         em.merge(company);
     }
+
     /**
      * Creates a new email service object with the address and password from their respective files
+     *
      * @param decryptor
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private EmailService newEmailService(Decryptor decryptor) throws Exception {
         //Fucking paths how do they work? the path should be relative to decryptor i guess

@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 })
 @Entity
-@Table(name = "company", schema = "TestLitFitsDB")
+@Table(name = "company", schema = "testlitfitsdb")
 @XmlRootElement
 public class Company implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -52,35 +52,35 @@ public class Company implements Serializable {
      * Password required for the company to log in
      */
     @NotNull
-    protected String password;
+    private String password;
     /**
      * Name of the company
      */
     @NotNull
-    protected String fullName;
+    private String fullName;
     /**
      * Phone number to contact the company
      */
-    protected String phoneNumber;
+    private String phoneNumber;
     /**
      * Email to contact the company
      */
-    protected String email;
+    private String email;
     /**
      * When the company last accessed the app
      */
     @Temporal(TemporalType.DATE)
-    protected Date lastAccess;
+    private Date lastAccess;
     /**
      * When the company last changed its password
      */
     @Temporal(TemporalType.DATE)
-    protected Date lastPasswordChange;
+    private Date lastPasswordChange;
     /**
      * List of garments "owned" by the company.
      */
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    protected List<Garment> garments;
+    private List<Garment> garments;
 
     /**
      * Empty constructor
