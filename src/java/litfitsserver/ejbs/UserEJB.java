@@ -20,7 +20,7 @@ import litfitsserver.exceptions.UpdateException;
 @Stateless
 public class UserEJB implements LocalUserEJB{
 
-    @PersistenceContext(unitName = "Test_Server2PU")
+    @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager em;
     
     @Override
