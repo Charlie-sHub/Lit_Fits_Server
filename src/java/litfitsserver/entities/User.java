@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 })
 
 @Entity
-@Table(name = "users", schema = "testreto2")
+@Table(name = "users", schema = "testlitfitsdb")
 @XmlRootElement
 public class User implements Serializable {
     
@@ -52,15 +52,15 @@ public class User implements Serializable {
     protected UserType type;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "user_colors", schema = "testreto2")
+    @JoinTable(name = "user_colors", schema = "testlitfitsdb")
     private Set<Color> likedColors;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "user_materials", schema = "testreto2")
+    @JoinTable(name = "user_materials", schema = "testlitfitsdb")
     private Set<Material> likedMaterials;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "user_garments", schema = "testreto2")
+    @JoinTable(name = "user_garments", schema = "testlitfitsdb")
     private Set<Garment> garments;
     
     /**
