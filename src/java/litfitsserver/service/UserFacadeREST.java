@@ -159,7 +159,7 @@ public class UserFacadeREST {
         
         try {
             
-            user = userEJB.getUserByEmail(email);
+            user = userEJB.findUserByEmail(email);
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package litfitsserver.entities;
 
 import java.io.Serializable;
@@ -32,13 +27,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries ({
     
     @NamedQuery (
-       name = "getUserByEmail",
+       name = "findUserByEmail",
         query = "SELECT user from User user WHERE user.email=:email"
     )
 })
 
 @Entity
-@Table(name = "users", schema = "testreto2")
+@Table(name = "users", schema = "testlitfitsdb")
 @XmlRootElement
 public class User implements Serializable {
     
@@ -57,15 +52,15 @@ public class User implements Serializable {
     protected UserType type;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "user_colors", schema = "testreto2")
+    @JoinTable(name = "user_colors", schema = "testlitfitsdb")
     private Set<Color> likedColors;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "user_materials", schema = "testreto2")
+    @JoinTable(name = "user_materials", schema = "testlitfitsdb")
     private Set<Material> likedMaterials;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = EAGER)
-    @JoinTable(name = "user_garments", schema = "testreto2")
+    @JoinTable(name = "user_garments", schema = "testlitfitsdb")
     private Set<Garment> garments;
     
     /**

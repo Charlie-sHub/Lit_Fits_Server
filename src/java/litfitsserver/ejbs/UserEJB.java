@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package litfitsserver.ejbs;
 
 import java.util.Set;
@@ -12,9 +7,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import litfitsserver.entities.Color;
-import litfitsserver.entities.Garment;
-import litfitsserver.entities.Material;
 import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
@@ -69,7 +61,7 @@ public class UserEJB implements LocalUserEJB{
     }
     
     @Override
-    public User getUserByEmail(String email) throws ReadException {
-        return (User) em.createNamedQuery("getUserByEmail").setParameter("email", email).getResultList();
+    public User findUserByEmail(String email) throws ReadException {
+        return (User) em.createNamedQuery("findUserByEmail").setParameter("email", email).getResultList();
     }
 }
