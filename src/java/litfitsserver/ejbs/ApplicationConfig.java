@@ -27,10 +27,10 @@ public class ApplicationConfig extends Application {
      * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(service.ColorFacadeREST.class);
-        resources.add(service.CompanyFacadeREST.class);
-        resources.add(service.GarmentFacadeREST.class);
-        resources.add(service.MaterialFacadeREST.class);
-        resources.add(service.UserFacadeREST.class);
+        resources.add(litfitsserver.service.ColorFacadeREST.class);
+        resources.add(litfitsserver.service.CompanyFacadeREST.class);
+        resources.add(litfitsserver.service.GarmentFacadeREST.class);
+        resources.add(litfitsserver.service.MaterialFacadeREST.class);
+        resources.add(litfitsserver.service.UserFacadeREST.class);
     }
 }

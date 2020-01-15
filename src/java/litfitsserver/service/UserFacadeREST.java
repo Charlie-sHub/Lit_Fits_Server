@@ -1,4 +1,4 @@
-package service;
+package litfitsserver.service;
 
 import java.util.Set;
 import java.util.logging.Logger;

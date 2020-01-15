@@ -1,4 +1,4 @@
-package service;
+package litfitsserver.service;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -14,37 +14,38 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import litfitsserver.ejbs.LocalCompanyEJB;
-import litfitsserver.entities.Company;
+import litfitsserver.ejbs.LocalMaterialEJB;
+import litfitsserver.entities.Material;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
 
 /**
- * RESTful for Company entity
+ * RESTful class for the Material entity
  *
  * @author Carlos
  */
-@Path("litfitsserver.entities.company")
-public class CompanyFacadeREST {
+@Path("litfitsserver.entities.material")
+public class MaterialFacadeREST {
     /**
      * Injects the EJB of the entity in question
      */
     @EJB
-    private LocalCompanyEJB companyEJB;
-    private static final Logger LOG = Logger.getLogger(CompanyFacadeREST.class.getName());
+    private LocalMaterialEJB materialEJB;
+    private static final Logger LOG = Logger.getLogger(MaterialFacadeREST.class.getName());
 
     /**
-     * Inserts a new Company
+     * Inserts a new Material in the database
      *
-     * @param company
+     * @param material
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
-    public void create(Company company) {
+    public void create(Material material) {
         try {
-            companyEJB.createCompany(company);
+            LOG.info("Creating a new Material");
+            materialEJB.createMaterial(material);
         } catch (CreateException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -52,17 +53,18 @@ public class CompanyFacadeREST {
     }
 
     /**
-     * Edits a Company
+     * Edits the material
      *
-     * @param id
-     * @param company
+     * @param name
+     * @param material
      */
     @PUT
-    @Path("{id}")
+    @Path("{name}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Long id, Company company) {
+    public void edit(@PathParam("name") String name, Material material) {
         try {
-            companyEJB.editCompany(company);
+            LOG.info("Editing a Material");
+            materialEJB.editMaterial(material);
         } catch (UpdateException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -70,15 +72,16 @@ public class CompanyFacadeREST {
     }
 
     /**
-     * Deletes a Company
+     * Deletes the material
      *
-     * @param id
+     * @param name
      */
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
+    @Path("{name}")
+    public void remove(@PathParam("name") String name) {
         try {
-            companyEJB.removeCompany(companyEJB.findCompany(id));
+            LOG.info("Deleting a Material");
+            materialEJB.removeMaterial(materialEJB.findMaterial(name));
         } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -86,47 +89,49 @@ public class CompanyFacadeREST {
     }
 
     /**
-     * Gets a Company
+     * Gets the material wanted
      *
-     * @param id
-     * @return Company
+     * @param name
+     * @return Material
      */
     @GET
-    @Path("{id}")
+    @Path("{name}")
     @Produces({MediaType.APPLICATION_XML})
-    public Company find(@PathParam("id") Long id) {
-        Company company = null;
+    public Material find(@PathParam("name") String name) {
+        Material material = null;
         try {
-            company = companyEJB.findCompany(id);
+            LOG.info("Finding a Material");
+            material = materialEJB.findMaterial(name);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return company;
+        return material;
     }
 
     /**
-     * Gets all the companies
+     * Gets all the materials
      *
-     * @return List
+     * @return List of materials
      */
     @GET
     @Produces({MediaType.APPLICATION_XML})
-    public List<Company> findAll() {
-        List<Company> companies = null;
+    public List<Material> findAll() {
+        List<Material> materialList = null;
         try {
-            companies = companyEJB.findAllCompanies();
+            LOG.info("Getting all Materials");
+            materialList = materialEJB.findAllMaterials();
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return companies;
+        return materialList;
     }
 
     /**
-     * Gets the amount of companies
+     * Gets the amount of materials
      *
-     * @return String
+     * @return String amount of materials
      */
     @GET
     @Path("count")
@@ -134,31 +139,12 @@ public class CompanyFacadeREST {
     public String countREST() {
         String amount = null;
         try {
-            amount = String.valueOf(companyEJB.countCompanies());
-        } catch (ReadException ex) {
+            LOG.info("Counting the Materials");
+            amount = String.valueOf(materialEJB.countMaterials());
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return amount;
-    }
-
-    /**
-     * Gets a company by its nif
-     *
-     * @param nif
-     * @return Company
-     */
-    @GET
-    @Path("company/{nif}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Company findCompanyByNif(@PathParam("nif") String nif) {
-        Company company = null;
-        try {
-            company = companyEJB.findCompanyByNif(nif);
-        } catch (ReadException ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
-        }
-        return company;
     }
 }
