@@ -36,12 +36,7 @@ public class GarmentEJB implements LocalGarmentEJB {
 
     @Override
     public void createGarment(Garment garment) throws CreateException {
-        // Does this really save the picture?
-        File pictureFile = new File("/Pictures/" + garment.getPicture().getName());
-        // Is it ok to use absolute path here?
-        garment.setImagePath(pictureFile.getAbsolutePath());
-        // Is it neccessary to set the image null or something?
-        em.persist(garment);
+        em.persist(garment);        
     }
 
     @Override
@@ -98,7 +93,7 @@ public class GarmentEJB implements LocalGarmentEJB {
 
     @Override
     public File getImage(Long id) throws IOException, ReadException {
-        File image = new File(findGarment(id).getImagePath());
+        File image = new File(findGarment(id).getPictureName());
         return image;
     }
 
@@ -119,7 +114,7 @@ public class GarmentEJB implements LocalGarmentEJB {
             File customDir = new File(path);
             fileName = customDir.getCanonicalPath() + File.separator + fileName;
             writeFile(bytes, fileName);
-            findGarment(id).setImagePath(path);
+            findGarment(id).setPictureName(path);
             success = true;
         }
         return success;

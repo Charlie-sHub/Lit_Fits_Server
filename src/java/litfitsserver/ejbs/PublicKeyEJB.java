@@ -18,7 +18,7 @@ public class PublicKeyEJB implements LocalPublicKeyEJB {
     @Override
     public byte[] getPublicKey() throws FileNotFoundException, IOException {        
         byte[] publicKey = null;
-        String publicKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("publicKey");
+        String publicKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/public.key";
         File publicKeyFile = new File(publicKeyPath);
         publicKey = Files.readAllBytes(publicKeyFile.toPath());
         return publicKey;

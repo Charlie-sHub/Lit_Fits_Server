@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Date;
+import java.util.ResourceBundle;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -149,9 +150,10 @@ public class CompanyEJB implements LocalCompanyEJB {
      * @throws Exception
      */
     private EmailService newEmailService(Decryptor decryptor) throws Exception {
-        //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAddress = decryptor.decypherAES("Nothin personnel kid", "EncodedAddress.dat");
-        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", "EncodedPassword.dat");
+        String encodedPasswordPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/miscellaneous/EncodedPassword.dat";
+        String encodedAddressPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/miscellaneous/EncodedAddress.dat";
+        String emailAddress = decryptor.decypherAES("Nothin personnel kid", encodedAddressPath);
+        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", encodedPasswordPath);
         EmailService emailService = new EmailService(emailAddress, emailAddressPassword, null, null);
         return emailService;
     }

@@ -2,6 +2,7 @@ package litfitsserver.miscellaneous;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
@@ -33,6 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Decryptor {
     private static final byte[] SALT = "OwO UwU *.^ u.u!".getBytes();
+
     /**
      * Returns the decyphered content of a string
      *
@@ -49,7 +51,7 @@ public class Decryptor {
     public String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
         String message = null;
         byte privateKeyBytes[] = null;
-        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("privateKey");
+        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
         File privateKeyFile = new File(privateKeyPath);
         privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -69,7 +71,6 @@ public class Decryptor {
      * @return String deciphered
      * @throws java.lang.Exception
      */
-    @Deprecated
     public String decypherAES(String userKey, String path) throws Exception {
         String decypheredSecret = null;
         byte[] fileContent = fileReader(path);
@@ -85,7 +86,7 @@ public class Decryptor {
         byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(fileContent, 16, fileContent.length));
         decypheredSecret = new String(decodedMessage);
         return decypheredSecret;
-    }    
+    }
 
     /**
      * Returns the content of a given file
@@ -93,26 +94,17 @@ public class Decryptor {
      * @param path
      * @return byte[] the content of the file
      */
-    @Deprecated
-    private byte[] fileReader(String path) {
+    private byte[] fileReader(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
         byte content[] = null;
-        File file = new File(path);
         ObjectInputStream in = null;
         try {
             in = new ObjectInputStream(new FileInputStream(path));
             content = (byte[]) in.readObject();
-            //Path absolutePath = Paths.get(file.getAbsolutePath());
-        } catch (IOException ex) {
-            //Print stack trace should be removed
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (null != in) {
                 try {
                     in.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                     Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
