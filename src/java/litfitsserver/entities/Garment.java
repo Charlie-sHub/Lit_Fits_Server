@@ -1,6 +1,5 @@
 package litfitsserver.entities;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,9 +9,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -26,7 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -59,7 +54,7 @@ import org.apache.commons.io.FileUtils;
     )
 })
 @Entity
-@Table(name = "garment", schema = "testlitfitsdb")
+@Table(name = "garment", schema = "litfitsdb")
 @XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -128,21 +123,15 @@ public class Garment implements Serializable {
      * What colors are in the garment
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_colors", schema = "testlitfitsdb")
+    @JoinTable(name = "garment_colors", schema = "litfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_materials", schema = "testlitfitsdb")
+    @JoinTable(name = "garment_materials", schema = "litfitsdb")
     private Set<Material> materials;
 
-    /**
-     * The picture of the garment
-     */
-    //It was Transient before, will it now try to save it on the database? 
-    //@Transient
-    //private File picture;
     /**
      * Empty constructor
      */

@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Charlie
  */
 @Entity
-@Table(name = "color", schema = "testlitfitsdb")
+@Table(name = "color", schema = "litfitsdb")
 @XmlRootElement
 public class Color implements Serializable {
     private static final long serialVersionUID = 1L;

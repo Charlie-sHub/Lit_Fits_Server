@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
     
 })
 @Entity
-@Table(name="fashionExpert", schema="testLitFits")
+@Table(name="fashionExpert", schema="litfitsdb")
 @XmlRootElement
 public class FashionExpert implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -64,10 +64,10 @@ public class FashionExpert implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date lastAccess;
     @ManyToMany
-    @JoinTable(name = "expert_materials", schema = "testLitFits")
+    @JoinTable(name = "expert_materials", schema = "litfitsdb")
     private List<Material> recommendedMaterials;
     @ManyToMany
-    @JoinTable(name = "expert_colors", schema = "testLitFits")
+    @JoinTable(name = "expert_colors", schema = "litfitsdb")
     private List<Color> recommendedColors;
 
     public FashionExpert() {
