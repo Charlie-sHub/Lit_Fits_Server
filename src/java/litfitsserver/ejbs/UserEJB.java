@@ -1,5 +1,6 @@
 package litfitsserver.ejbs;
 
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -45,10 +46,10 @@ public class UserEJB implements LocalUserEJB{
     }
 
     @Override
-    public Set<User> findAllUsers() throws ReadException {
+    public List<User> findAllUsers() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         cq.select(cq.from(User.class));
-        return (Set<User>) em.createQuery(cq).getResultList();
+        return (List<User>) em.createQuery(cq).getResultList();
     }
 
     @Override
