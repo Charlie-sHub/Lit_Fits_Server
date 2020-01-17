@@ -117,22 +117,7 @@ public class FashionExpertFacadeREST  {
         }
         return expert;
     }
-    /*
-    @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML})
-    public FashionExpert find(@PathParam("id") Long id) {
-        LOG.info("Finding an expert");
-        FashionExpert expert = null;
-        try {
-            expert = expertEJB.findExpert(id);
-        } catch (ReadException ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
-        }
-        return expert;
-    }
-    */
+    
     @GET
     @Path("colors/")
     @Produces({MediaType.APPLICATION_XML})

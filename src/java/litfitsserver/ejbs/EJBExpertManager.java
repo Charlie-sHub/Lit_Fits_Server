@@ -9,7 +9,6 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.crypto.NoSuchPaddingException;
@@ -144,9 +143,6 @@ public class EJBExpertManager implements LocalExpertEJB {
 
     @Override
     public void reestabilishPassword(String username) {
-        //NO TENGO NIDEA
-        
-        
     }
 
     private String toHash(String password) throws NoSuchAlgorithmException {
