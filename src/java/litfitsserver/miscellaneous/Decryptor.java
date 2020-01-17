@@ -1,4 +1,4 @@
-package miscellaneous;
+package litfitsserver.miscellaneous;
 
 import java.io.File;
 import java.io.FileInputStream;
