@@ -246,26 +246,4 @@ public class GarmentFacadeREST {
         }
         return response;
     }
-    /**
-     * Takes a given file input and saves it, meant for the garment's picture
-     *
-     * @param input
-     * @return Response
-     */
-    /*
-    @POST
-    @Path("picture/upload/{id}")
-    @Consumes("image/jpg")
-    public Response uploadFile(MultipartFormDataInput input, @PathParam("id") Long id) {
-        try {
-            if (garmentEJB.uploadPicture(input, id)) {
-                return Response.status(200).entity("Uploaded file").build();
-            }
-        } catch (IOException | ReadException ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
-        }
-        return null;
-    }
-     */
 }
