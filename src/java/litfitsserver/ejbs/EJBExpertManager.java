@@ -25,7 +25,7 @@ import litfitsserver.entities.Material;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
-import miscellaneous.Decryptor;
+import litfitsserver.miscellaneous.Decryptor;
 
 /**
  *
