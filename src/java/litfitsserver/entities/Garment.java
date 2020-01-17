@@ -302,7 +302,7 @@ public class Garment implements Serializable {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
         byte[] pictureBytes = null;
         try {
-            pictureBytes = Files.readAllBytes(new File(pictureFolder + "\\" + pictureName + ".jpg").toPath());
+            pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + pictureName + ".jpg").toPath());
         } catch (IOException ex) {
             Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -311,7 +311,7 @@ public class Garment implements Serializable {
 
     public void setPicture(byte[] pictureBytes) {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
-        File outputFile = new File(pictureFolder + "\\" + pictureName + ".jpg");
+        File outputFile = new File(pictureFolder + "/" + pictureName + ".jpg");
         try {
             FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
         } catch (IOException ex) {

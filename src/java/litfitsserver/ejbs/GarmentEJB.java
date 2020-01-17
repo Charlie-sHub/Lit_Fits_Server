@@ -92,55 +92,8 @@ public class GarmentEJB implements LocalGarmentEJB {
     }
 
     @Override
-    public File getImage(Long id) throws IOException, ReadException {
-        File image = new File(findGarment(id).getPictureName());
-        return image;
-    }
-
-    @Override
-    public boolean uploadPicture(MultipartFormDataInput input, Long id) throws IOException, ReadException {
-        Boolean success = false;
-        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        // Get file data to save
-        List<InputPart> inputParts = uploadForm.get("attachment");
-        // change to inputParts.stream().forEach(inputPart -> {});
-        for (InputPart inputPart : inputParts) {
-            MultivaluedMap<String, String> header = inputPart.getHeaders();
-            String fileName = getFileName(header);
-            // convert the uploaded file to inputstream
-            InputStream inputStream = inputPart.getBody(InputStream.class, null);
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            String path = System.getProperty("user.home") + File.separator + "Pictures";
-            File customDir = new File(path);
-            fileName = customDir.getCanonicalPath() + File.separator + fileName;
-            writeFile(bytes, fileName);
-            findGarment(id).setPictureName(path);
-            success = true;
-        }
-        return success;
-    }
-
-    private String getFileName(MultivaluedMap<String, String> header) {
-        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-        // stream() it
-        for (String filename : contentDisposition) {
-            if ((filename.trim().startsWith("filename"))) {
-                String[] name = filename.split("=");
-                String finalFileName = name[1].trim().replaceAll("\"", "");
-                return finalFileName;
-            }
-        }
-        return "unknown";
-    }
-
-    private void writeFile(byte[] content, String filename) throws IOException {
-        File file = new File(filename);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        fileOutputStream.write(content);
-        fileOutputStream.flush();
-        fileOutputStream.close();
+    public byte[] getImage(Long id) throws IOException, ReadException {
+        byte[] imageBytes = findGarment(id).getPicture();
+        return imageBytes;
     }
 }

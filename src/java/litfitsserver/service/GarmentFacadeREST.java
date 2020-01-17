@@ -234,15 +234,17 @@ public class GarmentFacadeREST {
     @Path("picture/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getImage(@PathParam("id") Long id) {
-        File image = null;
+        byte[] image = null;
+        Response response;
         try {
             LOG.info("Retreiving a garment's picture");
             image = garmentEJB.getImage(id);
+            response = Response.ok(image, "image/jpg").header("Inline", "filename=\"" + garmentEJB.findGarment(id).getPictureName() + "\"").build();
         } catch (IOException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return Response.ok(image, "image/jpg").header("Inline", "filename=\"" + image.getName() + "\"").build();
+        return response;
     }
     /**
      * Takes a given file input and saves it, meant for the garment's picture

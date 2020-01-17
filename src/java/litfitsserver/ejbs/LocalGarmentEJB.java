@@ -112,14 +112,5 @@ public interface LocalGarmentEJB {
      * @throws java.io.IOException
      * @throws litfitsserver.exceptions.ReadException
      */
-    public File getImage(Long id) throws IOException, ReadException;
-
-    /**
-     * Saves the picture of the garment
-     *
-     * @param input
-     * @param id
-     * @return boolean
-     */
-    public boolean uploadPicture(MultipartFormDataInput input, Long id) throws IOException, ReadException;
+    public byte[] getImage(Long id) throws IOException, ReadException;
 }
