@@ -8,11 +8,6 @@ import java.nio.file.Files;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -26,7 +21,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -59,7 +53,7 @@ import org.apache.commons.io.FileUtils;
     )
 })
 @Entity
-@Table(name = "garment", schema = "testlitfitsdb")
+@Table(name = "garment", schema = "litfitsdb")
 @XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -128,21 +122,15 @@ public class Garment implements Serializable {
      * What colors are in the garment
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_colors", schema = "testlitfitsdb")
+    @JoinTable(name = "garment_colors", schema = "litfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_materials", schema = "testlitfitsdb")
+    @JoinTable(name = "garment_materials", schema = "litfitsdb")
     private Set<Material> materials;
 
-    /**
-     * The picture of the garment
-     */
-    //It was Transient before, will it now try to save it on the database? 
-    //@Transient
-    //private File picture;
     /**
      * Empty constructor
      */
@@ -298,25 +286,27 @@ public class Garment implements Serializable {
         this.materials = materials;
     }
 
-    public byte[] getPicture() {
+    /**
+     * Reads the bytes of the picture and returns them
+     *
+     * @return byte[] of the picture
+     */
+    public byte[] getPicture() throws IOException {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
-        byte[] pictureBytes = null;
-        try {
-            pictureBytes = Files.readAllBytes(new File(pictureFolder + "\\" + pictureName + ".jpg").toPath());
-        } catch (IOException ex) {
-            Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        byte[] pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + pictureName + ".jpg").toPath());
         return pictureBytes;
     }
 
-    public void setPicture(byte[] pictureBytes) {
+    /**
+     * Saves the picture in the corresponding folder
+     *
+     * @param pictureBytes
+     * @throws Exception
+     */
+    public void setPicture(byte[] pictureBytes) throws Exception {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
-        File outputFile = new File(pictureFolder + "\\" + pictureName + ".jpg");
-        try {
-            FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
-        } catch (IOException ex) {
-            Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        File outputFile = new File(pictureFolder + "/" + pictureName + ".jpg");
+        FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
     }
 
     @Override

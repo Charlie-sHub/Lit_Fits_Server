@@ -1,5 +1,6 @@
 package litfitsserver.ejbs;
 
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import litfitsserver.entities.User;
@@ -48,10 +49,10 @@ public interface LocalUserEJB {
     
     /**
      * Gets the data of all the users in the database.
-     * @return A set with all the existing users.
+     * @return A list with all the existing users.
      * @throws ReadException
      */
-    public Set<User> findAllUsers() throws ReadException;
+    public List<User> findAllUsers() throws ReadException;
     
     /**
      * Gets the amount of users saved on the database.

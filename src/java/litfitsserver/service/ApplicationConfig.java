@@ -24,6 +24,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(litfitsserver.service.ColorFacadeREST.class);
         resources.add(litfitsserver.service.CompanyFacadeREST.class);
+        resources.add(litfitsserver.service.FashionExpertFacadeREST.class);
         resources.add(litfitsserver.service.GarmentFacadeREST.class);
         resources.add(litfitsserver.service.MaterialFacadeREST.class);
         resources.add(litfitsserver.service.PublicKeyFacadeREST.class);

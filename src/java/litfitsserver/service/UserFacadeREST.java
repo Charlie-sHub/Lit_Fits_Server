@@ -1,5 +1,6 @@
 package litfitsserver.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -113,7 +114,7 @@ public class UserFacadeREST {
      */
     @GET
     @Produces({MediaType.APPLICATION_XML})
-    public Set<User> findAllUser() {
+    public List<User> findAllUser() {
 
         try {
             return userEJB.findAllUsers();

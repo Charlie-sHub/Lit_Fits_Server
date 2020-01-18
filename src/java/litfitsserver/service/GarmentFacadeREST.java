@@ -1,6 +1,5 @@
 package litfitsserver.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,7 +21,6 @@ import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * RESTful for Garment garment
@@ -234,36 +232,16 @@ public class GarmentFacadeREST {
     @Path("picture/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getImage(@PathParam("id") Long id) {
-        File image = null;
+        byte[] image = null;
+        Response response;
         try {
             LOG.info("Retreiving a garment's picture");
             image = garmentEJB.getImage(id);
+            response = Response.ok(image, "image/jpg").header("Inline", "filename=\"" + garmentEJB.findGarment(id).getPictureName() + "\"").build();
         } catch (IOException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        return Response.ok(image, "image/jpg").header("Inline", "filename=\"" + image.getName() + "\"").build();
+        return response;
     }
-    /**
-     * Takes a given file input and saves it, meant for the garment's picture
-     *
-     * @param input
-     * @return Response
-     */
-    /*
-    @POST
-    @Path("picture/upload/{id}")
-    @Consumes("image/jpg")
-    public Response uploadFile(MultipartFormDataInput input, @PathParam("id") Long id) {
-        try {
-            if (garmentEJB.uploadPicture(input, id)) {
-                return Response.status(200).entity("Uploaded file").build();
-            }
-        } catch (IOException | ReadException ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
-        }
-        return null;
-    }
-     */
 }
