@@ -1,9 +1,11 @@
-package miscellaneous;
+package litfitsserver.miscellaneous;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -31,6 +34,34 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Decryptor {
     private static final byte[] SALT = "OwO UwU *.^ u.u!".getBytes();
+
+    /**
+     * Returns the decyphered content of a string
+     *
+     * @param secret
+     * @return
+     * @throws java.security.spec.InvalidKeySpecException
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws javax.crypto.NoSuchPaddingException
+     * @throws java.security.InvalidKeyException
+     * @throws java.io.IOException
+     * @throws javax.crypto.IllegalBlockSizeException
+     * @throws javax.crypto.BadPaddingException
+     */
+    public String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
+        String message = null;
+        byte privateKeyBytes[] = null;
+        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
+        File privateKeyFile = new File(privateKeyPath);
+        privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+        PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        message = cipher.doFinal(secret.getBytes()).toString();
+        return message;
+    }
 
     /**
      * Returns the deciphered content of a given encrypted file
@@ -58,51 +89,22 @@ public class Decryptor {
     }
 
     /**
-     * Returns the decyphered content of a string
-     *
-     * @param secret
-     * @return
-     */
-    public String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        String message = null;
-        byte secretBytes[] = null;
-        byte privateKeyFile[] = fileReader("private.key");
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyFile);
-        PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        secretBytes = cipher.doFinal(secret.getBytes());
-        message = secretBytes.toString();
-        return message;
-    }
-
-    /**
      * Returns the content of a given file
      *
      * @param path
      * @return byte[] the content of the file
      */
-    private byte[] fileReader(String path) {
+    private byte[] fileReader(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
         byte content[] = null;
-        //File file = new File(path);
         ObjectInputStream in = null;
         try {
             in = new ObjectInputStream(new FileInputStream(path));
             content = (byte[]) in.readObject();
-            //Path absolutePath = Paths.get(file.getAbsolutePath());
-            //content = Files.readAllBytes(absolutePath);
-        } catch (IOException ex) {
-            //Print stack trace should be removed
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (null != in) {
                 try {
                     in.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                     Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

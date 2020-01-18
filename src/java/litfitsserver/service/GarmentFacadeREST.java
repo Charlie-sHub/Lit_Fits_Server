@@ -153,7 +153,7 @@ public class GarmentFacadeREST {
     @GET
     @Path("company/{nif}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Garment> findGarmentGarmentsByCompany(@PathParam("nif") String nif) {
+    public List<Garment> findGarmentsByCompany(@PathParam("nif") String nif) {
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findGarmentsByCompany(nif);
@@ -173,7 +173,7 @@ public class GarmentFacadeREST {
     @GET
     @Path("request/{requested}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Garment> findGarmentGarmentsByRequest(@PathParam("requested") Boolean requested) {
+    public List<Garment> findGarmentsByRequest(@PathParam("requested") Boolean requested) {
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findGarmentsByRequest(requested);
@@ -193,7 +193,7 @@ public class GarmentFacadeREST {
     @GET
     @Path("barcode/{barcode}")
     @Produces({MediaType.APPLICATION_XML})
-    public Garment findGarmentGarmentByBarcode(@PathParam("barcode") String barcode) {
+    public Garment findGarmentByBarcode(@PathParam("barcode") String barcode) {
         Garment garment = null;
         try {
             garment = garmentEJB.findGarmentByBarcode(barcode);
@@ -213,7 +213,7 @@ public class GarmentFacadeREST {
     @GET
     @Path("promotion/{promoted}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Garment> findGarmentGarmentsPromoted(@PathParam("promoted") Boolean promoted) {
+    public List<Garment> findGarmentsPromoted(@PathParam("promoted") Boolean promoted) {
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findGarmentsPromoted(promoted);

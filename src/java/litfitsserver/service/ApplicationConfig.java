@@ -27,5 +27,6 @@ public class ApplicationConfig extends Application {
         resources.add(litfitsserver.service.GarmentFacadeREST.class);
         resources.add(litfitsserver.service.MaterialFacadeREST.class);
         resources.add(litfitsserver.service.PublicKeyFacadeREST.class);
+        resources.add(litfitsserver.service.UserFacadeREST.class);
     }
 }

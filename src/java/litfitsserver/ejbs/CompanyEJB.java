@@ -1,12 +1,13 @@
 package litfitsserver.ejbs;
 
 import java.security.InvalidKeyException;
-import miscellaneous.EmailService;
+import litfitsserver.miscellaneous.EmailService;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Date;
+import java.util.ResourceBundle;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -24,7 +25,7 @@ import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
-import miscellaneous.Decryptor;
+import litfitsserver.miscellaneous.Decryptor;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
@@ -61,6 +62,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     @Override
     public Company login(Company company) throws ReadException, NotAuthorizedException, Exception {
         Company companyInDB = findCompanyByNif(company.getNif());
+        String auxPassword = company.getPassword();
         try {
             Decryptor decryptor = new Decryptor();
             company.setPassword(decryptor.decypherRSA(company.getPassword()));
@@ -74,7 +76,8 @@ public class CompanyEJB implements LocalCompanyEJB {
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             throw new Exception(ex.getMessage());
         }
-        //return a encoded password or just use the client's?
+        // To keep the same "password" that was sent by the client, meaning the encrypted one
+        companyInDB.setPassword(auxPassword);
         return companyInDB;
     }
 
@@ -138,16 +141,19 @@ public class CompanyEJB implements LocalCompanyEJB {
         emailService.sendCompanyPasswordReestablishmentEmail(company);
         em.merge(company);
     }
+
     /**
      * Creates a new email service object with the address and password from their respective files
+     *
      * @param decryptor
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private EmailService newEmailService(Decryptor decryptor) throws Exception {
-        //Fucking paths how do they work? the path should be relative to decryptor i guess
-        String emailAddress = decryptor.decypherAES("Nothin personnel kid", "EncodedAddress.dat");
-        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", "EncodedPassword.dat");
+        String encodedPasswordPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/miscellaneous/EncodedPassword.dat";
+        String encodedAddressPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/miscellaneous/EncodedAddress.dat";
+        String emailAddress = decryptor.decypherAES("Nothin personnel kid", encodedAddressPath);
+        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", encodedPasswordPath);
         EmailService emailService = new EmailService(emailAddress, emailAddressPassword, null, null);
         return emailService;
     }

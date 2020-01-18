@@ -1,9 +1,18 @@
 package litfitsserver.entities;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -20,11 +29,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Garment entity
  *
- * @author Charlie
+ * @author Carlos Mendez
  */
 @NamedQueries({
     @NamedQuery(
@@ -48,7 +59,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     )
 })
 @Entity
-@Table(name = "garment", schema = "TestLitFitsDB")
+@Table(name = "garment", schema = "testlitfitsdb")
 @XmlRootElement
 public class Garment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -105,7 +116,7 @@ public class Garment implements Serializable {
      * Path in the database to the picture of the garment
      */
     @NotNull
-    private String imagePath;
+    private String pictureName;
     /**
      * Company that sells the garment
      */
@@ -117,20 +128,21 @@ public class Garment implements Serializable {
      * What colors are in the garment
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_colors", schema = "TestLitFitsDB")
+    @JoinTable(name = "garment_colors", schema = "testlitfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
     @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "garment_materials", schema = "TestLitFitsDB")
+    @JoinTable(name = "garment_materials", schema = "testlitfitsdb")
     private Set<Material> materials;
+
     /**
      * The picture of the garment
      */
-    @Transient
-    private File picture;
-
+    //It was Transient before, will it now try to save it on the database? 
+    //@Transient
+    //private File picture;
     /**
      * Empty constructor
      */
@@ -166,7 +178,7 @@ public class Garment implements Serializable {
         this.available = available;
         this.promotionRequest = promotionRequest;
         this.promoted = promoted;
-        this.imagePath = imagePath;
+        this.pictureName = imagePath;
         this.company = company;
         this.colors = colors;
         this.materials = materials;
@@ -252,12 +264,12 @@ public class Garment implements Serializable {
         this.promoted = promoted;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getPictureName() {
+        return pictureName;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setPictureName(String pictureName) {
+        this.pictureName = pictureName;
     }
 
     public Company getCompany() {
@@ -268,6 +280,7 @@ public class Garment implements Serializable {
         this.company = company;
     }
 
+    @XmlTransient
     public Set<Color> getColors() {
         return colors;
     }
@@ -276,6 +289,7 @@ public class Garment implements Serializable {
         this.colors = colors;
     }
 
+    @XmlTransient
     public Set<Material> getMaterials() {
         return materials;
     }
@@ -284,12 +298,25 @@ public class Garment implements Serializable {
         this.materials = materials;
     }
 
-    public File getPicture() {
-        return picture;
+    public byte[] getPicture() {
+        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
+        byte[] pictureBytes = null;
+        try {
+            pictureBytes = Files.readAllBytes(new File(pictureFolder + "\\" + pictureName + ".jpg").toPath());
+        } catch (IOException ex) {
+            Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return pictureBytes;
     }
 
-    public void setPicture(File picture) {
-        this.picture = picture;
+    public void setPicture(byte[] pictureBytes) {
+        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
+        File outputFile = new File(pictureFolder + "\\" + pictureName + ".jpg");
+        try {
+            FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
+        } catch (IOException ex) {
+            Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -305,7 +332,7 @@ public class Garment implements Serializable {
         hash = 29 * hash + (this.available ? 1 : 0);
         hash = 29 * hash + (this.promotionRequest ? 1 : 0);
         hash = 29 * hash + (this.promoted ? 1 : 0);
-        hash = 29 * hash + Objects.hashCode(this.imagePath);
+        hash = 29 * hash + Objects.hashCode(this.pictureName);
         hash = 29 * hash + Objects.hashCode(this.company);
         hash = 29 * hash + Objects.hashCode(this.colors);
         hash = 29 * hash + Objects.hashCode(this.materials);
@@ -332,6 +359,6 @@ public class Garment implements Serializable {
 
     @Override
     public String toString() {
-        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + imagePath + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
+        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + pictureName + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
     }
 }
