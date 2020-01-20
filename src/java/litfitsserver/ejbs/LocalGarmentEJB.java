@@ -73,7 +73,7 @@ public interface LocalGarmentEJB {
      * @return List
      * @throws litfitsserver.exceptions.ReadException
      */
-    public List<Garment> findGarmentsByCompany(String nif) throws ReadException;
+    List<Garment> findGarmentsByCompany(String nif) throws ReadException;
 
     /**
      * Gets the garments of which a promotion has been requested
@@ -82,7 +82,7 @@ public interface LocalGarmentEJB {
      * @return List
      * @throws litfitsserver.exceptions.ReadException
      */
-    public List<Garment> findGarmentsByRequest(Boolean requested) throws ReadException;
+    List<Garment> findGarmentsByRequest(Boolean requested) throws ReadException;
 
     /**
      * Gets a garment by its barcode
@@ -91,7 +91,7 @@ public interface LocalGarmentEJB {
      * @return Garment
      * @throws litfitsserver.exceptions.ReadException
      */
-    public Garment findGarmentByBarcode(String barcode) throws ReadException;
+    Garment findGarmentByBarcode(String barcode) throws ReadException;
 
     /**
      * Gets the garments currently being promoted
@@ -100,7 +100,7 @@ public interface LocalGarmentEJB {
      * @return List
      * @throws litfitsserver.exceptions.ReadException
      */
-    public List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException;
+    List<Garment> findGarmentsPromoted(Boolean promoted) throws ReadException;
 
     /**
      * Gets the picture of the garment
@@ -110,5 +110,5 @@ public interface LocalGarmentEJB {
      * @throws java.io.IOException
      * @throws litfitsserver.exceptions.ReadException
      */
-    public byte[] getImage(Long id) throws IOException, ReadException;
+    byte[] getImage(Long id) throws IOException, ReadException;
 }

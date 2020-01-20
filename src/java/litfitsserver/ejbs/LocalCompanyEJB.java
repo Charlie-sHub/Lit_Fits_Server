@@ -89,7 +89,7 @@ public interface LocalCompanyEJB {
      * @throws ReadException
      * @throws NotAuthorizedException
      */
-    public Company login(Company company) throws ReadException, NotAuthorizedException, Exception;
+    Company login(Company company) throws ReadException, NotAuthorizedException, Exception;
 
     /**
      * Method to reestablish the password of a given company ( nif)
@@ -98,5 +98,5 @@ public interface LocalCompanyEJB {
      * @throws ReadException
      * @throws javax.mail.MessagingException
      */
-    public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception;
+    void reestablishPassword(String nif) throws ReadException, MessagingException, Exception;
 }
