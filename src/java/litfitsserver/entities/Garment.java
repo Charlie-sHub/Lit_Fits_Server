@@ -1,5 +1,6 @@
 package litfitsserver.entities;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -7,8 +8,6 @@ import java.nio.file.Files;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -287,25 +286,27 @@ public class Garment implements Serializable {
         this.materials = materials;
     }
 
-    public byte[] getPicture() {
+    /**
+     * Reads the bytes of the picture and returns them
+     *
+     * @return byte[] of the picture
+     */
+    public byte[] getPicture() throws IOException {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
-        byte[] pictureBytes = null;
-        try {
-            pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + pictureName + ".jpg").toPath());
-        } catch (IOException ex) {
-            Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        byte[] pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + pictureName + ".jpg").toPath());
         return pictureBytes;
     }
 
-    public void setPicture(byte[] pictureBytes) {
+    /**
+     * Saves the picture in the corresponding folder
+     *
+     * @param pictureBytes
+     * @throws Exception
+     */
+    public void setPicture(byte[] pictureBytes) throws Exception {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
         File outputFile = new File(pictureFolder + "/" + pictureName + ".jpg");
-        try {
-            FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
-        } catch (IOException ex) {
-            Logger.getLogger(Garment.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
     }
 
     @Override

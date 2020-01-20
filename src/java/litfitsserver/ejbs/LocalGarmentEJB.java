@@ -1,6 +1,5 @@
 package litfitsserver.ejbs;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.Local;
@@ -9,7 +8,6 @@ import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * Interface for the GarmentEJB
