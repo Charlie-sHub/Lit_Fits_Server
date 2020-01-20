@@ -25,6 +25,7 @@ import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
 import litfitsserver.miscellaneous.Decryptor;
 import litfitsserver.miscellaneous.EmailService;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * The EJB for the User on the app
