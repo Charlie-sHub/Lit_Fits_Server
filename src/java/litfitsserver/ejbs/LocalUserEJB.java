@@ -3,6 +3,9 @@ package litfitsserver.ejbs;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
+import javax.mail.MessagingException;
+import javax.ws.rs.NotAuthorizedException;
+import litfitsserver.entities.Company;
 import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
@@ -68,4 +71,24 @@ public interface LocalUserEJB {
      * @throws ReadException
      */
     public User findUserByEmail (String email) throws ReadException;
+    
+    /**
+     * Takes the data from the sent User and returns it.
+     *
+     * @param user
+     * @return Company
+     * @throws NoSuchAlgorithmException
+     * @throws ReadException
+     * @throws NotAuthorizedException
+     */
+    public User login(User user) throws ReadException, NotAuthorizedException, Exception;
+
+    /**
+     * Reestablish the password for the User with the received username.
+     *
+     * @param username
+     * @throws ReadException
+     * @throws javax.mail.MessagingException
+     */
+    public void reestablishPassword(String username) throws ReadException, MessagingException, Exception;
 }

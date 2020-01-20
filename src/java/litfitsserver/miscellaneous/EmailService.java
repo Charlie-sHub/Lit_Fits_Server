@@ -15,6 +15,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import litfitsserver.entities.Company;
+import litfitsserver.entities.User;
 
 /**
  * Builds an Email Service capable of sending normal email to a given SMTP Host. Currently <b>send()</b> can only works
@@ -130,5 +131,18 @@ public class EmailService {
     public void sendCompanyPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
         sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
+    }
+    
+    /**
+     * Send an email to the received user with the new password.
+     *
+     * @param user The User that is going to receive the new password.
+     * @throws MessagingException
+     * 
+     * @author Asier
+     */
+    public void sendUserPasswordReestablishmentEmail(User user) throws MessagingException, Exception {
+        String text = "The password for the user: " + user.getUsername() + " was changed the " + LocalDate.now() + ", to " + user.getPassword();
+        sendMail(user.getEmail(), "Your Lit Fits password has been changed", text);
     }
 }
