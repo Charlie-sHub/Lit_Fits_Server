@@ -55,6 +55,7 @@ public class CompanyEJB implements LocalCompanyEJB {
                 em.persist(company);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         }
     }

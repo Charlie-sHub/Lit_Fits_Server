@@ -39,7 +39,7 @@ public class Decryptor {
      * Returns the decyphered content of a string
      *
      * @param secret
-     * @return
+     * @return String deciphered secret
      * @throws java.security.spec.InvalidKeySpecException
      * @throws java.security.NoSuchAlgorithmException
      * @throws javax.crypto.NoSuchPaddingException
