@@ -20,6 +20,9 @@ public class PublicKeyEJB implements LocalPublicKeyEJB {
         String publicKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/public.key";
         File publicKeyFile = new File(publicKeyPath);
         publicKey = Files.readAllBytes(publicKeyFile.toPath());
+        // Don't forget to erase this, it's just a test
+        System.out.println(publicKey.length);
+        System.out.println(publicKey.toString());
         return publicKey;
     }
 }
