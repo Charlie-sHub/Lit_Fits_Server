@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -79,7 +80,13 @@ public class ColorFacadeREST {
         try {
             LOG.info("Deleting a Color");
             colorEJB.removeColor(colorEJB.findColor(name));
-        } catch (ReadException | DeleteException ex) {
+        } catch (DeleteException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -101,6 +108,9 @@ public class ColorFacadeREST {
             color = colorEJB.findColor(name);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return color;
@@ -119,6 +129,9 @@ public class ColorFacadeREST {
             LOG.info("Getting all Colors");
             colorList = colorEJB.findAllColors();
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -140,8 +153,12 @@ public class ColorFacadeREST {
             amount = String.valueOf(colorEJB.countColors());
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
+        
         return amount;
     }
 }

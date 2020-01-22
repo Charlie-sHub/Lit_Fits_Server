@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -79,7 +80,10 @@ public class GarmentFacadeREST {
     public void remove(@PathParam("id") Long id) {
         try {
             garmentEJB.removeGarment(garmentEJB.findGarment(id));
-        } catch (ReadException | DeleteException ex) {
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -101,6 +105,9 @@ public class GarmentFacadeREST {
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
         return garment;
     }
@@ -117,6 +124,9 @@ public class GarmentFacadeREST {
         try {
             garments = garmentEJB.findAllGarments();
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -136,6 +146,9 @@ public class GarmentFacadeREST {
         try {
             amount = String.valueOf(garmentEJB.countGarments());
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -158,6 +171,9 @@ public class GarmentFacadeREST {
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
         return garments;
     }
@@ -176,6 +192,9 @@ public class GarmentFacadeREST {
         try {
             garments = garmentEJB.findGarmentsByRequest(requested);
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -198,6 +217,9 @@ public class GarmentFacadeREST {
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
         return garment;
     }
@@ -216,6 +238,9 @@ public class GarmentFacadeREST {
         try {
             garments = garmentEJB.findGarmentsPromoted(promoted);
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -239,6 +264,9 @@ public class GarmentFacadeREST {
             image = garmentEJB.getImage(id);
             response = Response.ok(image, "image/jpg").header("Inline", "filename=\"" + garmentEJB.findGarment(id).getPictureName() + "\"").build();
         } catch (IOException | ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

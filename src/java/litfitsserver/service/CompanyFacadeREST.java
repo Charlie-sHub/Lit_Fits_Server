@@ -10,6 +10,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -67,11 +68,11 @@ public class CompanyFacadeREST {
         LOG.info("Editing a company");
         try {
             companyEJB.editCompany(company);
-        } catch (UpdateException | NoSuchAlgorithmException | MessagingException | ReadException ex) {
+        } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             //Don't forget to delete
             ex.printStackTrace();
-            throw new InternalServerErrorException(ex);
+            throw new NotFoundException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             //Don't forget to delete
@@ -91,7 +92,10 @@ public class CompanyFacadeREST {
         LOG.info("Deleting a company");
         try {
             companyEJB.removeCompany(companyEJB.findCompany(id));
-        } catch (ReadException | DeleteException ex) {
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -112,9 +116,9 @@ public class CompanyFacadeREST {
         LOG.info("Login of a company attempted");
         try {
             company = companyEJB.login(company);
-        } catch (ReadException | NoSuchAlgorithmException | NotAuthorizedException ex) {
+        } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
+            throw new NotFoundException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -138,6 +142,9 @@ public class CompanyFacadeREST {
             company = companyEJB.findCompany(id);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return company;
@@ -156,6 +163,9 @@ public class CompanyFacadeREST {
         try {
             companies = companyEJB.findAllCompanies();
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -177,7 +187,7 @@ public class CompanyFacadeREST {
             amount = String.valueOf(companyEJB.countCompanies());
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
+            throw new NotFoundException(ex);
         }
         return amount;
     }
@@ -198,6 +208,9 @@ public class CompanyFacadeREST {
             company = companyEJB.findCompanyByNif(nif);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return company;
@@ -216,7 +229,7 @@ public class CompanyFacadeREST {
             companyEJB.reestablishPassword(nif);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
+            throw new NotFoundException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
