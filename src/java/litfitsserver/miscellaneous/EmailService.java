@@ -15,6 +15,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import litfitsserver.entities.Company;
+import litfitsserver.entities.FashionExpert;
 import litfitsserver.entities.User;
 
 /**
@@ -131,6 +132,19 @@ public class EmailService {
     public void sendCompanyPasswordReestablishmentEmail(Company company) throws MessagingException, Exception {
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
         sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
+    }
+    
+    /**
+     * Sends an email notifying the password has been changed to a new random one, used when the expert forget their
+     * passwords
+     * 
+     * @author Ander
+     * @param expert
+     * @throws MessagingException 
+     */
+    public void sendExpertPasswordReestablishmentEmail(FashionExpert expert) throws MessagingException {
+        String text = "The password for the company: " + expert.getUsername() + " was changed the " + LocalDate.now() + ", to " + expert.getPassword();
+        sendMail(expert.getEmail(), "Your account password of Lit Fits has been changed", text);
     }
     
     /**

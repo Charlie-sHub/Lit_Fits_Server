@@ -48,17 +48,32 @@ public class FashionExpert implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    /**
+     * Unique identifier of the expert
+     */
     @NotNull
     private String username;
+    /**
+     * Password required to login
+     */
     @NotNull
     private String password;
+    /**
+     * Phone Number of the expert
+     */
     @NotNull
     private String phoneNumber;
+    /**
+     * Full name of the expert
+     */
     @NotNull
     private String fullName;
+    /**
+     * Email of the expert
+     */
     @NotNull
     private String email;
-    private String publication;
+    
     @Temporal(TemporalType.DATE)
     private Date lastPasswordChange;
     @Temporal(TemporalType.DATE)
@@ -73,13 +88,13 @@ public class FashionExpert implements Serializable {
     public FashionExpert() {
     }
 
-    public FashionExpert(String username, String password, String phoneNumber, String fullName, String email, String publication, Date lastPasswordChange, Date lastAccess, List<Material> recommendedMaterials, List<Color> recommendedColors) {
+    public FashionExpert(Long id, String username, String password, String phoneNumber, String fullName, String email, String publication, Date lastPasswordChange, Date lastAccess, List<Material> recommendedMaterials, List<Color> recommendedColors) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.fullName = fullName;
         this.email = email;
-        this.publication = publication;
         this.lastPasswordChange = lastPasswordChange;
         this.lastAccess = lastAccess;
         this.recommendedMaterials = recommendedMaterials;
@@ -95,7 +110,7 @@ public class FashionExpert implements Serializable {
     @Override
     public String toString() {
         return "Expert{ " + "Username: " + username + ", Password: " + password + ", Phone Number: " + phoneNumber + 
-                ", Full Name: " + fullName + ", Email: " + email + ", Publication: " + publication + ", lastAccess=" + lastAccess + ", lastPasswordChange=" + lastPasswordChange
+                ", Full Name: " + fullName + ", Email: " + email + ", lastAccess=" + lastAccess + ", lastPasswordChange=" + lastPasswordChange
                 + ", Recommended Materials: " + recommendedMaterials + "and Recommended Colors: " + recommendedColors + " }" ;
    }
     /**
@@ -111,7 +126,6 @@ public class FashionExpert implements Serializable {
         hash = 29 * hash + Objects.hashCode(this.fullName);
         hash = 29 * hash + Objects.hashCode(this.phoneNumber);
         hash = 29 * hash + Objects.hashCode(this.email);
-        hash = 29 * hash + Objects.hashCode(this.publication);
         hash = 29 * hash + Objects.hashCode(this.recommendedColors);
         hash = 29 * hash + Objects.hashCode(this.recommendedMaterials);
         return hash;
@@ -150,7 +164,14 @@ public class FashionExpert implements Serializable {
             return false;
         return true;
     }
+    
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 
 
     /**
@@ -223,19 +244,6 @@ public class FashionExpert implements Serializable {
         this.email = email;
     }
 
-    /**
-     * @return the publication
-     */
-    public String getPublication() {
-        return publication;
-    }
-
-    /**
-     * @param publication the publication to set
-     */
-    public void setPublication(String publication) {
-        this.publication = publication;
-    }
 
     /**
      * @return the lastPasswordChange

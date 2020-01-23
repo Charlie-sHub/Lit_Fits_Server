@@ -37,11 +37,18 @@ import litfitsserver.exceptions.UpdateException;
 
 @Path("litfitsserver.entities.fashionexpert")
 public class FashionExpertFacadeREST  {
-
+    /**
+     * Injects the EJB of the entity of the expert
+     */
     @EJB
     private LocalExpertEJB expertEJB;
     private static final Logger LOG = Logger.getLogger(FashionExpertFacadeREST.class.getName());
-
+    
+    /**
+     * Inserts a new Expert
+     *
+     * @param expert
+     */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void createExpert(FashionExpert expert) {
@@ -55,6 +62,11 @@ public class FashionExpertFacadeREST  {
         }
     }
     
+    /**
+     * Edits a Expert including the change of password
+     *
+     * @param expert
+     */
     @PUT
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(FashionExpert expert) {
@@ -69,9 +81,14 @@ public class FashionExpertFacadeREST  {
             throw new InternalServerErrorException(ex);
         }
     }
-
+    
+    /**
+     * Deletes a Expert
+     *
+     * @param username
+     */
     @DELETE
-    @Path("{username}")
+    @Path("expert/{username}")
     public void remove(@PathParam("username") String username) {
         LOG.info("Deleting an expert");
         try {
@@ -82,6 +99,13 @@ public class FashionExpertFacadeREST  {
         } 
     }
     
+    /**
+     * The log in method for experts Takes a Expert object with only the password and username giving back either an
+     * exception or a full Company
+     *
+     * @param expert
+     * @return expert
+     */
     @POST
     @Path("login/")
     @Consumes({MediaType.APPLICATION_XML})
@@ -99,9 +123,12 @@ public class FashionExpertFacadeREST  {
         }
         return expert;
     }
-    
-    
-    
+    /**
+     * Gets an expert
+     *
+     * @param username
+     * @return expert
+     */
     
     @GET
     @Path("expert/{username}")
@@ -118,6 +145,10 @@ public class FashionExpertFacadeREST  {
         return expert;
     }
     
+    /**
+     * Gets List of colors
+     *  return colors
+     */
     @GET
     @Path("colors/")
     @Produces({MediaType.APPLICATION_XML})
@@ -133,6 +164,10 @@ public class FashionExpertFacadeREST  {
         return colors;
     }
     
+    /**
+     * Get list of materials
+     * @return materials
+     */
     @GET
     @Path("materials/")
     @Produces({MediaType.APPLICATION_XML})
@@ -148,7 +183,25 @@ public class FashionExpertFacadeREST  {
         return materials;
     }
        
-
+    /**
+     * Gets a given username and replaces the password of the associated expert with a nre random one
+     *
+     * @param username
+     */
+    @GET
+    @Path("passwordReestablishment/{username}")
+    public void reestablishPassword(@PathParam("username") String username) {
+        LOG.info("Reestablishing a password");
+        try {
+            expertEJB.reestabilishPassword(username);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+    }
        
    
 }
