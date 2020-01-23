@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +25,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Has the methods for deciphering the encrypted files used by the server
@@ -36,7 +36,7 @@ public class Decryptor {
     private static final byte[] SALT = "OwO UwU *.^ u.u!".getBytes();
 
     /**
-     * Returns the decyphered content of a string
+     * Returns the deciphered content of a string
      *
      * @param secret
      * @return String deciphered secret
@@ -50,10 +50,7 @@ public class Decryptor {
      */
     public static String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
         String message = null;
-        byte privateKeyBytes[] = null;
-        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
-        File privateKeyFile = new File(privateKeyPath);
-        privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
+        byte privateKeyBytes[] = getPrivateKey();
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
@@ -61,6 +58,22 @@ public class Decryptor {
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         message = cipher.doFinal(getBytesFromHexString(secret)).toString();
         return message;
+    }
+
+    /**
+     * Reads the private.key file and returns its contents
+     *
+     * @return byte[]
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private static byte[] getPrivateKey() throws IOException, FileNotFoundException {
+        byte privateKeyBytes[] = null;
+        // String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
+        File privateKeyFile = new File("private.key");
+        FileInputStream input = new FileInputStream(privateKeyFile);
+        privateKeyBytes = IOUtils.toByteArray(input);
+        return privateKeyBytes;
     }
 
     /**
