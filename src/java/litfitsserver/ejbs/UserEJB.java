@@ -122,7 +122,7 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public User findUserByEmail(String email) throws ReadException {
-        return (User) em.createNamedQuery("findUserByEmail").setParameter("email", email).getResultList();
+        return (User) em.createNamedQuery("findUserByEmail").setParameter("email", email).getResultList().get(0);
     }
 
     /**

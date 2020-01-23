@@ -40,6 +40,7 @@ public class UserFacadeREST {
      * @param user The user that will be inserted, with all the data.
      */
     @POST
+    @Path("createuser")
     @Consumes({MediaType.APPLICATION_XML})
     public void createUser(User user) {
         
@@ -58,9 +59,9 @@ public class UserFacadeREST {
      * @param user A User object that contains all the data that will be updated.
      */
     @PUT
-    @Path("{username}")
+    //@Path("edituser/{user}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void editUser(@PathParam("username") User user) {
+    public void editUser( User user) {
 
         try {
             userEJB.createUser(user);
@@ -77,8 +78,8 @@ public class UserFacadeREST {
      * @param user The user that will be deleted from the database.
      */
     @DELETE
-    @Path("{username}")
-    public void removeUser(@PathParam("username") User user) {
+    @Path("deleteuser/{user}")
+    public void removeUser(@PathParam("user") User user) {
 
         try {
             userEJB.removeUser(user);
@@ -90,7 +91,8 @@ public class UserFacadeREST {
     }
     
     /**
-     *
+     * Gets a user with all its data.
+     * 
      * @param user
      * @return User
      */
@@ -123,7 +125,7 @@ public class UserFacadeREST {
      * @return The user with all the data.
      */
     @GET
-    @Path("{username}")
+    @Path("find/{username}")
     @Produces({MediaType.APPLICATION_XML})
     public User findUser(@PathParam("username") String username) {
 
@@ -142,6 +144,7 @@ public class UserFacadeREST {
      * @return A List with the registered users.
      */
     @GET
+    //@Path("findall")
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAllUser() {
 
