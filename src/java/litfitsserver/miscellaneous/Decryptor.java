@@ -48,7 +48,7 @@ public class Decryptor {
      * @throws javax.crypto.IllegalBlockSizeException
      * @throws javax.crypto.BadPaddingException
      */
-    public String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
+    public static String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
         String message = null;
         byte privateKeyBytes[] = null;
         String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
@@ -59,8 +59,23 @@ public class Decryptor {
         PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        message = cipher.doFinal(secret.getBytes()).toString();
+        message = cipher.doFinal(getBytesFromHexString(secret)).toString();
         return message;
+    }
+
+    /**
+     * Gets a byte array from a given string of hexadecimal values
+     *
+     * @param secret
+     * @return byte[]
+     */
+    public static byte[] getBytesFromHexString(String secret) {
+        int length = secret.length();
+        byte[] data = new byte[length / 2];
+        for (int i = 0; i < length; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(secret.charAt(i), 16) << 4) + Character.digit(secret.charAt(i + 1), 16));
+        }
+        return data;
     }
 
     /**

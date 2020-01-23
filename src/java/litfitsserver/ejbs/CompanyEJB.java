@@ -39,12 +39,11 @@ public class CompanyEJB implements LocalCompanyEJB {
     private EntityManager em;
     @EJB
     LocalGarmentEJB garmentEJB;
-    
+
     @Override
     public void createCompany(Company company) throws CreateException {
-        Decryptor decryptor = new Decryptor();
         try {
-            company.setPassword(decryptor.decypherRSA(company.getPassword()));
+            company.setPassword(Decryptor.decypherRSA(company.getPassword()));
             if (companyExists(company.getNif())) {
                 throw new Exception("NIF already exists in the database");
             } else {
@@ -54,12 +53,15 @@ public class CompanyEJB implements LocalCompanyEJB {
                 company.setLastPasswordChange(new Date());
                 em.persist(company);
             }
+        } catch (BadPaddingException ex) {
+            ex.printStackTrace();
+            throw new CreateException(ex.getMessage());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         }
     }
-    
+
     @Override
     public Company login(Company company) throws ReadException, NotAuthorizedException, Exception {
         String auxPassword = company.getPassword();
@@ -82,7 +84,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         companyInDB.setPassword(auxPassword);
         return companyInDB;
     }
-    
+
     @Override
     public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception {
         //This method should receive the original password to make sure the company is the one editing its own data
@@ -101,24 +103,24 @@ public class CompanyEJB implements LocalCompanyEJB {
         em.merge(company);
         em.flush();
     }
-    
+
     @Override
     public void removeCompany(Company company) throws ReadException, DeleteException {
         em.remove(em.merge(company));
     }
-    
+
     @Override
     public Company findCompany(Long id) throws ReadException {
         return em.find(Company.class, id);
     }
-    
+
     @Override
     public List<Company> findAllCompanies() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
         cq.select(cq.from(Company.class));
         return em.createQuery(cq).getResultList();
     }
-    
+
     @Override
     public int countCompanies() throws ReadException {
         CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -127,7 +129,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         Query q = em.createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
-    
+
     @Override
     public Company findCompanyByNif(String nif) throws ReadException {
         Company company = null;
@@ -138,7 +140,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         }
         return company;
     }
-    
+
     @Override
     public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception {
         Company company = findCompanyByNif(nif);
