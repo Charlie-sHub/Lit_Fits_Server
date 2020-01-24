@@ -228,9 +228,11 @@ public class CompanyFacadeREST {
         try {
             companyEJB.reestablishPassword(nif);
         } catch (ReadException ex) {
+            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
         } catch (Exception ex) {
+            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

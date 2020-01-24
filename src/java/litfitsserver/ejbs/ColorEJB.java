@@ -21,42 +21,42 @@ import litfitsserver.exceptions.UpdateException;
 @Stateless
 public class ColorEJB implements LocalColorEJB {
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
-    private EntityManager em;
+    private EntityManager entityManager;
 
     @Override
     public void createColor(Color color) throws CreateException {
-        em.persist(color);
+        entityManager.persist(color);
     }
 
     @Override
     public void editColor(Color color) throws UpdateException {
-        em.merge(color);
-        em.flush();
+        entityManager.merge(color);
+        entityManager.flush();
     }
 
     @Override
     public void removeColor(Color color) throws ReadException, DeleteException {
-        em.remove(em.merge(color));
+        entityManager.remove(entityManager.merge(color));
     }
 
     @Override
     public Color findColor(String name) throws ReadException {
-        return em.find(Color.class, name);
+        return entityManager.find(Color.class, name);
     }
 
     @Override
     public List<Color> findAllColors() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         cq.select(cq.from(Color.class));
-        return em.createQuery(cq).getResultList();
+        return entityManager.createQuery(cq).getResultList();
     }
 
     @Override
     public int countColors() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         Root<Color> rt = cq.from(Color.class);
-        cq.select(em.getCriteriaBuilder().count(rt));
-        Query q = em.createQuery(cq);
+        cq.select(entityManager.getCriteriaBuilder().count(rt));
+        Query q = entityManager.createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
 }

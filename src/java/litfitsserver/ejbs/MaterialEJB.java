@@ -21,42 +21,42 @@ import litfitsserver.exceptions.UpdateException;
 @Stateless
 public class MaterialEJB implements LocalMaterialEJB {
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
-    private EntityManager em;
+    private EntityManager entityManager;
 
     @Override
     public void createMaterial(Material material) throws CreateException {
-        em.persist(material);
+        entityManager.persist(material);
     }
 
     @Override
     public void editMaterial(Material material) throws UpdateException {
-        em.merge(material);
-        em.flush();
+        entityManager.merge(material);
+        entityManager.flush();
     }
 
     @Override
     public void removeMaterial(Material material) throws ReadException, DeleteException {
-        em.remove(em.merge(material));
+        entityManager.remove(entityManager.merge(material));
     }
 
     @Override
     public Material findMaterial(String name) throws ReadException {
-        return em.find(Material.class, name);
+        return entityManager.find(Material.class, name);
     }
 
     @Override
     public List<Material> findAllMaterials() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         cq.select(cq.from(Material.class));
-        return em.createQuery(cq).getResultList();
+        return entityManager.createQuery(cq).getResultList();
     }
 
     @Override
     public int countMaterials() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         Root<Material> rt = cq.from(Material.class);
-        cq.select(em.getCriteriaBuilder().count(rt));
-        Query q = em.createQuery(cq);
+        cq.select(entityManager.getCriteriaBuilder().count(rt));
+        Query q = entityManager.createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
 }

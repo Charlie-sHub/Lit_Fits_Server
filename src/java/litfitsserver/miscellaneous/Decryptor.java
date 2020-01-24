@@ -56,7 +56,7 @@ public class Decryptor {
         PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        message = cipher.doFinal(getBytesFromHexString(secret)).toString();
+        message = new String(cipher.doFinal(getBytesFromHexString(secret)));
         return message;
     }
 
@@ -69,8 +69,8 @@ public class Decryptor {
      */
     private static byte[] getPrivateKey() throws IOException, FileNotFoundException {
         byte privateKeyBytes[] = null;
-        // String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
-        File privateKeyFile = new File("private.key");
+        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
+        File privateKeyFile = new File(privateKeyPath);
         FileInputStream input = new FileInputStream(privateKeyFile);
         privateKeyBytes = IOUtils.toByteArray(input);
         return privateKeyBytes;
@@ -123,20 +123,10 @@ public class Decryptor {
      * @return byte[] the content of the file
      */
     private byte[] fileReader(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
-        byte content[] = null;
-        ObjectInputStream in = null;
-        try {
-            in = new ObjectInputStream(new FileInputStream(path));
-            content = (byte[]) in.readObject();
-        } finally {
-            if (null != in) {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(Decryptor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+        byte[] content = null;
+        File file = new File(path);
+        FileInputStream input = new FileInputStream(file);
+        content = IOUtils.toByteArray(input);
         return content;
     }
 }
