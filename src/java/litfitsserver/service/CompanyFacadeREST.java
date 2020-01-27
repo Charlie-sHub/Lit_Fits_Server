@@ -223,18 +223,24 @@ public class CompanyFacadeREST {
      */
     @GET
     @Path("passwordReestablishment/{nif}")
-    public void reestablishPassword(@PathParam("nif") String nif) {
+    @Produces({MediaType.TEXT_PLAIN})
+    public String reestablishPassword(@PathParam("nif") String nif) {
         LOG.info("Reestablishing a password");
+        String aux;
         try {
             companyEJB.reestablishPassword(nif);
+            aux = "The Password has been reestablished";
         } catch (ReadException ex) {
             ex.printStackTrace();
+            aux = "There's been an error";
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
         } catch (Exception ex) {
             ex.printStackTrace();
+            aux = "There's been an error";
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
+        return aux;
     }
 }

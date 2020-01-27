@@ -45,6 +45,7 @@ public class GarmentFacadeREST {
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void createGarment(Garment garment) {
+        LOG.info("Creating a Garment");
         try {
             garmentEJB.createGarment(garment);
         } catch (CreateException ex) {
@@ -62,6 +63,7 @@ public class GarmentFacadeREST {
     @PUT
     @Consumes({MediaType.APPLICATION_XML})
     public void editGarment(Garment garment) {
+        LOG.info("Editing a Garment");
         try {
             garmentEJB.editGarment(garment);
         } catch (UpdateException ex) {
@@ -78,9 +80,10 @@ public class GarmentFacadeREST {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
+        LOG.info("Deleting a Garment");
         try {
             garmentEJB.removeGarment(garmentEJB.findGarment(id));
-        } catch (ReadException ex) {
+        } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
         } catch (Exception ex) {
@@ -99,6 +102,7 @@ public class GarmentFacadeREST {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Garment findGarment(@PathParam("id") Long id) {
+        LOG.info("Finding a Garment");
         Garment garment = null;
         try {
             garment = garmentEJB.findGarment(id);
@@ -120,6 +124,7 @@ public class GarmentFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentAll() {
+        LOG.info("Finding all Garments");
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findAllGarments();
@@ -142,6 +147,7 @@ public class GarmentFacadeREST {
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
+        LOG.info("Counting the Garments");
         String amount = null;
         try {
             amount = String.valueOf(garmentEJB.countGarments());
@@ -165,6 +171,7 @@ public class GarmentFacadeREST {
     @Path("company/{nif}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentsByCompany(@PathParam("nif") String nif) {
+        LOG.info("Finding the Garments of a Company");
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findGarmentsByCompany(nif);
@@ -188,6 +195,7 @@ public class GarmentFacadeREST {
     @Path("request/{requested}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentsByRequest(@PathParam("requested") Boolean requested) {
+        LOG.info("FInding all Garments with a promotion request");
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findGarmentsByRequest(requested);
@@ -211,6 +219,7 @@ public class GarmentFacadeREST {
     @Path("barcode/{barcode}")
     @Produces({MediaType.APPLICATION_XML})
     public Garment findGarmentByBarcode(@PathParam("barcode") String barcode) {
+        LOG.info("Finding a Garment by barcode");
         Garment garment = null;
         try {
             garment = garmentEJB.findGarmentByBarcode(barcode);
@@ -234,6 +243,7 @@ public class GarmentFacadeREST {
     @Path("promotion/{promoted}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Garment> findGarmentsPromoted(@PathParam("promoted") Boolean promoted) {
+        LOG.info("Finding all promoted Garments");
         List<Garment> garments = null;
         try {
             garments = garmentEJB.findGarmentsPromoted(promoted);
@@ -257,6 +267,7 @@ public class GarmentFacadeREST {
     @Path("picture/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getImage(@PathParam("id") Long id) {
+        LOG.info("Getting the image of a Garment");
         byte[] image = null;
         Response response;
         try {
