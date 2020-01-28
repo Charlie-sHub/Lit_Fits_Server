@@ -94,11 +94,10 @@ public class CompanyEJB implements LocalCompanyEJB {
             emailService.sendCompanyPasswordChangeComfirmationEmail(company);
             // Make a pool for emails if possible
             company.setLastPasswordChange(new Date());
-            String password = company.getPassword();
-            company.setPassword(toHash(password));
         }
-        companyInDB = company;
-        entityManager.merge(companyInDB);
+        company.setPassword(toHash(company.getPassword()));
+        company.setId(companyInDB.getId());
+        entityManager.merge(company);
         entityManager.flush();
     }
 
@@ -143,7 +142,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception {
         Company company = findCompanyByNif(nif);
         String generatedString = RandomStringUtils.randomAlphabetic(10);
-        company.setPassword(generatedString);
+        company.setPassword(toHash(generatedString));
         Decryptor decryptor = new Decryptor();
         EmailService emailService = newEmailService(decryptor);
         emailService.sendCompanyPasswordReestablishmentEmail(company);

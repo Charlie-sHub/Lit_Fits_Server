@@ -304,6 +304,7 @@ public class Garment implements Serializable {
      * @throws Exception
      */
     public void setPicture(byte[] pictureBytes) throws Exception {
+        System.out.println(getPictureName());
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
         File outputFile = new File(pictureFolder + "/" + pictureName + ".jpg");
         FileUtils.writeByteArrayToFile(outputFile, pictureBytes);

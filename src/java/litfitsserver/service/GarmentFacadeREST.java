@@ -66,7 +66,7 @@ public class GarmentFacadeREST {
         LOG.info("Editing a Garment");
         try {
             garmentEJB.editGarment(garment);
-        } catch (UpdateException ex) {
+        } catch (UpdateException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
