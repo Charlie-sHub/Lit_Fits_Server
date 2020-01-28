@@ -16,6 +16,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -114,9 +115,10 @@ public class FashionExpertFacadeREST  {
         LOG.info("Login of an expert");
         try {
             expert = expertEJB.login(expert);
-        } catch (ReadException | NoSuchAlgorithmException | NotAuthorizedException ex) {
+        } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
+            ex.printStackTrace();
+            throw new NotFoundException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);

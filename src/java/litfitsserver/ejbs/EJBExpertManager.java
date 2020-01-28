@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.crypto.NoSuchPaddingException;
 import javax.ejb.CreateException;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
@@ -40,6 +41,8 @@ public class EJBExpertManager implements LocalExpertEJB {
 
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager em;
+    @EJB
+    LocalExpertEJB expertEJB;
     
     /**
      * Method to create an exert
@@ -180,17 +183,17 @@ public class EJBExpertManager implements LocalExpertEJB {
      */
     @Override
     public FashionExpert login(FashionExpert expert) throws ReadException, NotAuthorizedException, Exception {
-        FashionExpert expertInDB = findExpertByUsername(expert.getUsername());
+        FashionExpert expertInDB;
         try {
-            Decryptor decryptor = new Decryptor();
-            expert.setPassword(decryptor.decypherRSA(expert.getPassword()));
+            expertInDB = findExpertByUsername(expert.getUsername());
+            expert.setPassword(Decryptor.decypherRSA(expert.getPassword()));
             boolean correctPassword = expertInDB.getPassword().equals(toHash(expert.getPassword()));
             if(!correctPassword){
                 throw new NotAuthorizedException("Wrong Password");
             }
             expertInDB.setLastAccess(new Date());
             em.merge(expertInDB);
-                        
+            em.flush();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException  ex) {
             throw new Exception(ex.getMessage());
         }
