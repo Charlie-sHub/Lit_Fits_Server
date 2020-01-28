@@ -103,8 +103,7 @@ public class EmailService {
      * @return True or False
      */
     public static boolean isValid(String mail) {
-        Pattern pattern = Pattern.compile(
-                "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$");
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$");
         if (mail == null) {
             return false;
         }
@@ -133,7 +132,7 @@ public class EmailService {
         String text = "The password for the company: " + company.getNif() + " was changed the " + LocalDate.now() + ", to " + company.getPassword();
         sendMail(company.getEmail(), "Your Lit Fits password has been changed", text);
     }
-    
+
     /**
      * Sends an email notifying the password has been changed to a new random one, used when the expert forget their
      * passwords
@@ -152,7 +151,7 @@ public class EmailService {
      *
      * @param user The User that is going to receive the new password.
      * @throws MessagingException
-     * 
+     *
      * @author Asier
      */
     public void sendUserPasswordReestablishmentEmail(User user) throws MessagingException, Exception {

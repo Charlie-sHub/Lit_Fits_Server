@@ -36,99 +36,108 @@ import org.apache.commons.lang3.RandomStringUtils;
 @Stateless
 public class CompanyEJB implements LocalCompanyEJB {
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
-    private EntityManager em;
+    private EntityManager entityManager;
     @EJB
     LocalGarmentEJB garmentEJB;
 
     @Override
     public void createCompany(Company company) throws CreateException {
-        Decryptor decryptor = new Decryptor();
         try {
-            company.setPassword(decryptor.decypherRSA(company.getPassword()));
+            company.setPassword(Decryptor.decypherRSA(company.getPassword()));
             if (companyExists(company.getNif())) {
                 throw new Exception("NIF already exists in the database");
             } else {
-                String password = company.getPassword();
-                company.setPassword(toHash(password));
+                company.setPassword(toHash(company.getPassword()));
                 company.setLastAccess(new Date());
                 company.setLastPasswordChange(new Date());
-                em.persist(company);
+                entityManager.persist(company);
             }
+        } catch (BadPaddingException ex) {
+            ex.printStackTrace();
+            throw new CreateException(ex.getMessage());
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         }
     }
 
     @Override
     public Company login(Company company) throws ReadException, NotAuthorizedException, Exception {
-        Company companyInDB = findCompanyByNif(company.getNif());
-        String auxPassword = company.getPassword();
+        Company companyInDB;
         try {
-            Decryptor decryptor = new Decryptor();
-            company.setPassword(decryptor.decypherRSA(company.getPassword()));
+            companyInDB = findCompanyByNif(company.getNif());
+            company.setPassword(Decryptor.decypherRSA(company.getPassword()));
             boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
             if (!rightPassword) {
                 throw new NotAuthorizedException("Wrong password");
             }
             companyInDB.setLastAccess(new Date());
-            em.merge(companyInDB);
+            entityManager.merge(companyInDB);
+            entityManager.flush();
             companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            ex.printStackTrace();
             throw new Exception(ex.getMessage());
         }
-        // To keep the same "password" that was sent by the client, meaning the encrypted one
-        companyInDB.setPassword(auxPassword);
         return companyInDB;
     }
 
     @Override
     public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception {
-        //This method should receive the original password to make sure the company is the one editing its own data
+        // This method should receive the original password to make sure the company is the one editing its own data
         Decryptor decryptor = new Decryptor();
-        company.setPassword(decryptor.decypherRSA(company.getPassword()));
+        company.setPassword(Decryptor.decypherRSA(company.getPassword()));
         Company companyInDB = findCompanyByNif(company.getNif());
         boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
         if (!rightPassword) {
             EmailService emailService = newEmailService(decryptor);
             emailService.sendCompanyPasswordChangeComfirmationEmail(company);
-            //Make a pool for emails
+            // Make a pool for emails if possible
             company.setLastPasswordChange(new Date());
             String password = company.getPassword();
             company.setPassword(toHash(password));
         }
-        em.merge(company);
-        em.flush();
+        System.out.println("company in db id: " + companyInDB.getId());
+        System.out.println("company from client" + company.getId());
+        entityManager.merge(company);
+        entityManager.flush();
     }
 
     @Override
     public void removeCompany(Company company) throws ReadException, DeleteException {
-        em.remove(em.merge(company));
+        entityManager.remove(entityManager.merge(company));
     }
 
     @Override
     public Company findCompany(Long id) throws ReadException {
-        return em.find(Company.class, id);
+        return entityManager.find(Company.class, id);
     }
 
     @Override
     public List<Company> findAllCompanies() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         cq.select(cq.from(Company.class));
-        return em.createQuery(cq).getResultList();
+        return entityManager.createQuery(cq).getResultList();
     }
 
     @Override
     public int countCompanies() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         Root<Company> rt = cq.from(Company.class);
-        cq.select(em.getCriteriaBuilder().count(rt));
-        Query q = em.createQuery(cq);
+        cq.select(entityManager.getCriteriaBuilder().count(rt));
+        Query q = entityManager.createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
 
     @Override
     public Company findCompanyByNif(String nif) throws ReadException {
-        return (Company) em.createNamedQuery("findCompanyByNif").setParameter("nif", nif).getSingleResult();
+        Company company = null;
+        try {
+            company = (Company) entityManager.createNamedQuery("findCompanyByNif").setParameter("nif", nif).getSingleResult();
+        } catch (Exception e) {
+            throw new ReadException("Username not found");
+        }
+        return company;
     }
 
     @Override
@@ -139,7 +148,8 @@ public class CompanyEJB implements LocalCompanyEJB {
         Decryptor decryptor = new Decryptor();
         EmailService emailService = newEmailService(decryptor);
         emailService.sendCompanyPasswordReestablishmentEmail(company);
-        em.merge(company);
+        entityManager.merge(company);
+        entityManager.flush();
     }
 
     /**
@@ -183,6 +193,6 @@ public class CompanyEJB implements LocalCompanyEJB {
      * @return boolean exists
      */
     private boolean companyExists(String nif) throws ReadException {
-        return (long) em.createNamedQuery("companyExists").setParameter("nif", nif).getSingleResult() == 1;
+        return (long) entityManager.createNamedQuery("companyExists").setParameter("nif", nif).getSingleResult() == 1;
     }
 }
