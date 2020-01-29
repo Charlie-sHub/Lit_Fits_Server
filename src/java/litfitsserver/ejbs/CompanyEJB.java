@@ -86,7 +86,7 @@ public class CompanyEJB implements LocalCompanyEJB {
     public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception {
         // This method should receive the original password to make sure the company is the one editing its own data
         Decryptor decryptor = new Decryptor();
-        company.setPassword(decryptor.decypherRSA(company.getPassword()));
+        company.setPassword(Decryptor.decypherRSA(company.getPassword()));
         Company companyInDB = findCompanyByNif(company.getNif());
         boolean rightPassword = companyInDB.getPassword().equals(toHash(company.getPassword()));
         if (!rightPassword) {
