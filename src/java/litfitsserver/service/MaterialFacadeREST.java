@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -79,7 +80,10 @@ public class MaterialFacadeREST {
         try {
             LOG.info("Deleting a Material");
             materialEJB.removeMaterial(materialEJB.findMaterial(name));
-        } catch (ReadException | DeleteException ex) {
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotFoundException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -102,6 +106,9 @@ public class MaterialFacadeREST {
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
         }
         return material;
     }
@@ -119,6 +126,9 @@ public class MaterialFacadeREST {
             LOG.info("Getting all Materials");
             materialList = materialEJB.findAllMaterials();
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -139,6 +149,9 @@ public class MaterialFacadeREST {
             LOG.info("Counting the Materials");
             amount = String.valueOf(materialEJB.countMaterials());
         } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

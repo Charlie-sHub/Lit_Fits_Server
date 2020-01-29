@@ -1,6 +1,5 @@
 package litfitsserver.entities;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -290,6 +289,7 @@ public class Garment implements Serializable {
      * Reads the bytes of the picture and returns them
      *
      * @return byte[] of the picture
+     * @throws java.io.IOException
      */
     public byte[] getPicture() throws IOException {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
@@ -304,6 +304,7 @@ public class Garment implements Serializable {
      * @throws Exception
      */
     public void setPicture(byte[] pictureBytes) throws Exception {
+        System.out.println(getPictureName());
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
         File outputFile = new File(pictureFolder + "/" + pictureName + ".jpg");
         FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
