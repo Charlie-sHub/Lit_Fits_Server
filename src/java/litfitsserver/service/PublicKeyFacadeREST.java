@@ -40,9 +40,6 @@ public class PublicKeyFacadeREST {
             ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
-        } catch (Exception ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
         }
         return publicKey;
     }
