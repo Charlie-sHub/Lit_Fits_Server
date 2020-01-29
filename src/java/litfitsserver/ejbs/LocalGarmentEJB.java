@@ -38,7 +38,7 @@ public interface LocalGarmentEJB {
      * @param garment
      * @throws litfitsserver.exceptions.UpdateException
      */
-    void editGarment(Garment garment) throws UpdateException;
+    void editGarment(Garment garment) throws UpdateException, ReadException;
 
     /**
      * Gets all the garments

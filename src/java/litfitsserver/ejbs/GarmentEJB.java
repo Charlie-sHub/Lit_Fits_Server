@@ -30,7 +30,9 @@ public class GarmentEJB implements LocalGarmentEJB {
     }
 
     @Override
-    public void editGarment(Garment garment) throws UpdateException {
+    public void editGarment(Garment garment) throws UpdateException, ReadException {
+        Garment garmentInDb = findGarmentByBarcode(garment.getBarcode());
+        garment.setId(garmentInDb.getId());
         entityManager.merge(garment);
         entityManager.flush();
     }
