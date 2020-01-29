@@ -46,7 +46,6 @@ public class GarmentFacadeREST {
     @Consumes({MediaType.APPLICATION_XML})
     public void createGarment(Garment garment) {
         LOG.info("Creating a Garment");
-        System.out.println(garment.getBarcode() + " picture mane: " + garment.getNamePicture());
         try {
             garmentEJB.createGarment(garment);
         } catch (CreateException ex) {
@@ -130,11 +129,9 @@ public class GarmentFacadeREST {
         try {
             garments = garmentEJB.findAllGarments();
         } catch (ReadException ex) {
-            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -179,11 +176,9 @@ public class GarmentFacadeREST {
         try {
             garments = garmentEJB.findGarmentsByCompany(nif);
         } catch (ReadException ex) {
-            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -265,12 +260,15 @@ public class GarmentFacadeREST {
     /**
      * Gets the picture of the garment
      *
+     * Deprecated since the picture is now embedded in the Garment
+     *
      * @param id
      * @return Response
      */
     @GET
     @Path("picture/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Deprecated
     public Response getImage(@PathParam("id") Long id) {
         LOG.info("Getting the image of a Garment");
         byte[] image = null;

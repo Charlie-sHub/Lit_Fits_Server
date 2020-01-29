@@ -31,7 +31,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 /**
  * EJB for Companies
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Stateless
 public class CompanyEJB implements LocalCompanyEJB {
@@ -45,7 +45,7 @@ public class CompanyEJB implements LocalCompanyEJB {
         try {
             company.setPassword(Decryptor.decypherRSA(company.getPassword()));
             if (companyExists(company.getNif())) {
-                throw new Exception("NIF already exists in the database");
+                throw new Exception("The NIF already exists in the database");
             } else {
                 company.setPassword(toHash(company.getPassword()));
                 company.setLastAccess(new Date());
@@ -53,10 +53,8 @@ public class CompanyEJB implements LocalCompanyEJB {
                 entityManager.persist(company);
             }
         } catch (BadPaddingException ex) {
-            ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         }
     }
@@ -76,7 +74,6 @@ public class CompanyEJB implements LocalCompanyEJB {
             entityManager.flush();
             companyInDB.setGarments(garmentEJB.findGarmentsByCompany(companyInDB.getNif()));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
-            ex.printStackTrace();
             throw new Exception(ex.getMessage());
         }
         return companyInDB;
@@ -84,7 +81,6 @@ public class CompanyEJB implements LocalCompanyEJB {
 
     @Override
     public void editCompany(Company company) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception {
-        // This method should receive the original password to make sure the company is the one editing its own data
         Decryptor decryptor = new Decryptor();
         company.setPassword(Decryptor.decypherRSA(company.getPassword()));
         Company companyInDB = findCompanyByNif(company.getNif());
@@ -92,7 +88,6 @@ public class CompanyEJB implements LocalCompanyEJB {
         if (!rightPassword) {
             EmailService emailService = newEmailService(decryptor);
             emailService.sendCompanyPasswordChangeComfirmationEmail(company);
-            // Make a pool for emails if possible
             company.setLastPasswordChange(new Date());
         }
         company.setPassword(toHash(company.getPassword()));
@@ -154,12 +149,12 @@ public class CompanyEJB implements LocalCompanyEJB {
      * Creates a new email service object with the address and password from their respective files
      *
      * @param decryptor
-     * @return
+     * @return EmailService
      * @throws Exception
      */
     private EmailService newEmailService(Decryptor decryptor) throws Exception {
-        String encodedPasswordPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/miscellaneous/EncodedPassword.dat";
-        String encodedAddressPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/miscellaneous/EncodedAddress.dat";
+        String encodedPasswordPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("encodedEmailCredentialsFolder") + "/EncodedPassword.dat";
+        String encodedAddressPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("encodedEmailCredentialsFolder") + "/EncodedAddress.dat";
         String emailAddress = decryptor.decypherAES("Nothin personnel kid", encodedAddressPath);
         String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", encodedPasswordPath);
         EmailService emailService = new EmailService(emailAddress, emailAddressPassword, null, null);

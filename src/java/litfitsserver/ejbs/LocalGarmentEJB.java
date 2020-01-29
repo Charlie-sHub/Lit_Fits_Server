@@ -12,7 +12,7 @@ import litfitsserver.exceptions.UpdateException;
 /**
  * Interface for the GarmentEJB
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Local
 public interface LocalGarmentEJB {

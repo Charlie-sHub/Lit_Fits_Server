@@ -11,7 +11,7 @@ import litfitsserver.exceptions.UpdateException;
 /**
  * Interface for the MaterialEJB
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Local
 public interface LocalMaterialEJB {

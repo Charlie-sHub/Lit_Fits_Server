@@ -14,7 +14,7 @@ import litfitsserver.exceptions.UpdateException;
 /**
  * Interface for the CompanyEJB
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Local
 public interface LocalCompanyEJB {

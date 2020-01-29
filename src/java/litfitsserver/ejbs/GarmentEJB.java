@@ -26,7 +26,6 @@ public class GarmentEJB implements LocalGarmentEJB {
 
     @Override
     public void createGarment(Garment garment) throws CreateException {
-        System.out.println(garment.getNamePicture());
         entityManager.persist(garment);        
     }
 

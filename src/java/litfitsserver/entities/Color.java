@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Color Class
+ * Color entity class
  * @author Charlie
  */
 @Entity

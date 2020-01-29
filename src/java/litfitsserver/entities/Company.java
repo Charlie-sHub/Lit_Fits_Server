@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Company class, has all the data required for the Use Cases of company type actors
+ * Company entity
  *
  * @author Charlie
  */

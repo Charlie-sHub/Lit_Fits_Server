@@ -293,7 +293,7 @@ public class Garment implements Serializable {
      * @throws java.io.IOException
      */
     public byte[] getPicture() throws IOException {
-        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
+        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("picturesFolder");
         byte[] pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + namePicture).toPath());
         return pictureBytes;
     }
@@ -305,9 +305,7 @@ public class Garment implements Serializable {
      * @throws Exception
      */
     public void setPicture(byte[] pictureBytes) throws Exception {
-        System.out.println(getNamePicture());
-        System.out.println(namePicture);
-        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
+        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("picturesFolder");
         File outputFile = new File(pictureFolder + "/" + namePicture);
         FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
     }

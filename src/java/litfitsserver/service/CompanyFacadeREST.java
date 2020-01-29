@@ -34,7 +34,7 @@ public class CompanyFacadeREST {
     private static final Logger LOG = Logger.getLogger(CompanyFacadeREST.class.getName());
 
     /**
-     * Inserts a new Company
+     * Creates a new Company
      *
      * @param company
      */
@@ -46,12 +46,9 @@ public class CompanyFacadeREST {
             companyEJB.createCompany(company);
         } catch (CreateException ex) {
             LOG.severe(ex.getMessage());
-            ex.printStackTrace();
             throw new InternalServerErrorException(ex);
         } catch (Exception ex) {
-            System.out.println("this should be printed");
             LOG.severe(ex.getMessage());
-            ex.printStackTrace();
             throw new InternalServerErrorException(ex);
         }
     }
@@ -70,13 +67,9 @@ public class CompanyFacadeREST {
             companyEJB.editCompany(company);
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
-            //Don't forget to delete
-            ex.printStackTrace();
             throw new NotFoundException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
-            //Don't forget to delete
-            ex.printStackTrace();
             throw new InternalServerErrorException(ex);
         }
     }
@@ -102,7 +95,7 @@ public class CompanyFacadeREST {
     }
 
     /**
-     * The log in method for companies Takes a Company object with only the password and nif giving back either an
+     * The log in method for companies Takes a Company object with only the password and NIF giving back either an
      * exception or a full Company
      *
      * @param company
@@ -217,7 +210,7 @@ public class CompanyFacadeREST {
     }
 
     /**
-     * Gets a given nif and replaces the password of the associated company with a nre random one
+     * Gets a given nif and replaces the password of the associated company with a generated random one
      *
      * @param nif
      */
@@ -231,13 +224,9 @@ public class CompanyFacadeREST {
             companyEJB.reestablishPassword(nif);
             aux = "The Password has been reestablished";
         } catch (ReadException ex) {
-            ex.printStackTrace();
-            aux = "There's been an error";
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            aux = "There's been an error";
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

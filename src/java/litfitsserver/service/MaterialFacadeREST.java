@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalMaterialEJB;
 import litfitsserver.entities.Material;
 import litfitsserver.exceptions.CreateException;
-import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
 
