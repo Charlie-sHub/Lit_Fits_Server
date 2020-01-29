@@ -20,6 +20,7 @@ import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
+import litfitsserver.exceptions.UpdateException;
 
 /**
  * RESTful class for User entity.
@@ -47,6 +48,7 @@ public class UserFacadeREST {
             userEJB.createUser(user);
             
         } catch (CreateException createException) {
+            createException.printStackTrace();
             LOG.severe(createException.getMessage());
             throw new InternalServerErrorException(createException);
         }
@@ -58,30 +60,31 @@ public class UserFacadeREST {
      * @param user A User object that contains all the data that will be updated.
      */
     @PUT
-    //@Path("edituser/{user}")
+    @Path("edit/{username}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void editUser( User user) {
+    public void editUser(User user) {
 
         try {
-            userEJB.createUser(user);
+            userEJB.editUser(user);
             
-        } catch (CreateException createException) {
-            LOG.severe(createException.getMessage());
-            throw new InternalServerErrorException(createException);
+        } catch (UpdateException updateException) {
+            LOG.severe(updateException.getMessage());
+            throw new InternalServerErrorException(updateException);
         }
     }
 
     /**
      * Removes a user from the database.
      * 
-     * @param user The user that will be deleted from the database.
+     * @param username The user that will be deleted from the database.
      */
     @DELETE
-    @Path("deleteuser/{user}")
-    public void removeUser(@PathParam("user") User user) {
+    @Path("{username}")
+    @Consumes({MediaType.APPLICATION_XML})
+    public void removeUser(@PathParam("username") String username) {
 
         try {
-            userEJB.removeUser(user);
+            userEJB.removeUser(username);
             
         } catch (ReadException | DeleteException removeException) {
             LOG.severe(removeException.getMessage());
@@ -110,6 +113,7 @@ public class UserFacadeREST {
             throw new InternalServerErrorException(exception);
         
         } catch (Exception unknownException) {
+            unknownException.printStackTrace();
             LOG.severe(unknownException.getMessage());
             throw new InternalServerErrorException(unknownException);
         }

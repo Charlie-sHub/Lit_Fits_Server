@@ -46,7 +46,7 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public void createUser(User user) throws CreateException {
-        em.persist(user);
+            em.persist(user);
     }
 
     /**
@@ -64,13 +64,15 @@ public class UserEJB implements LocalUserEJB{
     /**
      * Removes a user from the database.
      * 
-     * @param user The user that will be removed.
+     * @param username The user that will be removed.
      * @throws ReadException
      * @throws DeleteException 
      */
     @Override
-    public void removeUser(User user) throws ReadException, DeleteException {
-        em.remove(em.merge(user));
+    public void removeUser(String username) throws ReadException, DeleteException {
+        User removeUser = this.findUser(username);
+        
+        em.remove(removeUser);
     }
 
     /**
@@ -140,10 +142,10 @@ public class UserEJB implements LocalUserEJB{
         User receivedUser = user;
         User userInDB = this.findUser(user.getUsername());
         String auxPassword = user.getPassword();
-        
+
         try {
-            Decryptor decryptor = new Decryptor();
-            receivedUser.setPassword(decryptor.decypherRSA(receivedUser.getPassword()));
+                Decryptor decryptor = new Decryptor();
+                receivedUser.setPassword(decryptor.decypherRSA(receivedUser.getPassword()));
             boolean rightPassword = userInDB.getPassword().equals(toHash(receivedUser.getPassword()));
             
             if (!rightPassword) {

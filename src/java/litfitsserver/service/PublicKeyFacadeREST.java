@@ -36,7 +36,8 @@ public class PublicKeyFacadeREST {
         try {
             LOG.info("Giving the public key to a client");
             publicKey = publicKeyEJB.getPublicKey();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
