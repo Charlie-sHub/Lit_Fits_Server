@@ -12,6 +12,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.crypto.BadPaddingException;
 import javax.crypto.NoSuchPaddingException;
 import javax.ejb.CreateException;
 import javax.ejb.EJB;
@@ -50,10 +51,9 @@ public class EJBExpertManager implements LocalExpertEJB {
      * @throws CreateException 
      */
     @Override
-    public void createExpert (FashionExpert expert) throws CreateException{
-        Decryptor decryptor = new Decryptor();
+    public void createExpert (FashionExpert expert) throws CreateException{Decryptor decryptor = new Decryptor();
         try{
-            expert.setPassword(decryptor.decypherRSA(expert.getPassword()));
+            expert.setPassword(Decryptor.decypherRSA(expert.getPassword()));
             if(expertExists(expert.getUsername())){
                 throw new Exception("Username already exists in the database");
             }else{
@@ -62,6 +62,8 @@ public class EJBExpertManager implements LocalExpertEJB {
                 expert.setLastPasswordChange(new Date());
                 em.persist(expert);
             }
+        } catch(BadPaddingException ex){
+            throw new CreateException(ex.getMessage());
         }catch(Exception e){
             throw new CreateException(e.getMessage());
         }
@@ -85,10 +87,9 @@ public class EJBExpertManager implements LocalExpertEJB {
         
         if(!correctPassword){
             expert.setLastPasswordChange(new Date());
-            String password = expert.getPassword();
-            expert.setPassword(toHash(password));
         }
-        
+        expert.setId(expertInDB.getId());
+        expert.setPassword(toHash(expert.getPassword()));
         em.merge(expert);
         em.flush();
     }
@@ -123,7 +124,13 @@ public class EJBExpertManager implements LocalExpertEJB {
      */
     @Override
     public FashionExpert findExpertByUsername(String username) throws ReadException{
-        return (FashionExpert) em.createNamedQuery("findExpertByUsername").setParameter("username", username).getSingleResult();
+        FashionExpert expert = null;
+        try{
+            expert = (FashionExpert) em.createNamedQuery("findExpertByUsername").setParameter("username", username).getSingleResult();
+        } catch(Exception e) {
+            throw new ReadException("Username not found");
+        }
+        return expert;
     }
     
     /**
