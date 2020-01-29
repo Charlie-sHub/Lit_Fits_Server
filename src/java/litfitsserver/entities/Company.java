@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -79,7 +80,7 @@ public class Company implements Serializable {
     /**
      * List of garments "owned" by the company.
      */
-    @OneToMany(mappedBy = "company", cascade = ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = ALL)
     private List<Garment> garments;
 
     /**
