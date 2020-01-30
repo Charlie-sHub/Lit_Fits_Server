@@ -22,7 +22,7 @@ import litfitsserver.entities.User;
  * Builds an Email Service capable of sending normal email to a given SMTP Host. Currently <b>send()</b> can only works
  * with text.
  *
- * @author Asier Vila & Carlos Mendez
+ * @author Asier Vila and Carlos Mendez
  */
 public class EmailService {
     /**
@@ -61,14 +61,12 @@ public class EmailService {
 
     /**
      * Sends the given <b>text</b> from the <b>sender</b> to the <b>receiver</b>. In any case, both the <b>sender</b>
-     * and <b>receiver</b> must exist and be valid mail addresses. <br/>
-     * <br/>
+     * and <b>receiver</b> must exist and be valid mail addresses.
      *
      * Note the <b>user</b> and <b>pass</b> for the authentication is provided in the class constructor. Ideally, the
      * <b>sender</b> and the <b>user</b>
      * coincide.
      *
-     * @param sender The mail's FROM
      * @param receiver The mail's TO
      * @param subject The mail's SUBJECT
      * @param text The proper MESSAGE

@@ -30,7 +30,7 @@ public interface LocalGarmentEJB {
      * @param garment
      * @throws litfitsserver.exceptions.CreateException
      */
-    void createGarment(Garment garment) throws CreateException;
+    void createGarment(Garment garment) throws CreateException, ReadException;
 
     /**
      * Edits a Garment

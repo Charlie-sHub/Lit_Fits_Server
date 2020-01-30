@@ -2,6 +2,7 @@ package litfitsserver.ejbs;
 
 import java.io.IOException;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,16 +22,25 @@ import litfitsserver.exceptions.UpdateException;
  */
 @Stateless
 public class GarmentEJB implements LocalGarmentEJB {
+    /**
+     * Injects the EJB of the company
+     */
+    @EJB
+    private LocalCompanyEJB companyEJB;
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager entityManager;
 
     @Override
-    public void createGarment(Garment garment) throws CreateException {
+    public void createGarment(Garment garment) throws CreateException, ReadException {
+        Long companyID = companyEJB.findCompanyByNif(garment.getCompany().getNif()).getId();
+        garment.getCompany().setId(companyID);
         entityManager.persist(garment);        
     }
 
     @Override
     public void editGarment(Garment garment) throws UpdateException, ReadException {
+        Long companyID = companyEJB.findCompanyByNif(garment.getCompany().getNif()).getId();
+        garment.getCompany().setId(companyID);
         Garment garmentInDb = findGarmentByBarcode(garment.getBarcode());
         garment.setId(garmentInDb.getId());
         entityManager.merge(garment);
@@ -39,7 +49,8 @@ public class GarmentEJB implements LocalGarmentEJB {
 
     @Override
     public void removeGarment(Garment garment) throws ReadException, DeleteException {
-        entityManager.remove(entityManager.merge(garment));
+        garment = findGarmentByBarcode(garment.getBarcode());
+        entityManager.remove(garment);
     }
 
     @Override

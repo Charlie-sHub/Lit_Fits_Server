@@ -56,7 +56,6 @@ public class CompanyFacadeREST {
     /**
      * Edits a Company including the change of password
      *
-     * @param id
      * @param company
      */
     @PUT

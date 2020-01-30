@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -121,13 +122,13 @@ public class Garment implements Serializable {
     /**
      * What colors are in the garment
      */
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(fetch = EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "garment_colors", schema = "litfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(fetch = EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "garment_materials", schema = "litfitsdb")
     private Set<Material> materials;
 
