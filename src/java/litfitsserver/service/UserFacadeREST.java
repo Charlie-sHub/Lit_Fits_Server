@@ -1,6 +1,5 @@
 package litfitsserver.service;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -8,7 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -18,83 +17,100 @@ import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalUserEJB;
 import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
-import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
-import litfitsserver.exceptions.UpdateException;
 
 /**
- * RESTful class for User entity.
- * 
- * @author Asier
+ * RESTful for User
+ *
+ * @author Asier Vila Dominguez
  */
 @Path("litfitsserver.entities.user")
 public class UserFacadeREST {
-    
+    /**
+     * Inject EJB 
+     */
     @EJB
     private LocalUserEJB userEJB;
     private static final Logger LOG = Logger.getLogger(UserFacadeREST.class.getName());
 
     /**
-     * Inserts a new user in the database.
-     * 
-     * @param user The user that will be inserted, with all the data.
+     * Inserts a new User
+     *
+     * @param user
      */
     @POST
-    @Path("createuser")
     @Consumes({MediaType.APPLICATION_XML})
-    public void createUser(User user) {
+    public void create(User user) {
+        
+        LOG.info("Creating a new user");
         
         try {
             userEJB.createUser(user);
-            
+        
         } catch (CreateException createException) {
-            createException.printStackTrace();
             LOG.severe(createException.getMessage());
+            //createException.printStackTrace();
             throw new InternalServerErrorException(createException);
+        
+        } catch (Exception exception) {
+            LOG.severe(exception.getMessage());
+            exception.printStackTrace();
+            throw new InternalServerErrorException(exception);
         }
     }
 
     /**
-     *  Edits the data of a registered user.
-     * 
-     * @param user A User object that contains all the data that will be updated.
+     * Edit a User
+     *
+     * @param user
      */
     @PUT
-    @Path("edit/{username}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void editUser(User user) {
-
+    public void edit(User user) {
+        
+        LOG.info("Editing a user");
+        
         try {
             userEJB.editUser(user);
-            
-        } catch (UpdateException updateException) {
-            LOG.severe(updateException.getMessage());
-            throw new InternalServerErrorException(updateException);
+        
+        } catch (ReadException readException) {
+            LOG.severe(readException.getMessage());
+            throw new NotFoundException(readException);
+        
+        } catch (Exception exception) {
+            LOG.severe(exception.getMessage());
+            throw new InternalServerErrorException(exception);
         }
     }
 
     /**
-     * Removes a user from the database.
-     * 
-     * @param username The user that will be deleted from the database.
+     * Delete a User
+     *
+     * @param username
      */
     @DELETE
     @Path("{username}")
-    @Consumes({MediaType.APPLICATION_XML})
-    public void removeUser(@PathParam("username") String username) {
-
+    public void remove(@PathParam("username") String username) {
+        
+        LOG.info("Deleting a company");
+        
         try {
-            userEJB.removeUser(username);
-            
-        } catch (ReadException | DeleteException removeException) {
-            LOG.severe(removeException.getMessage());
-            throw new InternalServerErrorException(removeException);
+            userEJB.removeUser(userEJB.findUser(username));
+        
+        } catch (ReadException readException) {
+            LOG.severe(readException.getMessage());
+            throw new NotFoundException(readException);
+        
+        } catch (Exception exception) {
+            LOG.severe(exception.getMessage());
+            throw new InternalServerErrorException(exception);
         }
     }
-    
+
     /**
-     * Gets a user with all its data.
-     * 
+     * Makes a login. Returns the User with all the data.
+     * An exception will be thrown if the data does not match.
+     *
      * @param user
      * @return User
      */
@@ -103,125 +119,135 @@ public class UserFacadeREST {
     @Consumes({MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_XML})
     public User login(User user) {
-        LOG.info("User login attempted");
-        User returnUser;
+
+        User userLogin = new User();
+        LOG.info("User trying to log");
+        
         try {
-            returnUser = userEJB.login(user);
-            
-        } catch (ReadException | NoSuchAlgorithmException | NotAuthorizedException exception) {
+            userLogin = userEJB.login(user);
+        
+        } catch (ReadException readException) {
+            LOG.severe(readException.getMessage());
+            throw new NotFoundException(readException);
+        
+        } catch (Exception exception) {
             LOG.severe(exception.getMessage());
             throw new InternalServerErrorException(exception);
-        
-        } catch (Exception unknownException) {
-            unknownException.printStackTrace();
-            LOG.severe(unknownException.getMessage());
-            throw new InternalServerErrorException(unknownException);
         }
         
-        return returnUser;
+        return userLogin;
     }
 
     /**
-     * This method gets the data of a registered user.
-     * 
-     * @param username The unique id for the user.
-     * @return The user with all the data.
+     * Gets a User using the username of the account.
+     *
+     * @param username
+     * @return User
      */
     @GET
-    @Path("find/{username}")
+    @Path("{username}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findUser(@PathParam("username") String username) {
-
+    public User find(@PathParam("username") String username) {
+        
+        LOG.info("Getting user with the username");
+        User user = null;
+        
         try {
-            return userEJB.findUser(username);
-            
+            user = userEJB.findUser(username);
+        
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
-            throw new InternalServerErrorException(readException);
+            throw new NotFoundException(readException);
+        
+        } catch (Exception exception) {
+            LOG.severe(exception.getMessage());
+            throw new InternalServerErrorException(exception);
         }
+
+        return user;
     }
 
     /**
-     * This method returns a list with all the registered users.
-     * 
-     * @return A List with the registered users.
+     * Get all the users from the database.
+     *
+     * @return List
      */
     @GET
-    //@Path("findall")
     @Produces({MediaType.APPLICATION_XML})
-    public List<User> findAllUser() {
-
+    public List<User> findAll() {
+        
+        LOG.info("Getting all the users");
+        List<User> users = null;
+        
         try {
-            return userEJB.findAllUsers();
-            
+            users = userEJB.findAllUsers();
+        
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
-            throw new InternalServerErrorException(readException);
+            throw new NotFoundException(readException);
+        
+        } catch (Exception exception) {
+            LOG.severe(exception.getMessage());
+            throw new InternalServerErrorException(exception);
         }
+
+        return users;
     }
 
     /**
-     * Returns the amount of registered users.
-     * 
-     * @return An integer with the number of users.
+     * Gets the number of users registered into the database.
+     *
+     * @return String
      */
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
-    public int countRESTUser() {
+    public String countREST() {
         
+        LOG.info("Getting the number of users in the database.");
+        String amount = null;
+
         try {
-            return userEJB.countUsers();
-            
+            amount = String.valueOf(userEJB.countUsers());
+
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
-            throw new InternalServerErrorException(readException);
+            throw new NotFoundException(readException);
         }
+
+        return amount;
     }
-    
+
     /**
-     * This method uses an email to filter and get a user from the database.
-     * 
-     * @param email The email that will be used to filter.
-     * @return The user with all the data.
-     */
-    @GET
-    @Path("user/{email}")
-    @Produces({MediaType.APPLICATION_XML})
-    public User findUserByEmail(@PathParam("email") String email) {
-        
-        User user = null;
-        
-        try {
-            user = userEJB.findUserByEmail(email);
-            
-        } catch (ReadException readException) {
-            LOG.severe(readException.getMessage());
-            throw new InternalServerErrorException(readException);
-        }
-        
-        return user;
-    }
-    
-    /**
-     * Sets a new password for the user with the received username.
+     * Replaces the users password with a new random one.
      *
-     * @param username The User's username that will receive a new password.
+     * @param username
      */
     @GET
     @Path("passwordReestablishment/{username}")
-    public void reestablishPassword(@PathParam("username") String username) {
-        LOG.info("Reestablishing a user password");
+    @Produces({MediaType.TEXT_PLAIN})
+    public String reestablishPassword(@PathParam("username") String username) {
+        
+        LOG.info("Password reestablisment for user.");
+        String aux;
+
         try {
             userEJB.reestablishPassword(username);
-            
+            aux = "The Password has been reestablished";
+
         } catch (ReadException readException) {
+            //readException.printStackTrace();
+            aux = "There's been an error";
             LOG.severe(readException.getMessage());
-            throw new InternalServerErrorException(readException);
-            
-        } catch (Exception ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
+            throw new NotFoundException(readException);
+
+        } catch (Exception exception) {
+            //exception.printStackTrace();
+            aux = "Server internal error.";
+            LOG.severe(exception.getMessage());
+            throw new InternalServerErrorException(exception);
         }
+
+        return aux;
     }
 }

@@ -1,5 +1,6 @@
 package litfitsserver.ejbs;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.ejb.Local;
 import javax.mail.MessagingException;
@@ -11,82 +12,82 @@ import litfitsserver.exceptions.ReadException;
 import litfitsserver.exceptions.UpdateException;
 
 /**
- * Interface that contains all the method for User's EJB.
- * 
+ * Interface for the UserEJB
+ *
  * @author Asier Vila Dominguez
  */
 @Local
 public interface LocalUserEJB {
-    
     /**
-     * Creates a new user.
-     * @param user The user that will be created.
-     * @throws CreateException
+     * The number of users that are stored into the database.
+     *
+     * @return int
+     * @throws litfitsserver.exceptions.ReadException
      */
-    public void createUser (User user) throws CreateException;
-    
+    int countUsers() throws ReadException;
+
     /**
-     * Modifies the data of the received user.
-     * @param user The user that will be modified.
-     * @throws UpdateException
-     */
-    public void editUser (User user) throws UpdateException;
-    
-    /**
-     * Deletes a user from the database.
-     * @param username The user that will be deleted.
-     * @throws ReadException
-     * @throws DeleteException
-     */
-    public void removeUser(String username) throws ReadException, DeleteException;
-    
-    /**
-     * Gets the data of the user with the received username.
-     * @param username The username that will be used to filter.
-     * @return The user data for that username.
-     * @throws ReadException
-     */
-    public User findUser(String username) throws ReadException;
-    
-    /**
-     * Gets the data of all the users in the database.
-     * @return A list with all the existing users.
-     * @throws ReadException
-     */
-    public List<User> findAllUsers() throws ReadException;
-    
-    /**
-     * Gets the amount of users saved on the database.
-     * @return The number of users on the database.
-     * @throws ReadException
-     */
-    public int countUsers() throws ReadException;
-    
-    /**
-     * Gets the user that has the received email linked to its account.
-     * @param email The email that will be used to filter.
-     * @return A User with all the data.
-     * @throws ReadException
-     */
-    public User findUserByEmail (String email) throws ReadException;
-    
-    /**
-     * Takes the data from the sent User and returns it.
+     * Creates a new user in the database.
      *
      * @param user
-     * @return Company
+     * @throws litfitsserver.exceptions.CreateException
+     */
+    void createUser(User user) throws CreateException;
+
+    /**
+     * Edit the data of the received user.
+     *
+     * @param user
+     * @throws litfitsserver.exceptions.UpdateException
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws javax.mail.MessagingException
+     */
+    void editUser(User user) throws UpdateException, NoSuchAlgorithmException, ReadException, MessagingException, Exception;
+
+    /**
+     * Get the data of all the users stored into the database.
+     *
+     * @return List
+     * @throws litfitsserver.exceptions.ReadException
+     */
+    List<User> findAllUsers() throws ReadException;
+
+    /**
+     * Get the data of a user using the username.
+     *
+     * @param username
+     * @return User
+     * @throws litfitsserver.exceptions.ReadException
+     */
+    User findUser(String username) throws ReadException;
+
+    /**
+     * Deletes a user from the database
+     *
+     * @param user
+     * @throws litfitsserver.exceptions.ReadException
+     * @throws litfitsserver.exceptions.DeleteException
+     */
+    void removeUser(User user) throws ReadException, DeleteException;
+
+    /**
+     * Makes a login. Gets all the data of the user if the password and username match the database record.
+     *
+     * @param user
+     * @return User
      * @throws NoSuchAlgorithmException
      * @throws ReadException
      * @throws NotAuthorizedException
      */
-    public User login(User user) throws ReadException, NotAuthorizedException, Exception;
+    User login(User user) throws ReadException, NotAuthorizedException, Exception;
 
     /**
-     * Reestablish the password for the User with the received username.
+     * Reestablishes the password for the received user. It creates a random new one.
      *
      * @param username
      * @throws ReadException
      * @throws javax.mail.MessagingException
      */
-    public void reestablishPassword(String username) throws ReadException, MessagingException, Exception;
+    void reestablishPassword(String username) throws ReadException, MessagingException, Exception;
 }
