@@ -70,7 +70,7 @@ public class Garment implements Serializable {
      * Path in the database to the picture of the garment
      */
     @NotNull
-    @Column(name="pictureName")
+    @Column(name = "pictureName")
     private String namePicture;
     /**
      * The person that designed the garment
@@ -111,7 +111,7 @@ public class Garment implements Serializable {
      * Indicates if the promotion request is accepted
      */
     @NotNull
-    private boolean promoted;    
+    private boolean promoted;
     /**
      * Company that sells the garment
      */
@@ -122,13 +122,13 @@ public class Garment implements Serializable {
     /**
      * What colors are in the garment
      */
-    @ManyToMany(fetch = EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "garment_colors", schema = "litfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
-    @ManyToMany(fetch = EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "garment_materials", schema = "litfitsdb")
     private Set<Material> materials;
 
@@ -269,7 +269,7 @@ public class Garment implements Serializable {
         this.company = company;
     }
 
-    @XmlTransient
+    // @XmlTransient
     public Set<Color> getColors() {
         return colors;
     }
@@ -278,7 +278,7 @@ public class Garment implements Serializable {
         this.colors = colors;
     }
 
-    @XmlTransient
+    // @XmlTransient
     public Set<Material> getMaterials() {
         return materials;
     }

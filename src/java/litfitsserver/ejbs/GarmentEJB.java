@@ -1,7 +1,11 @@
 package litfitsserver.ejbs;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -9,7 +13,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import litfitsserver.entities.Color;
 import litfitsserver.entities.Garment;
+import litfitsserver.entities.Material;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
 import litfitsserver.exceptions.ReadException;
@@ -23,10 +29,20 @@ import litfitsserver.exceptions.UpdateException;
 @Stateless
 public class GarmentEJB implements LocalGarmentEJB {
     /**
-     * Injects the EJB of the company
+     * Injects the EJB of the Company
      */
     @EJB
     private LocalCompanyEJB companyEJB;
+    /**
+     * Injects the EJB of the Color
+     */
+    @EJB
+    private LocalColorEJB colorEJB;
+    /**
+     * Injects the EJB of the Material
+     */
+    @EJB
+    private LocalMaterialEJB materialEJB;
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager entityManager;
 
@@ -34,7 +50,27 @@ public class GarmentEJB implements LocalGarmentEJB {
     public void createGarment(Garment garment) throws CreateException, ReadException {
         Long companyID = companyEJB.findCompanyByNif(garment.getCompany().getNif()).getId();
         garment.getCompany().setId(companyID);
-        entityManager.persist(garment);        
+        /*
+        Set<Color> colors = new HashSet<>();
+        garment.getColors().stream().forEach(color -> {
+            try {
+                colors.add(colorEJB.findColor(color.getName()));
+            } catch (ReadException ex) {
+                Logger.getLogger(GarmentEJB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        garment.setColors(colors);
+        Set<Material> materials = new HashSet<>();
+        garment.getMaterials().stream().forEach(material -> {
+            try {
+                materials.add(materialEJB.findMaterial(material.getName()));
+            } catch (ReadException ex) {
+                Logger.getLogger(GarmentEJB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        garment.setMaterials(materials);
+        */
+        entityManager.persist(garment);
     }
 
     @Override
