@@ -57,7 +57,6 @@ public class GarmentFacadeREST {
     /**
      * Edits a Garment
      *
-     * @param id
      * @param garment
      */
     @PUT
