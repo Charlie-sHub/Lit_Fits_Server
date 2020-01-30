@@ -2,6 +2,7 @@ package litfitsserver.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -48,7 +49,7 @@ public class GarmentFacadeREST {
         LOG.info("Creating a Garment");
         try {
             garmentEJB.createGarment(garment);
-        } catch (CreateException ex) {
+        } catch (CreateException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
