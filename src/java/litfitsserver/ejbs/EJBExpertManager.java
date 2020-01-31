@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -151,7 +152,7 @@ public class EJBExpertManager implements LocalExpertEJB {
     @Override
     public List<Color> getRecommendedColors() throws ReadException {
         List<FashionExpert> experts;
-        List<Color> colors = null;
+        List<Color> colors = new ArrayList<>();
         experts = findAllExperts();
         experts.forEach((expert) -> {
             List<Color> color = expert.getRecommendedColors();
@@ -169,7 +170,7 @@ public class EJBExpertManager implements LocalExpertEJB {
     @Override
     public List<Material> getRecommendedMaterials() throws ReadException {
         List<FashionExpert> experts;
-        List<Material> materials = null;
+        List<Material> materials = new ArrayList<>();
         experts = findAllExperts();
         experts.forEach((expert) -> {
             List<Material> material = expert.getRecommendedMaterials();
