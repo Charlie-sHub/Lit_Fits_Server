@@ -9,7 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Color entity class
- * @author Charlie
+ *
+ * @author Carlos Mendez
  */
 @Entity
 @Table(name = "color", schema = "litfitsdb")

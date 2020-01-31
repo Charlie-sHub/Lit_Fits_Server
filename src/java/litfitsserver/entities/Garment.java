@@ -269,7 +269,6 @@ public class Garment implements Serializable {
         this.company = company;
     }
 
-    // @XmlTransient
     public Set<Color> getColors() {
         return colors;
     }
@@ -278,7 +277,6 @@ public class Garment implements Serializable {
         this.colors = colors;
     }
 
-    // @XmlTransient
     public Set<Material> getMaterials() {
         return materials;
     }

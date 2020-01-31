@@ -24,49 +24,43 @@ import litfitsserver.exceptions.UpdateException;
 
 /**
  * RESTful class for User entity.
- * 
+ *
  * @author Asier
  */
 @Path("litfitsserver.entities.user")
 public class UserFacadeREST {
-    
     @EJB
     private LocalUserEJB userEJB;
     private static final Logger LOG = Logger.getLogger(UserFacadeREST.class.getName());
 
     /**
      * Inserts a new user in the database.
-     * 
+     *
      * @param user The user that will be inserted, with all the data.
      */
     @POST
     @Path("createuser")
     @Consumes({MediaType.APPLICATION_XML})
     public void createUser(User user) {
-        
         try {
             userEJB.createUser(user);
-            
         } catch (CreateException createException) {
-            createException.printStackTrace();
             LOG.severe(createException.getMessage());
             throw new InternalServerErrorException(createException);
         }
     }
 
     /**
-     *  Edits the data of a registered user.
-     * 
+     * Edits the data of a registered user.
+     *
      * @param user A User object that contains all the data that will be updated.
      */
     @PUT
     @Path("edit/{username}")
     @Consumes({MediaType.APPLICATION_XML})
     public void editUser(User user) {
-
         try {
             userEJB.editUser(user);
-            
         } catch (UpdateException updateException) {
             LOG.severe(updateException.getMessage());
             throw new InternalServerErrorException(updateException);
@@ -75,26 +69,24 @@ public class UserFacadeREST {
 
     /**
      * Removes a user from the database.
-     * 
+     *
      * @param username The user that will be deleted from the database.
      */
     @DELETE
     @Path("{username}")
     @Consumes({MediaType.APPLICATION_XML})
     public void removeUser(@PathParam("username") String username) {
-
         try {
             userEJB.removeUser(username);
-            
         } catch (ReadException | DeleteException removeException) {
             LOG.severe(removeException.getMessage());
             throw new InternalServerErrorException(removeException);
         }
     }
-    
+
     /**
      * Gets a user with all its data.
-     * 
+     *
      * @param user
      * @return User
      */
@@ -107,23 +99,20 @@ public class UserFacadeREST {
         User returnUser;
         try {
             returnUser = userEJB.login(user);
-            
         } catch (ReadException | NoSuchAlgorithmException | NotAuthorizedException exception) {
             LOG.severe(exception.getMessage());
             throw new InternalServerErrorException(exception);
-        
         } catch (Exception unknownException) {
             unknownException.printStackTrace();
             LOG.severe(unknownException.getMessage());
             throw new InternalServerErrorException(unknownException);
         }
-        
         return returnUser;
     }
 
     /**
      * This method gets the data of a registered user.
-     * 
+     *
      * @param username The unique id for the user.
      * @return The user with all the data.
      */
@@ -131,10 +120,8 @@ public class UserFacadeREST {
     @Path("find/{username}")
     @Produces({MediaType.APPLICATION_XML})
     public User findUser(@PathParam("username") String username) {
-
         try {
             return userEJB.findUser(username);
-            
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
@@ -143,17 +130,15 @@ public class UserFacadeREST {
 
     /**
      * This method returns a list with all the registered users.
-     * 
+     *
      * @return A List with the registered users.
      */
     @GET
     //@Path("findall")
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAllUser() {
-
         try {
             return userEJB.findAllUsers();
-            
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
@@ -162,26 +147,24 @@ public class UserFacadeREST {
 
     /**
      * Returns the amount of registered users.
-     * 
+     *
      * @return An integer with the number of users.
      */
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public int countRESTUser() {
-        
         try {
             return userEJB.countUsers();
-            
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
         }
     }
-    
+
     /**
      * This method uses an email to filter and get a user from the database.
-     * 
+     *
      * @param email The email that will be used to filter.
      * @return The user with all the data.
      */
@@ -189,20 +172,16 @@ public class UserFacadeREST {
     @Path("user/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public User findUserByEmail(@PathParam("email") String email) {
-        
         User user = null;
-        
         try {
             user = userEJB.findUserByEmail(email);
-            
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
         }
-        
         return user;
     }
-    
+
     /**
      * Sets a new password for the user with the received username.
      *
@@ -214,11 +193,9 @@ public class UserFacadeREST {
         LOG.info("Reestablishing a user password");
         try {
             userEJB.reestablishPassword(username);
-            
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
-            
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);

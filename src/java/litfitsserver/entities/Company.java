@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * Company entity
  *
- * @author Charlie
+ * @author Carlos Mendez
  */
 @NamedQueries({
     @NamedQuery(
