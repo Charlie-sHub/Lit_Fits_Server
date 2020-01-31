@@ -243,8 +243,8 @@ public class UserEJB implements LocalUserEJB{
             }
         }catch (Exception ex) {
             exists = false;
-        } finally {
-            return exists;   
         }
+        
+        return exists;   
     }
 }
