@@ -49,7 +49,7 @@ public class UserEJB implements LocalUserEJB{
         try {
             user.setPassword(Decryptor.decypherRSA(user.getPassword()));
             if (userExists(user.getUsername())) {
-                throw new Exception("NIF already exists in the database");
+                throw new Exception("Username already exists in the database");
             } else {
                 user.setPassword(toHash(user.getPassword()));
                 user.setLastAccess(new Date());
@@ -57,10 +57,8 @@ public class UserEJB implements LocalUserEJB{
                 entityManager.persist(user);
             }
         } catch (BadPaddingException ex) {
-            ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new CreateException(ex.getMessage());
         }
     }

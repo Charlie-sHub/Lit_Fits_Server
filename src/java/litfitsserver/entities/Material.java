@@ -8,9 +8,9 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Defines the different materials a garment can be made out of
+ * Material entity class
  *
- * @author Charlie
+ * @author Carlos Mendez
  */
 @Entity
 @Table(name = "material", schema = "litfitsdb")

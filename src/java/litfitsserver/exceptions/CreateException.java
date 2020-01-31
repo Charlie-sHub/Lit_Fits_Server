@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package litfitsserver.exceptions;
 
 /**
  * Exception thrown when an entity failed to be created
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 public class CreateException extends Exception {
     /**

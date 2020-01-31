@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -14,8 +13,6 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,12 +30,15 @@ import org.apache.commons.io.IOUtils;
  * @author Carlos Mendez
  */
 public class Decryptor {
+    /**
+     * Super serious SALT 
+     */
     private static final byte[] SALT = "OwO UwU *.^ u.u!".getBytes();
 
     /**
      * Returns the deciphered content of a string
      *
-     * @param secret
+     * @param secretMessage
      * @return String deciphered secret
      * @throws java.security.spec.InvalidKeySpecException
      * @throws java.security.NoSuchAlgorithmException
@@ -48,16 +48,16 @@ public class Decryptor {
      * @throws javax.crypto.IllegalBlockSizeException
      * @throws javax.crypto.BadPaddingException
      */
-    public static String decypherRSA(String secret) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
-        String message = null;
+    public static String decypherRSA(String secretMessage) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
+        String decypheredMessage = null;
         byte privateKeyBytes[] = getPrivateKey();
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        message = new String(cipher.doFinal(getBytesFromHexString(secret)));
-        return message;
+        decypheredMessage = new String(cipher.doFinal(getBytesFromHexString(secretMessage)));
+        return decypheredMessage;
     }
 
     /**
@@ -69,7 +69,7 @@ public class Decryptor {
      */
     private static byte[] getPrivateKey() throws IOException, FileNotFoundException {
         byte privateKeyBytes[] = null;
-        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("serverLocalSystemAddress") + "/ejbs/private.key";
+        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("keysFolder") + "/private.key";
         File privateKeyFile = new File(privateKeyPath);
         FileInputStream input = new FileInputStream(privateKeyFile);
         privateKeyBytes = IOUtils.toByteArray(input);

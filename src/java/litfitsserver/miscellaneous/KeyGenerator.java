@@ -12,11 +12,18 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * Generates the public and private keys for asimetric encryption
+ * Generates the public and private keys for asymmetric encryption, meant to only be used once
+ *
+ * @author Carlos Mendez
  */
-public class KeyGen {
+public class KeyGenerator {
+    public static void main(String[] args) {
+        KeyGenerator keyGenerator = new KeyGenerator();
+        keyGenerator.generateKeys();
+    }
+
     /**
-     * Genera el fichero con la clave privada
+     * Generates the pair of keys
      */
     public void generateKeys() {
         KeyPairGenerator generator;
@@ -24,14 +31,21 @@ public class KeyGen {
             generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
             KeyPair keypair = generator.generateKeyPair();
-            getPublicKey(keypair);
-            getPrivateKey(keypair);
+            getAndStorePublicKey(keypair);
+            getAndStorePrivateKey(keypair);
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
 
-    private void getPublicKey(KeyPair keypair) throws FileNotFoundException, IOException {
+    /**
+     * Gets the public key from the keyPair and stores it in a file
+     *
+     * @param keypair
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private void getAndStorePublicKey(KeyPair keypair) throws FileNotFoundException, IOException {
         PublicKey publicKey = keypair.getPublic();
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
         FileOutputStream fileOutputStream = new FileOutputStream("public.key");
@@ -39,17 +53,18 @@ public class KeyGen {
         fileOutputStream.close();
     }
 
-    private void getPrivateKey(KeyPair keypair) throws IOException, FileNotFoundException {
-        FileOutputStream fileOutputStream;
+    /**
+     * Gets the private key from the keyPair and stores it in a file
+     *
+     * @param keypair
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private void getAndStorePrivateKey(KeyPair keypair) throws FileNotFoundException, IOException {
         PrivateKey privateKey = keypair.getPrivate();
         PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
-        fileOutputStream = new FileOutputStream("private.key");
+        FileOutputStream fileOutputStream = new FileOutputStream("private.key");
         fileOutputStream.write(pKCS8EncodedKeySpec.getEncoded());
         fileOutputStream.close();
-    }
-
-    public static void main(String[] args) {
-        KeyGen keyGenerator = new KeyGen();
-        keyGenerator.generateKeys();
     }
 }

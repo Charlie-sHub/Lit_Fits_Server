@@ -16,7 +16,7 @@ import litfitsserver.exceptions.UpdateException;
 /**
  * EJB for Colors
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Stateless
 public class ColorEJB implements LocalColorEJB {

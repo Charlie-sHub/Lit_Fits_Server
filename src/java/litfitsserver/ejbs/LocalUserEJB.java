@@ -75,7 +75,6 @@ public interface LocalUserEJB {
      *
      * @param user
      * @return Company
-     * @throws NoSuchAlgorithmException
      * @throws ReadException
      * @throws NotAuthorizedException
      */

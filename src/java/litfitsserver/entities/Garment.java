@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -66,6 +67,12 @@ public class Garment implements Serializable {
     @Column(unique = true)
     private String barcode;
     /**
+     * Path in the database to the picture of the garment
+     */
+    @NotNull
+    @Column(name = "pictureName")
+    private String namePicture;
+    /**
      * The person that designed the garment
      */
     @NotNull
@@ -106,11 +113,6 @@ public class Garment implements Serializable {
     @NotNull
     private boolean promoted;
     /**
-     * Path in the database to the picture of the garment
-     */
-    @NotNull
-    private String pictureName;
-    /**
      * Company that sells the garment
      */
     @NotNull
@@ -120,13 +122,13 @@ public class Garment implements Serializable {
     /**
      * What colors are in the garment
      */
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(fetch = EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "garment_colors", schema = "litfitsdb")
     private Set<Color> colors;
     /**
      * What materials is the garment made out of
      */
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(fetch = EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "garment_materials", schema = "litfitsdb")
     private Set<Material> materials;
 
@@ -165,7 +167,7 @@ public class Garment implements Serializable {
         this.available = available;
         this.promotionRequest = promotionRequest;
         this.promoted = promoted;
-        this.pictureName = imagePath;
+        this.namePicture = imagePath;
         this.company = company;
         this.colors = colors;
         this.materials = materials;
@@ -251,12 +253,12 @@ public class Garment implements Serializable {
         this.promoted = promoted;
     }
 
-    public String getPictureName() {
-        return pictureName;
+    public String getNamePicture() {
+        return namePicture;
     }
 
-    public void setPictureName(String pictureName) {
-        this.pictureName = pictureName;
+    public void setNamePicture(String namePicture) {
+        this.namePicture = namePicture;
     }
 
     public Company getCompany() {
@@ -267,7 +269,7 @@ public class Garment implements Serializable {
         this.company = company;
     }
 
-    @XmlTransient
+    // @XmlTransient
     public Set<Color> getColors() {
         return colors;
     }
@@ -276,7 +278,7 @@ public class Garment implements Serializable {
         this.colors = colors;
     }
 
-    @XmlTransient
+    // @XmlTransient
     public Set<Material> getMaterials() {
         return materials;
     }
@@ -292,8 +294,8 @@ public class Garment implements Serializable {
      * @throws java.io.IOException
      */
     public byte[] getPicture() throws IOException {
-        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
-        byte[] pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + pictureName + ".jpg").toPath());
+        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("picturesFolder");
+        byte[] pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + namePicture).toPath());
         return pictureBytes;
     }
 
@@ -304,9 +306,8 @@ public class Garment implements Serializable {
      * @throws Exception
      */
     public void setPicture(byte[] pictureBytes) throws Exception {
-        System.out.println(getPictureName());
-        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("pictures");
-        File outputFile = new File(pictureFolder + "/" + pictureName + ".jpg");
+        String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("picturesFolder");
+        File outputFile = new File(pictureFolder + "/" + namePicture);
         FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
     }
 
@@ -323,7 +324,7 @@ public class Garment implements Serializable {
         hash = 29 * hash + (this.available ? 1 : 0);
         hash = 29 * hash + (this.promotionRequest ? 1 : 0);
         hash = 29 * hash + (this.promoted ? 1 : 0);
-        hash = 29 * hash + Objects.hashCode(this.pictureName);
+        hash = 29 * hash + Objects.hashCode(this.namePicture);
         hash = 29 * hash + Objects.hashCode(this.company);
         hash = 29 * hash + Objects.hashCode(this.colors);
         hash = 29 * hash + Objects.hashCode(this.materials);
@@ -350,6 +351,6 @@ public class Garment implements Serializable {
 
     @Override
     public String toString() {
-        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + pictureName + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
+        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + namePicture + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
     }
 }

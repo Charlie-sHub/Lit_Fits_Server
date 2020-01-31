@@ -24,7 +24,7 @@ import litfitsserver.exceptions.UpdateException;
 /**
  * RESTful class for the Color entity
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Path("litfitsserver.entities.color")
 public class ColorFacadeREST {
@@ -80,12 +80,9 @@ public class ColorFacadeREST {
         try {
             LOG.info("Deleting a Color");
             colorEJB.removeColor(colorEJB.findColor(name));
-        } catch (DeleteException ex) {
+        } catch (DeleteException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
-        } catch (ReadException ex) {
-            LOG.severe(ex.getMessage());
-            throw new NotFoundException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
@@ -158,7 +155,6 @@ public class ColorFacadeREST {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
-        
         return amount;
     }
 }

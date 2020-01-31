@@ -11,7 +11,7 @@ import litfitsserver.exceptions.UpdateException;
 /**
  * Interface for the ColorEJB
  *
- * @author Carlos
+ * @author Carlos Mendez
  */
 @Local
 public interface LocalColorEJB {

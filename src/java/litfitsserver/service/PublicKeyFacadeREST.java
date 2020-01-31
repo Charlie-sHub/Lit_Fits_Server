@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import litfitsserver.ejbs.LocalPublicKeyEJB;
 
 /**
- * RESTful class for getting the Public Key
+ * RESTful class for the Public Key
  *
  * @author Carlos
  */
@@ -25,16 +25,16 @@ public class PublicKeyFacadeREST {
     private static final Logger LOG = Logger.getLogger(PublicKeyFacadeREST.class.getName());
 
     /**
-     * Gets the material wanted
+     * Gets the Public Key
      *
-     * @return Material
+     * @return byte[] the public key as a byte array
      */
     @GET
     @Produces({MediaType.APPLICATION_OCTET_STREAM})
     public byte[] getPublicKey() {
+        LOG.info("Giving the public key to a client");
         byte[] publicKey = null;
         try {
-            LOG.info("Giving the public key to a client");
             publicKey = publicKeyEJB.getPublicKey();
         } catch (Exception ex) {
             ex.printStackTrace();

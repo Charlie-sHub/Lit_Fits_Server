@@ -2,6 +2,7 @@ package litfitsserver.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -48,7 +49,7 @@ public class GarmentFacadeREST {
         LOG.info("Creating a Garment");
         try {
             garmentEJB.createGarment(garment);
-        } catch (CreateException ex) {
+        } catch (CreateException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -57,7 +58,6 @@ public class GarmentFacadeREST {
     /**
      * Edits a Garment
      *
-     * @param id
      * @param garment
      */
     @PUT
@@ -260,12 +260,15 @@ public class GarmentFacadeREST {
     /**
      * Gets the picture of the garment
      *
+     * Deprecated since the picture is now embedded in the Garment
+     *
      * @param id
      * @return Response
      */
     @GET
     @Path("picture/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Deprecated
     public Response getImage(@PathParam("id") Long id) {
         LOG.info("Getting the image of a Garment");
         byte[] image = null;
@@ -273,7 +276,7 @@ public class GarmentFacadeREST {
         try {
             LOG.info("Retreiving a garment's picture");
             image = garmentEJB.getImage(id);
-            response = Response.ok(image, "image/jpg").header("Inline", "filename=\"" + garmentEJB.findGarment(id).getPictureName() + "\"").build();
+            response = Response.ok(image, "image/jpg").header("Inline", "filename=\"" + garmentEJB.findGarment(id).getNamePicture() + "\"").build();
         } catch (IOException | ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
