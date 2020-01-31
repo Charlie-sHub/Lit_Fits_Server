@@ -36,10 +36,8 @@ public class PublicKeyFacadeREST {
         byte[] publicKey = null;
         try {
             publicKey = publicKeyEJB.getPublicKey();
-        } catch (IOException ex) {
-            LOG.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex);
         } catch (Exception ex) {
+            ex.printStackTrace();
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

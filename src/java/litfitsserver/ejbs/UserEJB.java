@@ -28,7 +28,7 @@ import litfitsserver.miscellaneous.EmailService;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
- * The EJB for the User on the app
+ * The EJB for the User on the app.
  * 
  * @author Asier
  */
@@ -36,7 +36,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class UserEJB implements LocalUserEJB{
 
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
-    private EntityManager em;
+    private EntityManager entityManager;
     
     /**
      * Creates a new user.
@@ -46,7 +46,21 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public void createUser(User user) throws CreateException {
-        em.persist(user);
+        try {
+            user.setPassword(Decryptor.decypherRSA(user.getPassword()));
+            if (userExists(user.getUsername())) {
+                throw new Exception("Username already exists in the database");
+            } else {
+                user.setPassword(toHash(user.getPassword()));
+                user.setLastAccess(new Date());
+                user.setLastPasswordChange(new Date());
+                entityManager.persist(user);
+            }
+        } catch (BadPaddingException ex) {
+            throw new CreateException(ex.getMessage());
+        } catch (Exception ex) {
+            throw new CreateException(ex.getMessage());
+        }
     }
 
     /**
@@ -57,20 +71,22 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public void editUser(User user) throws UpdateException {
-        em.merge(user);
-        em.flush();
+        entityManager.merge(user);
+        entityManager.flush();
     }
 
     /**
      * Removes a user from the database.
      * 
-     * @param user The user that will be removed.
+     * @param username The user that will be removed.
      * @throws ReadException
      * @throws DeleteException 
      */
     @Override
-    public void removeUser(User user) throws ReadException, DeleteException {
-        em.remove(em.merge(user));
+    public void removeUser(String username) throws ReadException, DeleteException {
+        User removeUser = this.findUser(username);
+        
+        entityManager.remove(removeUser);
     }
 
     /**
@@ -82,7 +98,7 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public User findUser(String username) throws ReadException {
-        return em.find(User.class, username);
+        return entityManager.find(User.class, username);
     }
 
     /**
@@ -93,9 +109,9 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public List<User> findAllUsers() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         cq.select(cq.from(User.class));
-        return (List<User>) em.createQuery(cq).getResultList();
+        return (List<User>) entityManager.createQuery(cq).getResultList();
     }
 
     /**
@@ -106,10 +122,10 @@ public class UserEJB implements LocalUserEJB{
      */
     @Override
     public int countUsers() throws ReadException {
-        CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = entityManager.getCriteriaBuilder().createQuery();
         Root<User> rt = cq.from(User.class);
-        cq.select(em.getCriteriaBuilder().count(rt));
-        Query q = em.createQuery(cq);
+        cq.select(entityManager.getCriteriaBuilder().count(rt));
+        Query q = entityManager.createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
     
@@ -117,12 +133,12 @@ public class UserEJB implements LocalUserEJB{
      * Returns a User with all the data by filtering with the received email.
      * 
      * @param email The email that will be used to filter.
-     * @return
+     * @return The user that contains that email.
      * @throws ReadException 
      */
     @Override
     public User findUserByEmail(String email) throws ReadException {
-        return (User) em.createNamedQuery("findUserByEmail").setParameter("email", email).getResultList();
+        return (User) entityManager.createNamedQuery("findUserByEmail").setParameter("email", email).getResultList().get(0);
     }
 
     /**
@@ -137,28 +153,21 @@ public class UserEJB implements LocalUserEJB{
     @Override
     public User login (User user) throws ReadException, NotAuthorizedException, Exception {
         
-        User receivedUser = user;
-        User userInDB = this.findUser(user.getUsername());
-        String auxPassword = user.getPassword();
-        
+        User userInDB;
         try {
-            Decryptor decryptor = new Decryptor();
-            receivedUser.setPassword(decryptor.decypherRSA(receivedUser.getPassword()));
-            boolean rightPassword = userInDB.getPassword().equals(toHash(receivedUser.getPassword()));
-            
+            userInDB = findUser(user.getUsername());
+            user.setPassword(Decryptor.decypherRSA(user.getPassword()));
+            boolean rightPassword = userInDB.getPassword().equals(toHash(user.getPassword()));
             if (!rightPassword) {
                 throw new NotAuthorizedException("Wrong password");
             }
             userInDB.setLastAccess(new Date());
-            em.merge(userInDB);
+            entityManager.merge(userInDB);
+            entityManager.flush();
             //userInDB.setGarments(garmentEJB.findGarmentsByUser(userInDB.getUsername()));
-            
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             throw new Exception(ex.getMessage());
         }
-        
-        // To keep the same "password" that was sent by the client, meaning the encrypted one
-        userInDB.setPassword(auxPassword);
         return userInDB;
     }
     
@@ -171,15 +180,13 @@ public class UserEJB implements LocalUserEJB{
      */
     private String toHash(String password) throws NoSuchAlgorithmException {
         
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA");
-        
+        String passwordHash;
+        MessageDigest messageDigest;
+        messageDigest = MessageDigest.getInstance("SHA");
         byte dataBytes[] = password.getBytes();
-        
         messageDigest.update(dataBytes);
-        
         byte hash[] = messageDigest.digest();
-        
-        String passwordHash = new String(hash);
+        passwordHash = new String(hash);
         
         return passwordHash;
     }
@@ -196,11 +203,12 @@ public class UserEJB implements LocalUserEJB{
     public void reestablishPassword (String username) throws ReadException, MessagingException, Exception {
         User user = findUser(username);
         String generatedString = RandomStringUtils.randomAlphabetic(10);
-        user.setPassword(generatedString);
+        user.setPassword(toHash(generatedString));
         Decryptor decryptor = new Decryptor();
-        EmailService emailService = this.newEmailService(decryptor);
+        EmailService emailService = newEmailService(decryptor);
         emailService.sendUserPasswordReestablishmentEmail(user);
-        em.merge(user);
+        entityManager.merge(user);
+        entityManager.flush();
     }
     
     /**
@@ -217,5 +225,26 @@ public class UserEJB implements LocalUserEJB{
         String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", encodedPasswordPath);
         EmailService emailService = new EmailService(emailAddress, emailAddressPassword, null, null);
         return emailService;
+    }
+    
+    /**
+     * Checks if the username already exists into the database.
+     * 
+     * @param username The username that will be checked.
+     * @return True if it exists, false if not.
+     */
+    private boolean userExists(String username){
+        
+        boolean exists = false;
+        
+        try {
+            if (this.findUser(username).getUsername().equals(username)) {
+                exists = true;
+            }
+        }catch (Exception ex) {
+            exists = false;
+        }
+        
+        return exists;   
     }
 }

@@ -1,11 +1,9 @@
 package litfitsserver.ejbs;
 
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Local;
 import javax.mail.MessagingException;
 import javax.ws.rs.NotAuthorizedException;
-import litfitsserver.entities.Company;
 import litfitsserver.entities.User;
 import litfitsserver.exceptions.CreateException;
 import litfitsserver.exceptions.DeleteException;
@@ -36,11 +34,11 @@ public interface LocalUserEJB {
     
     /**
      * Deletes a user from the database.
-     * @param user The user that will be deleted.
+     * @param username The user that will be deleted.
      * @throws ReadException
      * @throws DeleteException
      */
-    public void removeUser(User user) throws ReadException, DeleteException;
+    public void removeUser(String username) throws ReadException, DeleteException;
     
     /**
      * Gets the data of the user with the received username.

@@ -71,7 +71,8 @@ public class User implements Serializable {
     }
     
     /**
-     * Full constructor
+     * Constructor for classes that inherits User.
+     * 
      * @param username The username that will be set.
      * @param fullName The full name that will be set.
      * @param password The password that that will be set.
@@ -91,6 +92,37 @@ public class User implements Serializable {
         this.lastAccess = lastAccess;
         this.lastPasswordChange = lastPasswordChange;
         this.type = type;
+    }
+    
+    /**
+     * Full constructor for User.
+     * 
+     * @param username The username that will be set.
+     * @param fullName The full name that will be set.
+     * @param password The password that that will be set.
+     * @param phoneNumber The phone number that will be set.
+     * @param email The email that will be set.
+     * @param lastAccess The last access date that will be set.
+     * @param lastPasswordChange The last password change date that will be set.
+     * @param type The type of the user that will be set.
+     * @param likedColors The set of colors that the user likes.
+     * @param likedMaterials The set of materials that the user likes.
+     * @param garments The set of garments that the user saves into its closet.
+     */
+    public User (String username, String fullName, String password, String phoneNumber,
+            String email, Date lastAccess, Date lastPasswordChange, UserType type,
+            Set<Color> likedColors, Set<Material> likedMaterials, Set<Garment> garments) {
+        this.username = username;
+        this.fullName = fullName;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.lastAccess = lastAccess;
+        this.lastPasswordChange = lastPasswordChange;
+        this.type = type;
+        this.likedColors = likedColors;
+        this.likedMaterials =likedMaterials;
+        this.garments =garments;
     }
     
     /**
