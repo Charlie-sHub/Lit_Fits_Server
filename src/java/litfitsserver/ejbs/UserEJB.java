@@ -28,7 +28,7 @@ import litfitsserver.miscellaneous.EmailService;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
- * The EJB for the User on the app
+ * The EJB for the User on the app.
  * 
  * @author Asier
  */
@@ -133,7 +133,7 @@ public class UserEJB implements LocalUserEJB{
      * Returns a User with all the data by filtering with the received email.
      * 
      * @param email The email that will be used to filter.
-     * @return
+     * @return The user that contains that email.
      * @throws ReadException 
      */
     @Override
@@ -166,7 +166,6 @@ public class UserEJB implements LocalUserEJB{
             entityManager.flush();
             //userInDB.setGarments(garmentEJB.findGarmentsByUser(userInDB.getUsername()));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
-            ex.printStackTrace();
             throw new Exception(ex.getMessage());
         }
         return userInDB;
@@ -228,6 +227,12 @@ public class UserEJB implements LocalUserEJB{
         return emailService;
     }
     
+    /**
+     * Checks if the username already exists into the database.
+     * 
+     * @param username The username that will be checked.
+     * @return True if it exists, false if not.
+     */
     private boolean userExists(String username){
         
         boolean exists = false;
@@ -236,10 +241,8 @@ public class UserEJB implements LocalUserEJB{
             if (this.findUser(username).getUsername().equals(username)) {
                 exists = true;
             }
-        
         }catch (Exception ex) {
             exists = false;
-        
         } finally {
             return exists;   
         }
