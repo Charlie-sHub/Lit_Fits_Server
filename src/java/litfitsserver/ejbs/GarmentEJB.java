@@ -50,7 +50,6 @@ public class GarmentEJB implements LocalGarmentEJB {
     public void createGarment(Garment garment) throws CreateException, ReadException {
         Long companyID = companyEJB.findCompanyByNif(garment.getCompany().getNif()).getId();
         garment.getCompany().setId(companyID);
-        /*
         Set<Color> colors = new HashSet<>();
         garment.getColors().stream().forEach(color -> {
             try {
@@ -69,7 +68,6 @@ public class GarmentEJB implements LocalGarmentEJB {
             }
         });
         garment.setMaterials(materials);
-        */
         entityManager.persist(garment);
     }
 
