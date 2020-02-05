@@ -137,10 +137,11 @@ public class CompanyEJB implements LocalCompanyEJB {
     public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception {
         Company company = findCompanyByNif(nif);
         String generatedString = RandomStringUtils.randomAlphabetic(10);
-        company.setPassword(toHash(generatedString));
         Decryptor decryptor = new Decryptor();
         EmailService emailService = newEmailService(decryptor);
+        company.setPassword(generatedString);
         emailService.sendCompanyPasswordReestablishmentEmail(company);
+        company.setPassword(toHash(generatedString));
         entityManager.merge(company);
         entityManager.flush();
     }
