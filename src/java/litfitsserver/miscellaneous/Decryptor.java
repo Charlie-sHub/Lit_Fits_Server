@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +23,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import litfitsserver.ejbs.PublicKeyEJB;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -69,8 +71,8 @@ public class Decryptor {
      */
     private static byte[] getPrivateKey() throws IOException, FileNotFoundException {
         byte privateKeyBytes[] = null;
-        String privateKeyPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("keysFolder") + "/private.key";
-        File privateKeyFile = new File(privateKeyPath);
+        URL privateKeyPath = Decryptor.class.getResource("private.key");
+        File privateKeyFile = new File(privateKeyPath.getFile());
         FileInputStream input = new FileInputStream(privateKeyFile);
         privateKeyBytes = IOUtils.toByteArray(input);
         return privateKeyBytes;

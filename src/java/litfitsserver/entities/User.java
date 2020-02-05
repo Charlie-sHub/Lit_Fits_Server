@@ -341,7 +341,7 @@ public class User implements Serializable {
      * Gets the garments that the user has saved.
      * @return A Set with all the garments.
      */
-    @XmlTransient
+    // @XmlTransient
     public Set<Garment> getGarments () {
         return garments;
     }
