@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
@@ -34,7 +35,11 @@ import org.apache.commons.lang3.RandomStringUtils;
  */
 @Stateless
 public class UserEJB implements LocalUserEJB{
-
+    /**
+     * Injects the EJB of the Garment
+     */
+    @EJB
+    private LocalCompanyEJB garmentEJB;
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager entityManager;
     
@@ -164,7 +169,7 @@ public class UserEJB implements LocalUserEJB{
             userInDB.setLastAccess(new Date());
             entityManager.merge(userInDB);
             entityManager.flush();
-            //userInDB.setGarments(garmentEJB.findGarmentsByUser(userInDB.getUsername()));
+            
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             throw new Exception(ex.getMessage());
         }

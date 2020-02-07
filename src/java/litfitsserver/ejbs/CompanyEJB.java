@@ -1,5 +1,7 @@
 package litfitsserver.ejbs;
 
+import java.io.File;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import litfitsserver.miscellaneous.EmailService;
 import java.security.MessageDigest;
@@ -136,11 +138,12 @@ public class CompanyEJB implements LocalCompanyEJB {
     @Override
     public void reestablishPassword(String nif) throws ReadException, MessagingException, Exception {
         Company company = findCompanyByNif(nif);
-        String generatedString = RandomStringUtils.randomAlphabetic(10);
-        company.setPassword(toHash(generatedString));
+        String generatedString = RandomStringUtils.randomAlphabetic(10);        
+        company.setPassword(generatedString);
         Decryptor decryptor = new Decryptor();
         EmailService emailService = newEmailService(decryptor);
         emailService.sendCompanyPasswordReestablishmentEmail(company);
+        company.setPassword(toHash(generatedString));
         entityManager.merge(company);
         entityManager.flush();
     }
@@ -153,10 +156,10 @@ public class CompanyEJB implements LocalCompanyEJB {
      * @throws Exception
      */
     private EmailService newEmailService(Decryptor decryptor) throws Exception {
-        String encodedPasswordPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("encodedEmailCredentialsFolder") + "/EncodedPassword.dat";
-        String encodedAddressPath = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("encodedEmailCredentialsFolder") + "/EncodedAddress.dat";
-        String emailAddress = decryptor.decypherAES("Nothin personnel kid", encodedAddressPath);
-        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", encodedPasswordPath);
+        URL encodedAddressPath = CompanyEJB.class.getResource("EncodedAddress.dat");
+        URL encodedPasswordPath = CompanyEJB.class.getResource("EncodedPassword.dat");
+        String emailAddress = decryptor.decypherAES("Nothin personnel kid", encodedAddressPath.getFile());
+        String emailAddressPassword = decryptor.decypherAES("Nothin personnel kid", encodedPasswordPath.getFile());
         EmailService emailService = new EmailService(emailAddress, emailAddressPassword, null, null);
         return emailService;
     }
