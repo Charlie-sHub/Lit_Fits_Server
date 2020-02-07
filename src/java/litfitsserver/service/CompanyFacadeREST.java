@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -111,6 +112,9 @@ public class CompanyFacadeREST {
         } catch (ReadException ex) {
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
+        } catch (NotAuthorizedException ex) {
+            LOG.severe(ex.getMessage());
+            throw new NotAuthorizedException(ex);
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);

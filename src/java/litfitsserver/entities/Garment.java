@@ -49,6 +49,10 @@ import org.apache.commons.io.FileUtils;
     @NamedQuery(
             name = "findGarmentsPromoted",
             query = "SELECT gar FROM Garment gar WHERE gar.promoted=:promoted"
+    ),
+    @NamedQuery(
+        name = "setPromoted",
+        query = "UPDATE Garment gar SET gar.promoted=:true where gar.barcode=:barcode"
     )
 })
 @Entity

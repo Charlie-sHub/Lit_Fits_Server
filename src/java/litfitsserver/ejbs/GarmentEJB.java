@@ -43,6 +43,8 @@ public class GarmentEJB implements LocalGarmentEJB {
      */
     @EJB
     private LocalMaterialEJB materialEJB;
+    @EJB
+    private LocalUserEJB userEJB;
     @PersistenceContext(unitName = "Lit_Fits_ServerPU")
     private EntityManager entityManager;
 
@@ -84,6 +86,12 @@ public class GarmentEJB implements LocalGarmentEJB {
     @Override
     public void removeGarment(Garment garment) throws ReadException, DeleteException {
         garment = findGarmentByBarcode(garment.getBarcode());
+        garment.getCompany().getGarments().remove(garment);
+        garment.getMaterials().clear();
+        garment.getColors().clear();
+        final Long garmentId = garment.getId();
+        userEJB.findAllUsers().stream().forEach(user -> user.getGarments().removeIf(userGarment -> userGarment.getId() == garmentId ));
+        entityManager.merge(garment);
         entityManager.remove(garment);
     }
 
@@ -132,5 +140,10 @@ public class GarmentEJB implements LocalGarmentEJB {
     public byte[] getImage(Long id) throws IOException, ReadException {
         byte[] imageBytes = findGarment(id).getPicture();
         return imageBytes;
+    }
+
+    @Override
+    public void promoteGarment(String barcode) throws ReadException {
+        entityManager.createNamedQuery("setPromoted").setParameter("barcode", barcode).setParameter("true", true).executeUpdate();
     }
 }

@@ -111,4 +111,6 @@ public interface LocalGarmentEJB {
      * @throws litfitsserver.exceptions.ReadException
      */
     byte[] getImage(Long id) throws IOException, ReadException;
+    
+    void promoteGarment(String barcode) throws ReadException;
 }

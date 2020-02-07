@@ -58,5 +58,5 @@ public class ColorEJB implements LocalColorEJB {
         cq.select(entityManager.getCriteriaBuilder().count(rt));
         Query q = entityManager.createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
-    }
+    }    
 }

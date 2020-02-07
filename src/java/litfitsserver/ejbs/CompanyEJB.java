@@ -1,6 +1,5 @@
 package litfitsserver.ejbs;
 
-import java.io.File;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import litfitsserver.miscellaneous.EmailService;
@@ -9,7 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Date;
-import java.util.ResourceBundle;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;

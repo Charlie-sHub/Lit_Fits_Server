@@ -46,6 +46,7 @@ public class UserFacadeREST {
             userEJB.createUser(user);
         } catch (CreateException createException) {
             LOG.severe(createException.getMessage());
+            createException.printStackTrace();
             throw new InternalServerErrorException(createException);
         }
     }

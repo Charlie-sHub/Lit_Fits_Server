@@ -83,6 +83,7 @@ public class GarmentFacadeREST {
         LOG.info("Deleting a Garment");
         try {
             garmentEJB.removeGarment(garmentEJB.findGarment(id));
+            garmentEJB.removeGarment(garmentEJB.findGarment(id));
         } catch (ReadException | DeleteException ex) {
             LOG.severe(ex.getMessage());
             throw new NotFoundException(ex);
@@ -285,5 +286,21 @@ public class GarmentFacadeREST {
             throw new InternalServerErrorException(ex);
         }
         return response;
+    }
+    
+    @GET
+    @Path("promote/{barcode}")
+    @Produces({MediaType.APPLICATION_XML})
+    public void findGarmentsPromoted(@PathParam("barcode") String barcode) {
+        LOG.info("Promote a given Garment");
+        try {
+            garmentEJB.promoteGarment(barcode);
+        } catch (ReadException ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        } catch (Exception ex) {
+            LOG.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 }
