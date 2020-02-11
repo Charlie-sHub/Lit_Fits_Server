@@ -141,6 +141,8 @@ public class UserEJB implements LocalUserEJB{
         return (User) entityManager.createNamedQuery("findUserByEmail").setParameter("email", email).getResultList().get(0);
     }
 
+    
+    
     /**
      * Gets all the data of the received user if the username and password are corrects.
      * 
@@ -203,10 +205,11 @@ public class UserEJB implements LocalUserEJB{
     public void reestablishPassword (String username) throws ReadException, MessagingException, Exception {
         User user = findUser(username);
         String generatedString = RandomStringUtils.randomAlphabetic(10);
-        user.setPassword(toHash(generatedString));
         Decryptor decryptor = new Decryptor();
         EmailService emailService = newEmailService(decryptor);
+        user.setPassword(generatedString);
         emailService.sendUserPasswordReestablishmentEmail(user);
+        user.setPassword(toHash(generatedString));
         entityManager.merge(user);
         entityManager.flush();
     }
@@ -246,5 +249,11 @@ public class UserEJB implements LocalUserEJB{
         }
         
         return exists;   
+    }
+
+    @Override
+    public void deleteAllUsers () throws ReadException, NotAuthorizedException, DeleteException {
+        
+        entityManager.createNamedQuery("deleteAllUsers");
     }
 }

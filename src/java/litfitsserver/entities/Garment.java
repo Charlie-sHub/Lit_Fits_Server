@@ -69,9 +69,11 @@ public class Garment implements Serializable {
     /**
      * Path in the database to the picture of the garment
      */
+    /*
     @NotNull
     @Column(name = "pictureName")
     private String namePicture;
+    */
     /**
      * The person that designed the garment
      */
@@ -167,7 +169,7 @@ public class Garment implements Serializable {
         this.available = available;
         this.promotionRequest = promotionRequest;
         this.promoted = promoted;
-        this.namePicture = imagePath;
+        //this.namePicture = imagePath;
         this.company = company;
         this.colors = colors;
         this.materials = materials;
@@ -253,13 +255,17 @@ public class Garment implements Serializable {
         this.promoted = promoted;
     }
 
+    /*
     public String getNamePicture() {
         return namePicture;
     }
+    */
 
+    /*
     public void setNamePicture(String namePicture) {
         this.namePicture = namePicture;
     }
+    */
 
     public Company getCompany() {
         return company;
@@ -291,11 +297,13 @@ public class Garment implements Serializable {
      * @return byte[] of the picture
      * @throws java.io.IOException
      */
+    /*
     public byte[] getPicture() throws IOException {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("picturesFolder");
         byte[] pictureBytes = Files.readAllBytes(new File(pictureFolder + "/" + namePicture).toPath());
         return pictureBytes;
     }
+    */
 
     /**
      * Saves the picture in the corresponding folder
@@ -303,11 +311,13 @@ public class Garment implements Serializable {
      * @param pictureBytes
      * @throws Exception
      */
+    /*
     public void setPicture(byte[] pictureBytes) throws Exception {
         String pictureFolder = ResourceBundle.getBundle("litfitsserver.miscellaneous.paths").getString("picturesFolder");
         File outputFile = new File(pictureFolder + "/" + namePicture);
         FileUtils.writeByteArrayToFile(outputFile, pictureBytes);
     }
+    */
 
     @Override
     public int hashCode() {
@@ -322,7 +332,7 @@ public class Garment implements Serializable {
         hash = 29 * hash + (this.available ? 1 : 0);
         hash = 29 * hash + (this.promotionRequest ? 1 : 0);
         hash = 29 * hash + (this.promoted ? 1 : 0);
-        hash = 29 * hash + Objects.hashCode(this.namePicture);
+        //hash = 29 * hash + Objects.hashCode(this.namePicture);
         hash = 29 * hash + Objects.hashCode(this.company);
         hash = 29 * hash + Objects.hashCode(this.colors);
         hash = 29 * hash + Objects.hashCode(this.materials);
@@ -349,6 +359,6 @@ public class Garment implements Serializable {
 
     @Override
     public String toString() {
-        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", imagePath=" + namePicture + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
+        return "Garment{" + "id=" + id + ", barcode=" + barcode + ", designer=" + designer + ", price=" + price + ", mood=" + mood + ", bodyPart=" + bodyPart + ", garmentType=" + garmentType + ", available=" + available + ", promotionRequest=" + promotionRequest + ", promoted=" + promoted + ", company=" + company + ", colors=" + colors + ", materials=" + materials + '}';
     }
 }

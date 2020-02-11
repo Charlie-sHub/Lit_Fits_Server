@@ -27,8 +27,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries ({
     
     @NamedQuery (
-       name = "findUserByEmail",
+        name = "findUserByEmail",
         query = "SELECT user from User user WHERE user.email=:email"
+    ),
+        
+    @NamedQuery (
+        name ="deleteAllUsers",
+        query = "DELETE from User"
     )
 })
 

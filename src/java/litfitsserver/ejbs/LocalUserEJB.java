@@ -88,4 +88,14 @@ public interface LocalUserEJB {
      * @throws javax.mail.MessagingException
      */
     public void reestablishPassword(String username) throws ReadException, MessagingException, Exception;
+    
+    /**
+     * Delete all the garments stored for the user with the specified username.
+     * 
+     * @param username
+     * @throws ReadException
+     * @throws NotAuthorizedException
+     * @throws DeleteException 
+     */
+    public void deleteAllUsers() throws ReadException, NotAuthorizedException, DeleteException;
 }

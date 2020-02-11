@@ -265,6 +265,7 @@ public class GarmentFacadeREST {
      * @param id
      * @return Response
      */
+    /*
     @GET
     @Path("picture/{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -286,4 +287,5 @@ public class GarmentFacadeREST {
         }
         return response;
     }
+    */
 }

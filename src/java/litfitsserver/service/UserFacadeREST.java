@@ -181,6 +181,18 @@ public class UserFacadeREST {
         }
         return user;
     }
+    
+    @DELETE
+    @Path("/deleteUsers/")
+    public void deleteAllUsers() {
+        try {
+            userEJB.deleteAllUsers();
+            
+        } catch (Exception ex) {
+            LOG.severe (ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+    }
 
     /**
      * Sets a new password for the user with the received username.
@@ -189,10 +201,12 @@ public class UserFacadeREST {
      */
     @GET
     @Path("passwordReestablishment/{username}")
-    public void reestablishPassword(@PathParam("username") String username) {
+    public String reestablishPassword(@PathParam("username") String username) {
         LOG.info("Reestablishing a user password");
+        String aux;
         try {
             userEJB.reestablishPassword(username);
+            aux = "Password reestablished";
         } catch (ReadException readException) {
             LOG.severe(readException.getMessage());
             throw new InternalServerErrorException(readException);
@@ -200,5 +214,6 @@ public class UserFacadeREST {
             LOG.severe(ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
+        return aux;
     }
 }

@@ -110,5 +110,7 @@ public interface LocalGarmentEJB {
      * @throws java.io.IOException
      * @throws litfitsserver.exceptions.ReadException
      */
+    /*
     byte[] getImage(Long id) throws IOException, ReadException;
+    */
 }

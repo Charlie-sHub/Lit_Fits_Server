@@ -128,9 +128,11 @@ public class GarmentEJB implements LocalGarmentEJB {
         return (List<Garment>) entityManager.createNamedQuery("findGarmentsPromoted").setParameter("promoted", promoted).getResultList();
     }
 
+    /*
     @Override
     public byte[] getImage(Long id) throws IOException, ReadException {
         byte[] imageBytes = findGarment(id).getPicture();
         return imageBytes;
     }
+    */
 }
